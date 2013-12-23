@@ -14,8 +14,7 @@ Start a broker (you can start as many brokers as your host system allows you to 
 - ```start-broker.sh <brokerId> <brokerPort> <hostIp>```
 
 Your broker will be available under ```hostIp:brokerPort```. If you run docker on a linux box you should use the IP of your linux box.
-If you run docker inside of vagrant you need to ensure that the ```brokerPort``` is forwarded and use the IP of the host running vagrant as
-```hostIp```
+If you run docker inside of vagrant you need to ensure that the ```brokerPort``` is forwarded and use the IP of the host running vagrant as ```hostIp```
 
 To forward ports with vagrant use: ```$ FORWARD_DOCKER_PORTS='true' vagrant up```
 
