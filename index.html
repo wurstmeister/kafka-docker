@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Kafka Docker : Run multiple Kafka brokers in Docker" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Kafka Docker</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/wurstmeister/kafka-docker">View on GitHub</a>
+
+          <h1 id="project_title">Kafka Docker</h1>
+          <h2 id="project_tagline">Run multiple Kafka brokers in Docker</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/wurstmeister/kafka-docker/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/wurstmeister/kafka-docker/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Following the excellent tutorials on how to run a multi broker kafka cluster natively:
+<a href="http://www.michael-noll.com/blog/2013/03/13/running-a-multi-broker-apache-kafka-cluster-on-a-single-node/">http://www.michael-noll.com/blog/2013/03/13/running-a-multi-broker-apache-kafka-cluster-on-a-single-node/</a> and in vagrant: <a href="http://allthingshadoop.com/2013/12/07/using-vagrant-to-get-up-and-running-with-apache-kafka/">http://allthingshadoop.com/2013/12/07/using-vagrant-to-get-up-and-running-with-apache-kafka/</a></p>
+
+<p>Here is the tutorial based on Docker:</p>
+
+<ol>
+<li>Install <a href="https://www.docker.io/gettingstarted/#h_installation">Docker</a> </li>
+</ol><pre><code>$ export START_SCRIPT=https://raw2.github.com/wurstmeister/kafka-docker/master/start-broker.sh
+$ curl -Ls $START_SCRIPT | bash /dev/stdin &lt;id-1&gt; &lt;port-1&gt; &lt;host-ip&gt;
+$ curl -Ls $START_SCRIPT | bash /dev/stdin &lt;id-2&gt; &lt;port-2&gt; &lt;host-ip&gt;
+$ ... 
+</code></pre>
+
+<p>e.g. to start a cluster with two brokers on localhost</p>
+
+<pre><code>$ curl -Ls $START_SCRIPT | bash /dev/stdin 1 9092 localhost
+$ curl -Ls $START_SCRIPT | bash /dev/stdin 2 9093 localhost
+</code></pre>
+
+<p>This will start a single zookeeper instance on localhost:49181, a kafka instance on localhost:9092 and one on localhost:9093.</p>
+
+<p>You can interact with your kafka cluster via the kafka shell:</p>
+
+<pre><code>$ docker run -link zookeeper:zk -i -t wurstmeister/kafka /bin/bash
+</code></pre>
+
+<p>Inside the shell you can use any kafka command, e.g:</p>
+
+<pre><code>$KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper $ZK_PORT_2181_TCP_ADDR
+$KAFKA_HOME/bin/kafka-topics.sh --create --topic topic \
+--partitions 2 --zookeeper $ZK_PORT_2181_TCP_ADDR --replication-factor 1
+</code></pre>
+
+<h1>
+<a name="running-docker-withing-vagrant" class="anchor" href="#running-docker-withing-vagrant"><span class="octicon octicon-link"></span></a>Running docker withing vagrant:</h1>
+
+<p>If you are running docker within vagrant, make sure you enable port forwarding:</p>
+
+<pre><code>$ FORWARD_DOCKER_PORTS='true' vagrant up
+</code></pre>
+
+<p>and set the  to the IP of you docker host (i.e. you vagrant vm ip)</p>
+
+<h1>
+<a name="troubleshooting" class="anchor" href="#troubleshooting"><span class="octicon octicon-link"></span></a>Troubleshooting:</h1>
+
+<p>By default a kafka broker uses 1GB of memory, so if you have trouble starting a broker, check docker logs for the container and make sure you've got enough memory available on your host</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Kafka Docker maintained by <a href="https://github.com/wurstmeister">wurstmeister</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
