@@ -36,6 +36,9 @@
 
 <p>Here is the tutorial based on Docker:</p>
 
+<h1>
+<a name="cluster-setup" class="anchor" href="#cluster-setup"><span class="octicon octicon-link"></span></a>Cluster Setup</h1>
+
 <ol>
 <li>Install <a href="https://www.docker.io/gettingstarted/#h_installation">Docker</a> </li>
 </ol><pre><code>$ export START_SCRIPT=https://raw2.github.com/wurstmeister/kafka-docker/master/start-broker.sh
@@ -44,24 +47,39 @@ $ curl -Ls $START_SCRIPT | bash /dev/stdin &lt;id-2&gt; &lt;port-2&gt; &lt;host-
 $ ... 
 </code></pre>
 
-<p>e.g. to start a cluster with two brokers on localhost</p>
+<p>e.g. to start a cluster with two brokers on 192.168.178.28</p>
 
-<pre><code>$ curl -Ls $START_SCRIPT | bash /dev/stdin 1 9092 localhost
-$ curl -Ls $START_SCRIPT | bash /dev/stdin 2 9093 localhost
+<pre><code>$ curl -Ls $START_SCRIPT | bash /dev/stdin 1 9092 192.168.178.28
+$ curl -Ls $START_SCRIPT | bash /dev/stdin 2 9093 192.168.178.28
 </code></pre>
 
-<p>This will start a single zookeeper instance on localhost:49181, a kafka instance on localhost:9092 and one on localhost:9093.</p>
+<p>This will start a single zookeeper instance on 192.168.178.28:49181, a kafka instance on 192.168.178.28:9092 and one on 192.168.178.28:9093.</p>
+
+<h1>
+<a name="kafka-shell" class="anchor" href="#kafka-shell"><span class="octicon octicon-link"></span></a>Kafka Shell</h1>
 
 <p>You can interact with your kafka cluster via the kafka shell:</p>
 
 <pre><code>$ docker run -link zookeeper:zk -i -t wurstmeister/kafka /bin/bash
 </code></pre>
 
-<p>Inside the shell you can use any kafka command, e.g:</p>
+<h1>
+<a name="testing" class="anchor" href="#testing"><span class="octicon octicon-link"></span></a>Testing</h1>
 
-<pre><code>$KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper $ZK_PORT_2181_TCP_ADDR
-$KAFKA_HOME/bin/kafka-topics.sh --create --topic topic \
---partitions 2 --zookeeper $ZK_PORT_2181_TCP_ADDR --replication-factor 1
+<p>To test your setup, start a shell, create a topic and start a producer:</p>
+
+<pre><code>$KAFKA_HOME/bin/kafka-topics.sh --create --topic topic \
+--partitions 4 --zookeeper $ZK_PORT_2181_TCP_ADDR --replication-factor 2
+$KAFKA_HOME/bin/kafka-topics.sh --describe --topic topic \
+--zookeeper $ZK_PORT_2181_TCP_ADDR 
+$KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper $ZK_PORT_2181_TCP_ADDR
+$KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic 
+--broker-list=192.168.178.28:9092
+</code></pre>
+
+<p>Start another shell and start a consumer:</p>
+
+<pre><code>$KAFKA_HOME/bin/kafka-console-consumer.sh --topic=topic --zookeeper=$ZK_PORT_2181_TCP_ADDR 
 </code></pre>
 
 <h1>
@@ -77,7 +95,7 @@ $KAFKA_HOME/bin/kafka-topics.sh --create --topic topic \
 <h1>
 <a name="troubleshooting" class="anchor" href="#troubleshooting"><span class="octicon octicon-link"></span></a>Troubleshooting:</h1>
 
-<p>By default a kafka broker uses 1GB of memory, so if you have trouble starting a broker, check docker logs for the container and make sure you've got enough memory available on your host</p>
+<p>By default a kafka broker uses 1GB of memory, so if you have trouble starting a broker, check <code>docker logs</code> for the container and make sure you've got enough memory available on your host</p>
       </section>
     </div>
 
