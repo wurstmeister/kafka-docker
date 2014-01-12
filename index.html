@@ -68,18 +68,18 @@ $ curl -Ls $START_SCRIPT | bash /dev/stdin 2 9093 192.168.178.28
 
 <p>To test your setup, start a shell, create a topic and start a producer:</p>
 
-<pre><code>$KAFKA_HOME/bin/kafka-topics.sh --create --topic topic \
+<pre><code>$ $KAFKA_HOME/bin/kafka-topics.sh --create --topic topic \
 --partitions 4 --zookeeper $ZK_PORT_2181_TCP_ADDR --replication-factor 2
-$KAFKA_HOME/bin/kafka-topics.sh --describe --topic topic \
+$ $KAFKA_HOME/bin/kafka-topics.sh --describe --topic topic \
 --zookeeper $ZK_PORT_2181_TCP_ADDR 
-$KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper $ZK_PORT_2181_TCP_ADDR
-$KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic 
+$ $KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper $ZK_PORT_2181_TCP_ADDR
+$ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic 
 --broker-list=192.168.178.28:9092
 </code></pre>
 
 <p>Start another shell and start a consumer:</p>
 
-<pre><code>$KAFKA_HOME/bin/kafka-console-consumer.sh --topic=topic --zookeeper=$ZK_PORT_2181_TCP_ADDR 
+<pre><code>$ $KAFKA_HOME/bin/kafka-console-consumer.sh --topic=topic --zookeeper=$ZK_PORT_2181_TCP_ADDR 
 </code></pre>
 
 <h1>
@@ -95,7 +95,10 @@ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic
 <h1>
 <a name="troubleshooting" class="anchor" href="#troubleshooting"><span class="octicon octicon-link"></span></a>Troubleshooting:</h1>
 
-<p>By default a kafka broker uses 1GB of memory, so if you have trouble starting a broker, check <code>docker logs</code> for the container and make sure you've got enough memory available on your host</p>
+<ul>
+<li>By default a kafka broker uses 1GB of memory, so if you have trouble starting a broker, check <code>docker logs</code> for the container and make sure you've got enough memory available on your host.</li>
+<li>Do not use localhost or 127.0.0.1 as the host ip if you want to run multiple brokers otherwise the brokers won't be able to communicate</li>
+</ul>
       </section>
     </div>
 
