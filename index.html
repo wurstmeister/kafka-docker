@@ -72,8 +72,7 @@ $ curl -Ls $START_SCRIPT | bash /dev/stdin 2 9093 192.168.178.28
 --partitions 4 --zookeeper $ZK_PORT_2181_TCP_ADDR --replication-factor 2
 $ $KAFKA_HOME/bin/kafka-topics.sh --describe --topic topic \
 --zookeeper $ZK_PORT_2181_TCP_ADDR 
-$ $KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper $ZK_PORT_2181_TCP_ADDR
-$ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic 
+$ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic \
 --broker-list=192.168.178.28:9092
 </code></pre>
 
