@@ -78,7 +78,8 @@ $ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic \
 
 <p>Start another shell and start a consumer:</p>
 
-<pre><code>$ $KAFKA_HOME/bin/kafka-console-consumer.sh --topic=topic --zookeeper=$ZK_PORT_2181_TCP_ADDR 
+<pre><code>$ $KAFKA_HOME/bin/kafka-console-consumer.sh --topic=topic \
+--zookeeper=$ZK_PORT_2181_TCP_ADDR 
 </code></pre>
 
 <h1>
@@ -89,7 +90,7 @@ $ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic \
 <pre><code>$ FORWARD_DOCKER_PORTS='true' vagrant up
 </code></pre>
 
-<p>and set the  to the IP of you docker host (i.e. you vagrant vm ip)</p>
+<p>and set the <code>&lt;host-ip&gt;</code> to the IP of your docker host (i.e. your vagrant vm ip)</p>
 
 <h1>
 <a name="troubleshooting" class="anchor" href="#troubleshooting"><span class="octicon octicon-link"></span></a>Troubleshooting:</h1>
