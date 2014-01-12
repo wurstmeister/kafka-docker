@@ -83,14 +83,14 @@ $ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic \
 </code></pre>
 
 <h1>
-<a name="running-docker-within-vagrant" class="anchor" href="#running-docker-within-vagrant"><span class="octicon octicon-link"></span></a>Running docker within vagrant:</h1>
+<a name="running-docker-inside-vagrant" class="anchor" href="#running-docker-inside-vagrant"><span class="octicon octicon-link"></span></a>Running docker inside vagrant:</h1>
 
-<p>If you are running docker within vagrant, make sure you enable port forwarding:</p>
+<p>If you are running docker inside vagrant and want to access your brokers from outside vagrant, make sure you enable port forwarding and configure your brokers to run on a port in the forwarded range:</p>
 
 <pre><code>$ FORWARD_DOCKER_PORTS='true' vagrant up
 </code></pre>
 
-<p>and set the <code>&lt;host-ip&gt;</code> to the IP of your docker host (i.e. your vagrant vm ip)</p>
+<p>The <code>&lt;host-ip&gt;</code> should then be set to the IP of the host running vagrant.</p>
 
 <h1>
 <a name="troubleshooting" class="anchor" href="#troubleshooting"><span class="octicon octicon-link"></span></a>Troubleshooting:</h1>
