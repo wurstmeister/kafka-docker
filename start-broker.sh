@@ -14,5 +14,5 @@ PORT=$2
 HOST_IP=$3
 NAME="broker-$ID"
 
-docker run -p $PORT:$PORT -link zookeeper:zk -e BROKER_ID=$ID -e HOST_IP=$HOST_IP -h $NAME -name $NAME -e PORT=$PORT -d wurstmeister/kafka
+docker run -p $PORT:$PORT -link zookeeper:zk -e BROKER_ID=$ID -e HOST_IP=$HOST_IP -h $NAME -name $NAME -e PORT=$PORT -d wurstmeister/kafka:0.8.1
 
