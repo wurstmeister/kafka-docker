@@ -3,8 +3,6 @@ kafka-docker
 
 Dockerfile for [Apache Kafka](http://kafka.apache.org/)
 
-It uses the current trunk version of kafka 0.8.1 because we need: [https://issues.apache.org/jira/browse/KAFKA-1092](https://issues.apache.org/jira/browse/KAFKA-1092)
-
 The image is available directly from https://index.docker.io
 
 ##Quickstart
@@ -21,6 +19,4 @@ Note: Do not use localhost or 127.0.0.1 as the host ip if you want to run multip
 [http://wurstmeister.github.io/kafka-docker/](http://wurstmeister.github.io/kafka-docker/)
 
 
-##Building
 
-To force an update of Kafka simply update ```LAST_GIT_UPDATE``` in the docker file (alternatively use the ```-no-cache``` option)
