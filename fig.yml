@@ -1,12 +1,12 @@
 zookeeper:
   image: jplock/zookeeper
-  ports: 
+  ports:
     - "2181:2181"
 kafka1:
-  image: wurstmeister/kafka:0.8.1 
+  image: wurstmeister/kafka:0.8.1
   ports:
     - "9092:9092"
-  links: 
+  links:
     - zookeeper:zk
   environment:
     BROKER_ID: 1
