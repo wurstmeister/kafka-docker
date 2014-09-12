@@ -1,7 +1,8 @@
 #!/bin/sh
 
-# Discover current containers IP address
-export HOST_IP=$(cat /etc/hosts | awk '{print $2,$1}' | grep "^$HOSTNAME " | awk '{print $2}')
+# If HOST_IP is undefined, Discover current containers IP address
+: ${HOST_IP:=$(cat /etc/hosts | awk '{print $2,$1}' | grep "^$HOSTNAME " | awk '{print $2}')}
+export HOST_IP
 
 # Discover the Host Machine's IP address via gateway (needs more testing)
 export DOCKER_IP=$(netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}')
