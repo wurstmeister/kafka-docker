@@ -3,24 +3,22 @@ zookeeper:
   ports: 
     - "2181:2181"
 kafka1:
-  image: wurstmeister/kafka:0.8.1 
+  image: closedloop/kafka:0.8.1 
   ports:
     - "9092:9092"
   links: 
     - zookeeper:zk
   environment:
     BROKER_ID: 1
-    HOST_IP: 192.168.59.103
     PORT: 9092
 kafka2:
-  image: wurstmeister/kafka:0.8.1
+  image: closedloop/kafka:0.8.1
   ports:
     - "9093:9093"
   links:
     - zookeeper:zk
   environment:
     BROKER_ID: 2
-    HOST_IP: 192.168.59.103
     PORT: 9093
 
 
