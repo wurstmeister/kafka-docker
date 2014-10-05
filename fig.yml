@@ -2,23 +2,13 @@ zookeeper:
   image: jplock/zookeeper
   ports: 
     - "2181:2181"
-kafka1:
+kafka:
   image: wurstmeister/kafka:latest
   ports:
-    - "9092:9092"
+    - "9092"
   links: 
     - zookeeper:zk
   environment:
-    HOST_IP: 192.168.59.103
-    KAFKA_BROKER_ID: 1
-    KAFKA_PORT: 9092
-kafka2:
-  image: wurstmeister/kafka:latest
-  ports:
-    - "9093:9093"
-  links:
-    - zookeeper:zk
-  environment:
-    HOST_IP: 192.168.59.103
-    KAFKA_BROKER_ID: 2
-    KAFKA_PORT: 9093
+    KAFKA_ADVERTISED_HOST_NAME: 192.168.59.103
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock

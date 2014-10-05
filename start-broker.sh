@@ -9,9 +9,7 @@ else
     docker run -p 49181:2181  -h zookeeper --name zookeeper -d jplock/zookeeper
 fi
 
-ID=$1
-PORT=$2
-HOST_IP=$3
+HOST_IP=$1
 
-docker run -p $PORT:$PORT --link zookeeper:zk -e KAFKA_BROKER_ID=$ID -e HOST_IP=$HOST_IP -e KAFKA_PORT=$PORT -d wurstmeister/kafka
+docker run -v /var/run/docker.sock:/var/run/docker.sock -p 9092 --link zookeeper:zk -e KAFKA_ADVERTISED_HOST_NAME=$HOST_IP -d wurstmeister/kafka
 
