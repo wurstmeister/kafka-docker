@@ -43,8 +43,14 @@
 <li>Install <a href="https://www.docker.io/gettingstarted/#h_installation">Docker</a> </li>
 <li>Install <a href="http://www.fig.sh/install.html">Fig</a>
 </li>
-<li>Update <code>fig.yml</code> with you docker host ip (<code>KAFKA_ADVERTISED_HOST_NAME</code>) </li>
-<li>If you want to customise any Kafka parameters, simply add them as environment variables in <code>fig.yml</code>, e.g. in order to increase the <code>message.max.bytes</code> parameter set the environment to <code>KAFKA_MESSAGE_MAX_BYTES: 2000000</code>. To turn off automatic topic creation set <code>KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'</code>
+<li>Update <code>fig.yml</code> with your docker host IP (<code>KAFKA_ADVERTISED_HOST_NAME</code>) </li>
+<li>If you want to customise any Kafka parameters, simply add them as environment variables in <code>fig.yml</code>. For example:
+
+<ul>
+<li>to increase the <code>message.max.bytes</code> parameter add <code>KAFKA_MESSAGE_MAX_BYTES: 2000000</code> to the <code>environment</code> section. </li>
+<li>to turn off automatic topic creation set <code>KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'</code>
+</li>
+</ul>
 </li>
 <li>Start the cluster</li>
 </ol><pre><code>$ fig up
@@ -55,12 +61,12 @@
 <pre><code>$ fig scale kafka=2
 </code></pre>
 
-<p>This will start a single zookeeper instance and two kafka instances. You can use <code>fig ps</code> to inspect the running instances. If you want to add more kafka brokers simply increase the value passed to <code>fig scale kafka=...</code></p>
+<p>This will start a single zookeeper instance and two Kafka instances. You can use <code>fig ps</code> to show the running instances. If you want to add more Kafka brokers simply increase the value passed to <code>fig scale kafka=n</code></p>
 
 <h1>
 <a name="kafka-shell" class="anchor" href="#kafka-shell"><span class="octicon octicon-link"></span></a>Kafka Shell</h1>
 
-<p>You can interact with your kafka cluster via the kafka shell:</p>
+<p>You can interact with your Kafka cluster via the Kafka shell:</p>
 
 <pre><code>$ start-kafka-shell.sh &lt;DOCKER_HOST_IP&gt;
 </code></pre>
@@ -93,8 +99,8 @@ $ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic \
 <a name="troubleshooting" class="anchor" href="#troubleshooting"><span class="octicon octicon-link"></span></a>Troubleshooting:</h1>
 
 <ul>
-<li>By default a kafka broker uses 1GB of memory, so if you have trouble starting a broker, check <code>docker logs</code> for the container and make sure you've got enough memory available on your host.</li>
-<li>Do not use localhost or 127.0.0.1 as the host ip if you want to run multiple brokers otherwise the brokers won't be able to communicate</li>
+<li>By default a Kafka broker uses 1GB of memory, so if you have trouble starting a broker, check <code>fig logs</code>/<code>docker logs</code> for the container and make sure you've got enough memory available on your host.</li>
+<li>Do not use localhost or 127.0.0.1 as the host IP if you want to run multiple brokers otherwise the brokers won't be able to communicate</li>
 </ul>
       </section>
     </div>
