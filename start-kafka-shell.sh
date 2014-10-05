@@ -1,3 +1,3 @@
 #!/bin/bash
-docker run -link zookeeper:zk -i -t wurstmeister/kafka:0.8.1 /bin/bash
+docker run -v /var/run/docker.sock:/var/run/docker.sock --link kafkadocker_zookeeper_1:zk -e HOST_IP=$1 -i -t wurstmeister/kafka:latest /bin/bash
 
