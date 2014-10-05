@@ -2,9 +2,9 @@
 <html>
 
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Kafka Docker : Run multiple Kafka brokers in Docker" />
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Kafka Docker : Run multiple Kafka brokers in Docker">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
@@ -34,33 +34,35 @@
         <p>Following the excellent tutorials on how to run a multi broker kafka cluster natively:
 <a href="http://www.michael-noll.com/blog/2013/03/13/running-a-multi-broker-apache-kafka-cluster-on-a-single-node/">http://www.michael-noll.com/blog/2013/03/13/running-a-multi-broker-apache-kafka-cluster-on-a-single-node/</a> and in vagrant: <a href="http://allthingshadoop.com/2013/12/07/using-vagrant-to-get-up-and-running-with-apache-kafka/">http://allthingshadoop.com/2013/12/07/using-vagrant-to-get-up-and-running-with-apache-kafka/</a></p>
 
-<p>Here is the tutorial based on Docker:</p>
+<p>Here is the tutorial based on Docker and Fig:</p>
 
 <h1>
 <a name="cluster-setup" class="anchor" href="#cluster-setup"><span class="octicon octicon-link"></span></a>Cluster Setup</h1>
 
 <ol>
 <li>Install <a href="https://www.docker.io/gettingstarted/#h_installation">Docker</a> </li>
-</ol><pre><code>$ export START_SCRIPT=https://raw2.github.com/wurstmeister/kafka-docker/master/start-broker.sh
-$ curl -Ls $START_SCRIPT | bash /dev/stdin &lt;id-1&gt; &lt;port-1&gt; &lt;host-ip&gt;
-$ curl -Ls $START_SCRIPT | bash /dev/stdin &lt;id-2&gt; &lt;port-2&gt; &lt;host-ip&gt;
-$ ... 
+<li>Install <a href="http://www.fig.sh/install.html">Fig</a>
+</li>
+<li>Update <code>fig.yml</code> with you docker host ip (<code>KAFKA_ADVERTISED_HOST_NAME</code>) </li>
+<li>If you want to customise any Kafka parameters, simply add them as environment variables in <code>fig.yml</code>, e.g. in order to increase the <code>message.max.bytes</code> parameter set the environment to <code>KAFKA_MESSAGE_MAX_BYTES: 2000000</code>. To turn off automatic topic creation set <code>KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'</code>
+</li>
+<li>Start the cluster</li>
+</ol><pre><code>$ fig up
 </code></pre>
 
-<p>e.g. to start a cluster with two brokers on 192.168.178.28</p>
+<p>e.g. to start a cluster with two brokers</p>
 
-<pre><code>$ curl -Ls $START_SCRIPT | bash /dev/stdin 1 9092 192.168.178.28
-$ curl -Ls $START_SCRIPT | bash /dev/stdin 2 9093 192.168.178.28
+<pre><code>$ fig scale kafka=2
 </code></pre>
 
-<p>This will start a single zookeeper instance on 192.168.178.28:49181, a kafka instance on 192.168.178.28:9092 and one on 192.168.178.28:9093.</p>
+<p>This will start a single zookeeper instance and two kafka instances. You can use <code>fig ps</code> to inspect the running instances. If you want to add more kafka brokers simply increase the value passed to <code>fig scale kafka=...</code></p>
 
 <h1>
 <a name="kafka-shell" class="anchor" href="#kafka-shell"><span class="octicon octicon-link"></span></a>Kafka Shell</h1>
 
 <p>You can interact with your kafka cluster via the kafka shell:</p>
 
-<pre><code>$ docker run -link zookeeper:zk -i -t wurstmeister/kafka:0.8.1 /bin/bash
+<pre><code>$ start-kafka-shell.sh &lt;DOCKER_HOST_IP&gt;
 </code></pre>
 
 <h1>
@@ -73,7 +75,7 @@ $ curl -Ls $START_SCRIPT | bash /dev/stdin 2 9093 192.168.178.28
 $ $KAFKA_HOME/bin/kafka-topics.sh --describe --topic topic \
 --zookeeper $ZK_PORT_2181_TCP_ADDR 
 $ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic \
---broker-list=192.168.178.28:9092
+--broker-list=`broker-list.sh`
 </code></pre>
 
 <p>Start another shell and start a consumer:</p>
@@ -83,14 +85,9 @@ $ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic \
 </code></pre>
 
 <h1>
-<a name="running-docker-inside-vagrant" class="anchor" href="#running-docker-inside-vagrant"><span class="octicon octicon-link"></span></a>Running docker inside vagrant:</h1>
+<a name="running-kafka-docker-on-a-mac" class="anchor" href="#running-kafka-docker-on-a-mac"><span class="octicon octicon-link"></span></a>Running kafka-docker on a Mac:</h1>
 
-<p>If you are running docker inside vagrant and want to access your brokers from outside vagrant, make sure you enable port forwarding and configure your brokers to run on a port in the forwarded range:</p>
-
-<pre><code>$ FORWARD_DOCKER_PORTS='true' vagrant up
-</code></pre>
-
-<p>The <code>&lt;host-ip&gt;</code> should then be set to the IP of the host running vagrant.</p>
+<p>Use <a href="http://boot2docker.io/">Boot2Docker</a></p>
 
 <h1>
 <a name="troubleshooting" class="anchor" href="#troubleshooting"><span class="octicon octicon-link"></span></a>Troubleshooting:</h1>
