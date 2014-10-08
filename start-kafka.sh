@@ -5,7 +5,7 @@ export KAFKA_BROKER_ID=$KAFKA_ADVERTISED_PORT
 export KAFKA_LOG_DIRS="\/kafka\/kafka-logs-$KAFKA_BROKER_ID"
 
 if [[ -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
-    export KAFKA_ZOOKEEPER_CONNECT=$ZK_PORT_2181_TCP_ADDR
+    export KAFKA_ZOOKEEPER_CONNECT=$(env | grep ZK.*PORT_2181_TCP= | sed -e 's|.*tcp://||' | paste -sd ,)
 fi
 
 if [[ -n "$KAFKA_HEAP_OPTS" ]]; then
