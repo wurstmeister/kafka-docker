@@ -37,7 +37,7 @@
 <p>Here is the tutorial based on Docker and Fig:</p>
 
 <h1>
-<a name="cluster-setup" class="anchor" href="#cluster-setup"><span class="octicon octicon-link"></span></a>Cluster Setup</h1>
+<a id="cluster-setup" class="anchor" href="#cluster-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cluster Setup</h1>
 
 <ol>
 <li>Install <a href="https://www.docker.io/gettingstarted/#h_installation">Docker</a> </li>
@@ -53,7 +53,9 @@
 </ul>
 </li>
 <li>Start the cluster</li>
-</ol><pre><code>$ fig up
+</ol>
+
+<pre><code>$ fig up
 </code></pre>
 
 <p>e.g. to start a cluster with two brokers</p>
@@ -64,39 +66,37 @@
 <p>This will start a single zookeeper instance and two Kafka instances. You can use <code>fig ps</code> to show the running instances. If you want to add more Kafka brokers simply increase the value passed to <code>fig scale kafka=n</code></p>
 
 <h1>
-<a name="kafka-shell" class="anchor" href="#kafka-shell"><span class="octicon octicon-link"></span></a>Kafka Shell</h1>
+<a id="kafka-shell" class="anchor" href="#kafka-shell" aria-hidden="true"><span class="octicon octicon-link"></span></a>Kafka Shell</h1>
 
 <p>You can interact with your Kafka cluster via the Kafka shell:</p>
 
-<pre><code>$ start-kafka-shell.sh &lt;DOCKER_HOST_IP&gt;
+<pre><code>$ start-kafka-shell.sh &lt;DOCKER_HOST_IP&gt; &lt;ZK_HOST:ZK_PORT&gt;
 </code></pre>
 
 <h1>
-<a name="testing" class="anchor" href="#testing"><span class="octicon octicon-link"></span></a>Testing</h1>
+<a id="testing" class="anchor" href="#testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Testing</h1>
 
 <p>To test your setup, start a shell, create a topic and start a producer:</p>
 
 <pre><code>$ $KAFKA_HOME/bin/kafka-topics.sh --create --topic topic \
---partitions 4 --zookeeper $ZK_PORT_2181_TCP_ADDR --replication-factor 2
-$ $KAFKA_HOME/bin/kafka-topics.sh --describe --topic topic \
---zookeeper $ZK_PORT_2181_TCP_ADDR 
+--partitions 4 --zookeeper $ZK --replication-factor 2
+$ $KAFKA_HOME/bin/kafka-topics.sh --describe --topic topic --zookeeper $ZK 
 $ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic \
 --broker-list=`broker-list.sh`
 </code></pre>
 
 <p>Start another shell and start a consumer:</p>
 
-<pre><code>$ $KAFKA_HOME/bin/kafka-console-consumer.sh --topic=topic \
---zookeeper=$ZK_PORT_2181_TCP_ADDR 
+<pre><code>$ $KAFKA_HOME/bin/kafka-console-consumer.sh --topic=topic --zookeeper=$ZK
 </code></pre>
 
 <h1>
-<a name="running-kafka-docker-on-a-mac" class="anchor" href="#running-kafka-docker-on-a-mac"><span class="octicon octicon-link"></span></a>Running kafka-docker on a Mac:</h1>
+<a id="running-kafka-docker-on-a-mac" class="anchor" href="#running-kafka-docker-on-a-mac" aria-hidden="true"><span class="octicon octicon-link"></span></a>Running kafka-docker on a Mac:</h1>
 
 <p>Use <a href="http://boot2docker.io/">Boot2Docker</a></p>
 
 <h1>
-<a name="troubleshooting" class="anchor" href="#troubleshooting"><span class="octicon octicon-link"></span></a>Troubleshooting:</h1>
+<a id="troubleshooting" class="anchor" href="#troubleshooting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Troubleshooting:</h1>
 
 <ul>
 <li>By default a Kafka broker uses 1GB of memory, so if you have trouble starting a broker, check <code>fig logs</code>/<code>docker logs</code> for the container and make sure you've got enough memory available on your host.</li>
