@@ -30,5 +30,4 @@ ADD application.conf application.conf
 ADD run.sh run.sh
 RUN chmod +x run.sh
 
-#CMD ./kafka-manager -Dconfig.file=application.conf
 CMD ./run.sh 
