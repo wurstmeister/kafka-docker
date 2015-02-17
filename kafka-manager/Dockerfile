@@ -1,4 +1,3 @@
-#FROM ubuntu:trusty
 FROM dockerfile/ubuntu
 
 MAINTAINER lyddonb
