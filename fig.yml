@@ -12,3 +12,11 @@ kafka:
     KAFKA_ADVERTISED_HOST_NAME: 192.168.59.103
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
+manager:
+  build: kafka-manager
+  command: ./run.sh
+  ports:
+    - "9000:9000"
+  links:
+    - zookeeper:zk
+    - kafka:ka
