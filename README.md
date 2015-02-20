@@ -26,7 +26,11 @@ Destroy a cluster:
 
 - ```fig stop```
 
+##Note
 
+The default fig.yml should be seen as a starting point. By default each broker will get a new port number and broker id on restart. Depending on your use case this might not be desirable. If you need to use specific ports and broker ids, modify the fig configuration accordingly, e.g.:
+
+- ```fig -f fig-single-broker.yml up```
  
 
 ##Tutorial
