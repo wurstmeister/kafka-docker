@@ -32,7 +32,19 @@ The default ```docker-compose.yml``` should be seen as a starting point. By defa
 
 - ```docker-compose -f docker-compose-single-broker.yml up```
 
+##Automatically create topics
 
+If you want to have kafka-docker automatically create topics in Kafka during
+creation, a ```KAFKA_CREATE_TOPICS``` environment variable can be
+added in ```docker-compose.yml```.
+
+Here is an example snippet from ```docker-compose.yml```:
+
+        environment:
+          KAFKA_CREATE_TOPICS: "Topic1,Topic2"
+
+NOTE: All topics will be created with a single partition and a single replica
+ 
 ##Tutorial
 
 [http://wurstmeister.github.io/kafka-docker/](http://wurstmeister.github.io/kafka-docker/)
