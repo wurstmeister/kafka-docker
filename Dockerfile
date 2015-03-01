@@ -2,14 +2,18 @@ FROM ubuntu:trusty
 
 MAINTAINER Wurstmeister 
 
-RUN apt-get update; apt-get install -y unzip  openjdk-6-jdk wget git docker.io
+RUN apt-get update; apt-get install -y unzip openjdk-6-jdk wget git docker.io software-properties-common python-software-properties
+RUN add-apt-repository ppa:cwchien/gradle; apt-get update; apt-get install -y gradle
 
-RUN wget -q http://apache.mirrors.lucidnetworks.net/kafka/0.8.2.0/kafka_2.10-0.8.2.0.tgz -O /tmp/kafka_2.10-0.8.2.0.tgz
-RUN tar xfz /tmp/kafka_2.10-0.8.2.0.tgz -C /opt
+RUN cd /opt; mkdir kafka-src; cd kafka-src; git clone https://github.com/apache/kafka.git
+
+ENV BUILD_DATE 2015-03-01
+
+RUN cd /opt/kafka-src/kafka; git pull; gradle; ./gradlew releaseTarGz ; cd /opt/kafka-src/kafka/core/build/distributions; mkdir /opt/kafka; tar xfvz *.tgz -C /opt/kafka --strip-components=1
 
 VOLUME ["/kafka"]
 
-ENV KAFKA_HOME /opt/kafka_2.10-0.8.2.0
+ENV KAFKA_HOME /opt/kafka
 ADD start-kafka.sh /usr/bin/start-kafka.sh
 ADD broker-list.sh /usr/bin/broker-list.sh
 CMD start-kafka.sh 
