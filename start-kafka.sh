@@ -31,4 +31,16 @@ do
   fi
 done
 
-$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties
+
+$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties &
+KAFKA_SERVER_PID=$!
+
+while netstat -lnt | awk '$4 ~ /:9092$/ {exit 1}'; do sleep 1; done
+
+if [[ -n $KAFKA_CREATE_TOPICS ]]; then
+    IFS=','; for topicToCreate in $KAFKA_CREATE_TOPICS; do
+        $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor 1 --partition 1 --topic "$topicToCreate"
+    done
+fi
+
+wait $KAFKA_SERVER_PID
