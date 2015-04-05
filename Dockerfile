@@ -7,7 +7,7 @@ RUN add-apt-repository ppa:cwchien/gradle; apt-get update; apt-get install -y gr
 
 RUN cd /opt; mkdir kafka-src; cd kafka-src; git clone https://github.com/apache/kafka.git
 
-ENV BUILD_DATE 2015-03-01
+ENV BUILD_DATE 2015-04-05
 
 RUN cd /opt/kafka-src/kafka; git pull; gradle; ./gradlew releaseTarGz ; cd /opt/kafka-src/kafka/core/build/distributions; mkdir /opt/kafka; tar xfvz *.tgz -C /opt/kafka --strip-components=1
 
