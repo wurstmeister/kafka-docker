@@ -17,7 +17,6 @@ Start a cluster:
 
 - ```docker-compose up -d ```
 
-
 Add more brokers:
 
 - ```docker-compose scale kafka=3```
@@ -31,6 +30,11 @@ Destroy a cluster:
 The default ```docker-compose.yml``` should be seen as a starting point. By default each broker will get a new port number and broker id on restart. Depending on your use case this might not be desirable. If you need to use specific ports and broker ids, modify the docker-compose configuration accordingly, e.g. [docker-compose-single-broker.yml](https://github.com/wurstmeister/kafka-docker/blob/master/docker-compose-single-broker.yml):
 
 - ```docker-compose -f docker-compose-single-broker.yml up```
+
+##Broker IDs
+
+If you don't specify a broker id in your docker-compose file it will automatically be generated based on the name that docker compose gives the container. This allows scaling up and down. In this case it is recommended to use the ```--no-recreate``` option of docker compose to ensure that containers are not re-created and thus keep their names and ids. 
+
 
 ##Automatically create topics
 
