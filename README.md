@@ -45,11 +45,9 @@ added in ```docker-compose.yml```.
 Here is an example snippet from ```docker-compose.yml```:
 
         environment:
-          KAFKA_CREATE_TOPICS: "Topic1,1,3:Topic2,1,1"
+          KAFKA_CREATE_TOPICS: "Topic1:1:3,Topic2:1:1"
 
 ```Topic 1``` will have 1 partition and 3 replicas, ```Topic 2``` will have 1 partition and 1 replica.
-
-NOTE: All topics will be created with a single partition and a single replica
 
 ##Tutorial
 
