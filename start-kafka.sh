@@ -39,7 +39,8 @@ while netstat -lnt | awk '$4 ~ /:9092$/ {exit 1}'; do sleep 1; done
 
 if [[ -n $KAFKA_CREATE_TOPICS ]]; then
     IFS=','; for topicToCreate in $KAFKA_CREATE_TOPICS; do
-        $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor 1 --partition 1 --topic "$topicToCreate"
+        IFS=':' read -a topicConfig <<< "$topicToCreate"
+        $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partition ${topicConfig[1]} --topic "${topicConfig[0]}"
     done
 fi
 
