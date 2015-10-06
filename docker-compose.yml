@@ -1,12 +1,12 @@
 zookeeper:
   image: wurstmeister/zookeeper
-  ports: 
-    - "2181"
+  ports:
+    - "2181:2181"
 kafka:
   build: .
   ports:
-    - "9092"
-  links: 
+    - "9092:9092"
+  links:
     - zookeeper:zk
   environment:
     KAFKA_ADVERTISED_HOST_NAME: 192.168.59.103
