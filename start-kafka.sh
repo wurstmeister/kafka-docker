@@ -39,7 +39,15 @@ done
 $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties &
 KAFKA_SERVER_PID=$!
 
-while netstat -lnt | awk '$4 ~ /:9092$/ {exit 1}'; do sleep 1; done
+wait_timeout=600
+count=0
+while netstat -lnt | awk '$4 ~ /:9092$/ {exit 1}'; do
+    sleep 1;
+    count=$(expr $count + 1)
+    if [ $count -gt $wait_timeout ]; then
+        break
+    fi
+done
 
 if [[ -n $KAFKA_CREATE_TOPICS ]]; then
     IFS=','; for topicToCreate in $KAFKA_CREATE_TOPICS; do
