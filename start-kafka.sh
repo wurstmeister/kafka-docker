@@ -6,6 +6,13 @@ fi
 if [[ -z "$KAFKA_BROKER_ID" ]]; then
     export KAFKA_BROKER_ID=$(docker inspect `hostname` | jq --raw-output '.[0] | .Name' | awk -F_ '{print $3}')
 fi
+if [[ -z "$KAFKA_BROKER_ID" ]]; then
+    uniqueNumber=$(date +%s%3N)
+	((uniqueNumber=uniqueNumber-1447000000000))
+	((uniqueNumber=uniqueNumber+$RANDOM))
+	echo SettingKafkaBrokerIdTo $uniqueNumber
+    export KAFKA_BROKER_ID=$uniqueNumber
+fi
 if [[ -z "$KAFKA_LOG_DIRS" ]]; then
     export KAFKA_LOG_DIRS="/kafka/kafka-logs-$KAFKA_BROKER_ID"
 fi
@@ -19,7 +26,7 @@ if [[ -n "$KAFKA_HEAP_OPTS" ]]; then
 fi
 
 if [[ -z "$KAFKA_ADVERTISED_HOST_NAME" ]]; then
-    export KAFKA_ADVERTISED_HOST_NAME=$(route -n | awk '/UG[ \t]/{print $2}')
+    export KAFKA_ADVERTISED_HOST_NAME=$(curl -s http://169.254.169.254/latest/meta-data/public-hostname)
 fi
 
 for VAR in `env`
