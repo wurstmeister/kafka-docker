@@ -16,5 +16,4 @@ ENV KAFKA_HOME /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION}
 ADD start-kafka.sh /usr/bin/start-kafka.sh
 ADD broker-list.sh /usr/bin/broker-list.sh
 ADD kafka.conf /etc/supervisor/conf.d/
-RUN echo command=$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties >> /etc/supervisor/conf.d/kafka.conf
 CMD start-kafka.sh
