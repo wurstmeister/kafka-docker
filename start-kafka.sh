@@ -1,17 +1,20 @@
 #!/bin/bash
 
+date
+
 if [[ -z "$KAFKA_ADVERTISED_PORT" ]]; then
     export KAFKA_ADVERTISED_PORT=$(docker port `hostname` 9092 | sed -r "s/.*:(.*)/\1/g")
 fi
 if [[ -z "$KAFKA_BROKER_ID" ]]; then
     export KAFKA_BROKER_ID=$(docker inspect `hostname` | jq --raw-output '.[0] | .Name' | awk -F_ '{print $3}')
+	echo UsedDockerHostNameToSetKafkaBrokerIdTo $KAFKA_BROKER_ID
 fi
 if [[ -z "$KAFKA_BROKER_ID" ]]; then
     uniqueNumber=$(date +%s%3N)
 	((uniqueNumber=uniqueNumber-1447000000000))
 	((uniqueNumber=uniqueNumber+$RANDOM))
-	echo SettingKafkaBrokerIdTo $uniqueNumber
     export KAFKA_BROKER_ID=$uniqueNumber
+	echo UsedTimePlusRandomNumberToSetKafkaBrokerIdTo $KAFKA_BROKER_ID
 fi
 if [[ -z "$KAFKA_LOG_DIRS" ]]; then
     export KAFKA_LOG_DIRS="/kafka/kafka-logs-$KAFKA_BROKER_ID"
@@ -46,17 +49,28 @@ do
   fi
 done
 
+date
+echo AboutToStartKafkaServer
 
 $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties &
 KAFKA_SERVER_PID=$!
 
+date
+echo JustStartedProcessId $KAFKA_SERVER_PID
+
 while netstat -lnt | awk '$4 ~ /:9092$/ {exit 1}'; do sleep 1; done
+
+date
+echo DoneWaitingForNetworkResponse
 
 if [[ -n $KAFKA_CREATE_TOPICS ]]; then
     IFS=','; for topicToCreate in $KAFKA_CREATE_TOPICS; do
         IFS=':' read -a topicConfig <<< "$topicToCreate"
         $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partition ${topicConfig[1]} --topic "${topicConfig[0]}"
     done
+    
+    date
+    echo DoneCreatingTopics $KAFKA_CREATE_TOPICS
 fi
 
 wait $KAFKA_SERVER_PID
