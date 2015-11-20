@@ -36,6 +36,8 @@ The default ```docker-compose.yml``` should be seen as a starting point. By defa
 
 If you don't specify a broker id in your docker-compose file, it will automatically be generated based on the name that docker-compose gives the container. This allows scaling up and down. In this case it is recommended to use the ```--no-recreate``` option of docker-compose to ensure that containers are not re-created and thus keep their names and ids.
 
+If a broker id cannot be calculated with the above method, one will be generated as a function of nanoseconds since epoch and a random number. This has the problems outlined [here](https://kafka.apache.org/082/ops.html#basic_ops_cluster_expansion), but at least Kafka will be able to start.
+
 
 ##Automatically create topics
 
