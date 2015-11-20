@@ -1,6 +1,6 @@
 FROM ubuntu:trusty
 
-MAINTAINER mweliczko 
+MAINTAINER Wurstmeister 
 
 ENV KAFKA_VERSION="0.8.2.1" SCALA_VERSION="2.10"
 
