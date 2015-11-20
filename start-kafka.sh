@@ -50,27 +50,35 @@ do
 done
 
 date
-echo AboutToStartKafkaServer
 
-$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties &
-KAFKA_SERVER_PID=$!
+if [[ -n "$USE_SUPERVISOR" ]]; then
+    echo UsingSupervisor
+    supervisord -n
+else
+    echo AboutToStartKafkaServer
 
-date
-echo JustStartedProcessId $KAFKA_SERVER_PID
+    $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties &
+    KAFKA_SERVER_PID=$!
 
-while netstat -lnt | awk '$4 ~ /:9092$/ {exit 1}'; do sleep 1; done
-
-date
-echo DoneWaitingForNetworkResponse
-
-if [[ -n $KAFKA_CREATE_TOPICS ]]; then
-    IFS=','; for topicToCreate in $KAFKA_CREATE_TOPICS; do
-        IFS=':' read -a topicConfig <<< "$topicToCreate"
-        $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partition ${topicConfig[1]} --topic "${topicConfig[0]}"
-    done
-    
     date
-    echo DoneCreatingTopics $KAFKA_CREATE_TOPICS
+    echo JustStartedProcessId $KAFKA_SERVER_PID
+
+    while netstat -lnt | awk '$4 ~ /:9092$/ {exit 1}'; do sleep 1; done
+
+    date
+    echo DoneWaitingForNetworkResponse
+
+    if [[ -n $KAFKA_CREATE_TOPICS ]]; then
+        IFS=','; for topicToCreate in $KAFKA_CREATE_TOPICS; do
+            IFS=':' read -a topicConfig <<< "$topicToCreate"
+            $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partition ${topicConfig[1]} --topic "${topicConfig[0]}"
+        done
+        
+        date
+        echo DoneCreatingTopics $KAFKA_CREATE_TOPICS
+    fi
+    
+    wait $KAFKA_SERVER_PID
 fi
 
-wait $KAFKA_SERVER_PID
+
