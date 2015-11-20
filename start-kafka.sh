@@ -19,14 +19,18 @@ fi
 if [[ -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
     export KAFKA_ZOOKEEPER_CONNECT=$(env | grep ZK.*PORT_2181_TCP= | sed -e 's|.*tcp://||' | paste -sd ,)
 fi
-
 if [[ -n "$KAFKA_HEAP_OPTS" ]]; then
     sed -r -i "s/(export KAFKA_HEAP_OPTS)=\"(.*)\"/\1=\"$KAFKA_HEAP_OPTS\"/g" $KAFKA_HOME/bin/kafka-server-start.sh
     unset KAFKA_HEAP_OPTS
 fi
-
+if [[ -n "$KAFKA_ADVERTISED_HOST_NAME_SCRIPT" ]]; then
+	echo AboutToCalculateHostNameUsing $KAFKA_ADVERTISED_HOST_NAME_SCRIPT
+    export KAFKA_ADVERTISED_HOST_NAME=$(eval $KAFKA_ADVERTISED_HOST_NAME_SCRIPT)
+	echo UsedScriptToCalculatedHostNameAs $KAFKA_ADVERTISED_HOST_NAME
+fi
 if [[ -z "$KAFKA_ADVERTISED_HOST_NAME" ]]; then
-    export KAFKA_ADVERTISED_HOST_NAME=$(curl -s http://169.254.169.254/latest/meta-data/public-hostname)
+    export KAFKA_ADVERTISED_HOST_NAME=$(route -n | awk '/UG[ \t]/{print $2}')
+	echo UsedRouteToCalculatedHostNameAs $KAFKA_ADVERTISED_HOST_NAME
 fi
 
 for VAR in `env`
