@@ -9,6 +9,7 @@ The image is available directly from https://registry.hub.docker.com/
 
 - install docker-compose [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
 - modify the ```KAFKA_ADVERTISED_HOST_NAME``` in ```docker-compose.yml``` to match your docker host IP (Note: Do not use localhost or 127.0.0.1 as the host ip if you want to run multiple brokers.)
+- or use ```ADVERTISED_HOST_NAME_SCRIPT``` to specify how to calculate the ```KAFKA_ADVERTISED_HOST_NAME```. This is very useful for situations where you won't know your server name until launching the Docker container. For example, running as an Amazon EC2 instance, ```curl -s http://169.254.169.254/latest/meta-data/public-hostname```
 - if you want to customise any Kafka parameters, simply add them as environment variables in ```docker-compose.yml```, e.g. in order to increase the ```message.max.bytes``` parameter set the environment to ```KAFKA_MESSAGE_MAX_BYTES: 2000000```. To turn off automatic topic creation set ```KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'```
 
 ##Usage
@@ -34,6 +35,8 @@ The default ```docker-compose.yml``` should be seen as a starting point. By defa
 ##Broker IDs
 
 If you don't specify a broker id in your docker-compose file, it will automatically be generated based on the name that docker-compose gives the container. This allows scaling up and down. In this case it is recommended to use the ```--no-recreate``` option of docker-compose to ensure that containers are not re-created and thus keep their names and ids.
+
+If a broker id cannot be calculated with the above method, one will be generated as a function of nanoseconds since epoch and a random number. This has the problems outlined [here](https://kafka.apache.org/082/ops.html#basic_ops_cluster_expansion), but at least Kafka will be able to start.
 
 
 ##Automatically create topics
