@@ -9,6 +9,7 @@ The image is available directly from https://registry.hub.docker.com/
 
 - install docker-compose [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
 - modify the ```KAFKA_ADVERTISED_HOST_NAME``` in ```docker-compose.yml``` to match your docker host IP (Note: Do not use localhost or 127.0.0.1 as the host ip if you want to run multiple brokers.)
+- or use ```ADVERTISED_HOST_NAME_SCRIPT``` to specify how to calculate the ```KAFKA_ADVERTISED_HOST_NAME```. This is very useful for situations where you won't know your server name until launching the Docker container. For example, running as an Amazon EC2 instance, ```curl -s http://169.254.169.254/latest/meta-data/public-hostname```
 - if you want to customise any Kafka parameters, simply add them as environment variables in ```docker-compose.yml```, e.g. in order to increase the ```message.max.bytes``` parameter set the environment to ```KAFKA_MESSAGE_MAX_BYTES: 2000000```. To turn off automatic topic creation set ```KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'```
 
 ##Usage

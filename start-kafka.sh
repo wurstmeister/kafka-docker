@@ -26,9 +26,9 @@ if [[ -n "$KAFKA_HEAP_OPTS" ]]; then
     sed -r -i "s/(export KAFKA_HEAP_OPTS)=\"(.*)\"/\1=\"$KAFKA_HEAP_OPTS\"/g" $KAFKA_HOME/bin/kafka-server-start.sh
     unset KAFKA_HEAP_OPTS
 fi
-if [[ -n "$KAFKA_ADVERTISED_HOST_NAME_SCRIPT" ]]; then
-	echo AboutToCalculateHostNameUsing $KAFKA_ADVERTISED_HOST_NAME_SCRIPT
-    export KAFKA_ADVERTISED_HOST_NAME=$(eval $KAFKA_ADVERTISED_HOST_NAME_SCRIPT)
+if [[ -n "$ADVERTISED_HOST_NAME_SCRIPT" ]]; then
+	echo AboutToCalculateHostNameUsing $ADVERTISED_HOST_NAME_SCRIPT
+    export KAFKA_ADVERTISED_HOST_NAME=$(eval $ADVERTISED_HOST_NAME_SCRIPT)
 	echo UsedScriptToCalculatedHostNameAs $KAFKA_ADVERTISED_HOST_NAME
 fi
 if [[ -z "$KAFKA_ADVERTISED_HOST_NAME" ]]; then
