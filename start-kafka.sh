@@ -35,6 +35,8 @@ do
   fi
 done
 
+# Capture kill requests to stop properly
+trap "$KAFKA_HOME/bin/kafka-server-stop.sh; echo 'Kafka stopped.'; exit" SIGHUP SIGINT SIGTERM
 
 $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties &
 KAFKA_SERVER_PID=$!
