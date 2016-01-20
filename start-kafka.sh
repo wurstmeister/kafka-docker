@@ -18,8 +18,8 @@ if [[ -n "$KAFKA_HEAP_OPTS" ]]; then
     unset KAFKA_HEAP_OPTS
 fi
 
-if [[ -z "$KAFKA_ADVERTISED_HOST_NAME" ]]; then
-    export KAFKA_ADVERTISED_HOST_NAME=$(route -n | awk '/UG[ \t]/{print $2}')
+if [[ -z "$KAFKA_ADVERTISED_HOST_NAME" && -n "$HOSTNAME_COMMAND" ]]; then
+    export KAFKA_ADVERTISED_HOST_NAME=$(eval $HOSTNAME_COMMAND)
 fi
 
 for VAR in `env`
