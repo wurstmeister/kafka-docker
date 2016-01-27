@@ -40,8 +40,8 @@ $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties &
 KAFKA_SERVER_PID=$!
 
 
-if [[ -z "$KAFKA_START_WAIT_TIMEOUT" ]]; then
-    KAFKA_START_WAIT_TIMEOUT=600
+if [[ -z "$START_TIMEOUT" ]]; then
+    START_TIMEOUT=600
 fi
 
 start_timeout_exceeded=false
@@ -49,13 +49,13 @@ count=0
 while netstat -lnt | awk '$4 ~ /:9092$/ {exit 1}'; do
     sleep 1;
     count=$(expr $count + 1)
-    if [ $count -gt $KAFKA_START_WAIT_TIMEOUT ]; then
+    if [ $count -gt $START_TIMEOUT ]; then
         start_timeout_exceeded=true
         break
     fi
 done
 if $start_timeout_exceeded; then
-    echo "Could not start Kafka broker $KAFKA_BROKER_ID (waited for $KAFKA_START_WAIT_TIMEOUT sec)"
+    echo "Could not start Kafka broker (waited for $START_TIMEOUT sec)"
     exit 1
 fi
 
