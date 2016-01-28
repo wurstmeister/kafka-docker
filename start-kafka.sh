@@ -42,7 +42,25 @@ trap "$KAFKA_HOME/bin/kafka-server-stop.sh; echo 'Kafka stopped.'; exit" SIGHUP 
 $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties &
 KAFKA_SERVER_PID=$!
 
-while netstat -lnt | awk '$4 ~ /:9092$/ {exit 1}'; do sleep 1; done
+
+if [[ -z "$START_TIMEOUT" ]]; then
+    START_TIMEOUT=600
+fi
+
+start_timeout_exceeded=false
+count=0
+while netstat -lnt | awk '$4 ~ /:9092$/ {exit 1}'; do
+    sleep 1;
+    count=$(expr $count + 1)
+    if [ $count -gt $START_TIMEOUT ]; then
+        start_timeout_exceeded=true
+        break
+    fi
+done
+if $start_timeout_exceeded; then
+    echo "Could not start Kafka broker (waited for $START_TIMEOUT sec)"
+    exit 1
+fi
 
 if [[ -n $KAFKA_CREATE_TOPICS ]]; then
     IFS=','; for topicToCreate in $KAFKA_CREATE_TOPICS; do
