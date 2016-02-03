@@ -1,7 +1,10 @@
 #!/bin/bash
 
+if [[ -z "$KAFKA_PORT" ]]; then
+    export KAFKA_PORT=9092
+fi
 if [[ -z "$KAFKA_ADVERTISED_PORT" ]]; then
-    export KAFKA_ADVERTISED_PORT=$(docker port `hostname` 9092 | sed -r "s/.*:(.*)/\1/g")
+    export KAFKA_ADVERTISED_PORT=$(docker port `hostname` $KAFKA_PORT | sed -r "s/.*:(.*)/\1/g")
 fi
 if [[ -z "$KAFKA_BROKER_ID" ]]; then
     # By default auto allocate broker ID
@@ -49,7 +52,7 @@ fi
 
 start_timeout_exceeded=false
 count=0
-while netstat -lnt | awk '$4 ~ /:9092$/ {exit 1}'; do
+while netstat -lnt | awk '$4 ~ /:'$KAFKA_PORT'$/ {exit 1}'; do
     sleep 1;
     count=$(expr $count + 1)
     if [ $count -gt $START_TIMEOUT ]; then
@@ -68,5 +71,7 @@ if [[ -n $KAFKA_CREATE_TOPICS ]]; then
         $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partition ${topicConfig[1]} --topic "${topicConfig[0]}"
     done
 fi
+
+echo "Kafka Started"
 
 wait $KAFKA_SERVER_PID
