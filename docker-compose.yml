@@ -9,6 +9,6 @@ kafka:
   links: 
     - zookeeper:zk
   environment:
-    KAFKA_ADVERTISED_HOST_NAME: 192.168.59.103
+    HOSTNAME_COMMAND: "ip -f inet address show eth0 | grep inet | cut -d' ' -f6 | cut -d'/' -f1"
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
