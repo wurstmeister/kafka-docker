@@ -5,7 +5,7 @@ services:
     ports:
       - "2181:2181"
   kafka:
-    build: .
+    image: zlim/kafka
     ports:
       - "9092:9092"
     depends_on:
