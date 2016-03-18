@@ -14,5 +14,7 @@ services:
       - zookeeper:zk
     environment:
       HOSTNAME_COMMAND: "ip -f inet address show eth0 | grep inet | cut -d' ' -f6 | cut -d'/' -f1"
+      KAFKA_ADVERTISED_PORT: "9092"
+      KAFKA_ZOOKEEPER_CONNECT: "zk:2181"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
