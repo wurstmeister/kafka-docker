@@ -43,4 +43,4 @@ done
 trap "$KAFKA_HOME/bin/kafka-server-stop.sh; echo 'Kafka stopped.'; exit" SIGHUP SIGINT SIGTERM
 
 create-topics.sh & 
-$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties
+JMX_PORT=$KAFKA_JMX_PORT $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties
