@@ -17,3 +17,4 @@ ADD create-topics.sh /usr/bin/create-topics.sh
 
 # Use "exec" form so that it runs as PID 1 (useful for graceful shutdown)
 CMD ["start-kafka.sh"]
+EXPOSE ${KAFKA_JMX_PORT}
