@@ -37,7 +37,7 @@
 <p>Here is the tutorial based on Docker and Fig:</p>
 
 <h1>
-<a id="cluster-setup" class="anchor" href="#cluster-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cluster Setup</h1>
+<a id="cluster-setup" class="anchor" href="#cluster-setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Cluster Setup</h1>
 
 <ol>
 <li>Install <a href="https://www.docker.io/gettingstarted/#h_installation">Docker</a> </li>
@@ -66,7 +66,7 @@
 <p>This will start a single zookeeper instance and two Kafka instances. You can use <code>docker-compose ps</code> to show the running instances. If you want to add more Kafka brokers simply increase the value passed to <code>docker-compose scale kafka=n</code></p>
 
 <h1>
-<a id="kafka-shell" class="anchor" href="#kafka-shell" aria-hidden="true"><span class="octicon octicon-link"></span></a>Kafka Shell</h1>
+<a id="kafka-shell" class="anchor" href="#kafka-shell" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Kafka Shell</h1>
 
 <p>You can interact with your Kafka cluster via the Kafka shell:</p>
 
@@ -74,7 +74,7 @@
 </code></pre>
 
 <h1>
-<a id="testing" class="anchor" href="#testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Testing</h1>
+<a id="testing" class="anchor" href="#testing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Testing</h1>
 
 <p>To test your setup, start a shell, create a topic and start a producer:</p>
 
@@ -91,12 +91,12 @@ $ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic \
 </code></pre>
 
 <h1>
-<a id="running-kafka-docker-on-a-mac" class="anchor" href="#running-kafka-docker-on-a-mac" aria-hidden="true"><span class="octicon octicon-link"></span></a>Running kafka-docker on a Mac:</h1>
+<a id="running-kafka-docker-on-a-mac" class="anchor" href="#running-kafka-docker-on-a-mac" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running kafka-docker on a Mac:</h1>
 
-<p>Use <a href="http://boot2docker.io/">Boot2Docker</a></p>
+<p>Install the <a href="https://www.docker.com/products/docker-toolbox">Docker Toolbox</a> and set <code>KAFKA_ADVERTISED_HOST_NAME</code> to the IP that is returned by the <code>docker-machine ip</code> command.</p>
 
 <h1>
-<a id="troubleshooting" class="anchor" href="#troubleshooting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Troubleshooting:</h1>
+<a id="troubleshooting" class="anchor" href="#troubleshooting" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Troubleshooting:</h1>
 
 <ul>
 <li>By default a Kafka broker uses 1GB of memory, so if you have trouble starting a broker, check <code>docker-compose logs</code>/<code>docker logs</code> for the container and make sure you've got enough memory available on your host.</li>
