@@ -22,6 +22,13 @@ if [[ -n "$KAFKA_HEAP_OPTS" ]]; then
     unset KAFKA_HEAP_OPTS
 fi
 
+if [[ -z "$KAFKA_ADVERTISED_HOST_NAME" ]]; then
+    # on Amazon ECS, we can get the host from the metadata service
+    # reference: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
+    # for non-EC2 hosts, wget will retry indefinitely, so we have timeouts set
+    export KAFKA_ADVERTISED_HOST_NAME=$(wget -t3 -T2 -qO-  http://169.254.169.254/latest/meta-data/local-ipv4)
+fi
+
 if [[ -z "$KAFKA_ADVERTISED_HOST_NAME" && -n "$HOSTNAME_COMMAND" ]]; then
     export KAFKA_ADVERTISED_HOST_NAME=$(eval $HOSTNAME_COMMAND)
 fi
