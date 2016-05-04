@@ -64,6 +64,11 @@ When using commands, make sure you review the "Variable Substitution" section in
 
 If ```KAFKA_ADVERTISED_HOST_NAME``` is specified, it takes presendence over ```HOSTNAME_COMMAND```
 
+For AWS deployment, you can use the Metadata service to get the container host's IP:
+```
+HOSTNAME_COMMAND=wget -t3 -T2 -qO-  http://169.254.169.254/latest/meta-data/local-ipv4
+```
+Reference: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
 
 ##Tutorial
 
