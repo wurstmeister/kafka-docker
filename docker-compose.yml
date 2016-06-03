@@ -10,5 +10,6 @@ kafka:
     - zookeeper:zk
   environment:
     KAFKA_ADVERTISED_HOST_NAME: 192.168.59.103
+    DOCKER_HOST: 192.168.59.103:2375
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
