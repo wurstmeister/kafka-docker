@@ -56,7 +56,7 @@ term_handler() {
 # Capture kill requests to stop properly
 trap "term_handler" SIGHUP SIGINT SIGTERM
 create-topics.sh & 
-JMX_PORT=$KAFKA_JMX_PORT $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties & 
+$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties &
 KAFKA_PID=$!
 
 wait
