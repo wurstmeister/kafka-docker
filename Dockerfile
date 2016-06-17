@@ -17,3 +17,19 @@ ADD create-topics.sh /usr/bin/create-topics.sh
 
 # Use "exec" form so that it runs as PID 1 (useful for graceful shutdown)
 CMD ["start-kafka.sh"]
+
+# Supervisor Code
+RUN \
+  yum update -y && \
+  yum install -y epel-release && \
+  yum install -y iproute python-setuptools hostname inotify-tools yum-utils which && \
+  yum clean all && \
+
+  easy_install supervisor
+
+# Add supervisord conf, bootstrap.sh files
+ADD container-files /
+
+VOLUME ["/data"]
+
+ENTRYPOINT ["/config/bootstrap.sh"]
