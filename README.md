@@ -66,7 +66,7 @@ If ```KAFKA_ADVERTISED_HOST_NAME``` is specified, it takes presendence over ```H
 
 For AWS deployment, you can use the Metadata service to get the container host's IP:
 ```
-HOSTNAME_COMMAND=curl http://169.254.169.254/latest/meta-data/public-ipv4
+HOSTNAME_COMMAND=curl http://169.254.169.254/latest/meta-data/local-ipv4
 ```
 Reference: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
 
