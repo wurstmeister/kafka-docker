@@ -5,7 +5,7 @@ MAINTAINER Wurstmeister
 ENV KAFKA_VERSION="0.10.0.0" SCALA_VERSION="2.11" KAFKA_HOME=/opt/kafka
 
 RUN set -x && \
-  apk add --update unzip wget curl docker jq coreutils && \
+  apk add --update curl docker jq coreutils && \
   curl -s https://archive.apache.org/dist/kafka/$KAFKA_VERSION/kafka_$KAFKA_VERSION_$SCALA_VERSION-$KAFKA_VERSION.tgz | \
   tar xvz -C /opt && \
   ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} $KAFKA_HOME
