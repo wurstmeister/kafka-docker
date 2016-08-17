@@ -39,6 +39,11 @@ do
   fi
 done
 
+if [[ -n "$CUSTOM_INIT_SCRIPT" ]] ; then
+  eval $CUSTOM_INIT_SCRIPT
+fi
+
+
 KAFKA_PID=0
 
 # see https://medium.com/@gchudnov/trapping-signals-in-docker-containers-7a57fdda7d86#.bh35ir4u5
