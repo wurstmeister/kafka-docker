@@ -2,6 +2,8 @@ FROM anapsix/alpine-java
 
 MAINTAINER Wurstmeister 
 
+RUN echo "http://dl-4.alpinelinux.org/alpine/v3.4/main" >> /etc/apk/repositories
+RUN echo "ipv6" >> /etc/modules
 RUN apk add --update unzip wget curl docker jq coreutils
 
 ENV KAFKA_VERSION="0.10.0.0" SCALA_VERSION="2.11"
