@@ -1,15 +1,22 @@
-FROM ubuntu:trusty
+FROM anapsix/alpine-java
 
-MAINTAINER Wurstmeister 
+MAINTAINER Wurstmeister
 
-RUN apt-get update; apt-get install -y unzip  openjdk-6-jdk wget git docker.io
+RUN apk add --update unzip wget curl docker jq coreutils
 
-RUN wget -q http://mirror.gopotato.co.uk/apache/kafka/0.8.2-beta/kafka_2.9.1-0.8.2-beta.tgz -O /tmp/kafka_2.9.1-0.8.2-beta.tgz
-RUN tar xfz /tmp/kafka_2.9.1-0.8.2-beta.tgz -C /opt
+ENV KAFKA_VERSION="0.8.2.2" SCALA_VERSION="2.11"
+ADD download-kafka.sh /tmp/download-kafka.sh
+RUN chmod a+x /tmp/download-kafka.sh && /tmp/download-kafka.sh && tar xfz /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz -C /opt && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz
 
 VOLUME ["/kafka"]
 
-ENV KAFKA_HOME /opt/kafka_2.9.1-0.8.2-beta
+ENV KAFKA_HOME /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION}
 ADD start-kafka.sh /usr/bin/start-kafka.sh
 ADD broker-list.sh /usr/bin/broker-list.sh
-CMD start-kafka.sh 
+ADD create-topics.sh /usr/bin/create-topics.sh
+# The scripts need to have executable permission
+RUN chmod a+x /usr/bin/start-kafka.sh && \
+    chmod a+x /usr/bin/broker-list.sh && \
+    chmod a+x /usr/bin/create-topics.sh
+# Use "exec" form so that it runs as PID 1 (useful for graceful shutdown)
+CMD ["start-kafka.sh"]
