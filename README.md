@@ -58,7 +58,7 @@ Here is an example snippet from ```docker-compose.yml```:
 You can configure the advertised hostname in different ways 
 
 1. explicitly, using ```KAFKA_ADVERTISED_HOST_NAME``` 
-2. via a command, using ```HOSTNAME_COMMAND```, e.g. ```HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"```
+2. via a command, using ```HOSTNAME_COMMAND```, e.g. ```HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $2}'"```
 
 When using commands, make sure you review the "Variable Substitution" section in [https://docs.docker.com/compose/compose-file/](https://docs.docker.com/compose/compose-file/)
 
