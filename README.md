@@ -49,15 +49,15 @@ added in ```docker-compose.yml```.
 Here is an example snippet from ```docker-compose.yml```:
 
         environment:
-          KAFKA_CREATE_TOPICS: "Topic1:1:3,Topic2:1:1"
+          KAFKA_CREATE_TOPICS: "Topic1:1:3,Topic2:1:1:compact"
 
-```Topic 1``` will have 1 partition and 3 replicas, ```Topic 2``` will have 1 partition and 1 replica.
+```Topic 1``` will have 1 partition and 3 replicas, ```Topic 2``` will have 1 partition, 1 replica and a `cleanup.policy` set to `compact`.
 
-##Advertised hostname 
+##Advertised hostname
 
-You can configure the advertised hostname in different ways 
+You can configure the advertised hostname in different ways
 
-1. explicitly, using ```KAFKA_ADVERTISED_HOST_NAME``` 
+1. explicitly, using ```KAFKA_ADVERTISED_HOST_NAME```
 2. via a command, using ```HOSTNAME_COMMAND```, e.g. ```HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"```
 
 When using commands, make sure you review the "Variable Substitution" section in [https://docs.docker.com/compose/compose-file/](https://docs.docker.com/compose/compose-file/)
@@ -73,6 +73,3 @@ Reference: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metad
 ##Tutorial
 
 [http://wurstmeister.github.io/kafka-docker/](http://wurstmeister.github.io/kafka-docker/)
-
-
-
