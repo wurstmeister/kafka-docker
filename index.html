@@ -34,7 +34,7 @@
         <p>Following the excellent tutorials on how to run a multi broker kafka cluster natively:
 <a href="http://www.michael-noll.com/blog/2013/03/13/running-a-multi-broker-apache-kafka-cluster-on-a-single-node/">http://www.michael-noll.com/blog/2013/03/13/running-a-multi-broker-apache-kafka-cluster-on-a-single-node/</a> and in vagrant: <a href="http://allthingshadoop.com/2013/12/07/using-vagrant-to-get-up-and-running-with-apache-kafka/">http://allthingshadoop.com/2013/12/07/using-vagrant-to-get-up-and-running-with-apache-kafka/</a></p>
 
-<p>Here is the tutorial based on Docker and Fig:</p>
+<p>Here is the tutorial based on Docker and Compose:</p>
 
 <h1>
 <a id="cluster-setup" class="anchor" href="#cluster-setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Cluster Setup</h1>
@@ -68,7 +68,8 @@
 <h1>
 <a id="kafka-shell" class="anchor" href="#kafka-shell" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Kafka Shell</h1>
 
-<p>You can interact with your Kafka cluster via the Kafka shell:</p>
+<p>You can interact with your Kaf
+  ka cluster via the Kafka shell:</p>
 
 <pre><code>$ start-kafka-shell.sh &lt;DOCKER_HOST_IP&gt; &lt;ZK_HOST:ZK_PORT&gt;
 </code></pre>
