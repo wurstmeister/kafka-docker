@@ -2,10 +2,12 @@ FROM anapsix/alpine-java
 
 ARG kafka_version=0.10.1.1
 ARG scala_version=2.11
-
+ARG kafkacat_version=1.3.0
 MAINTAINER wurstmeister
 
-RUN apk add --update unzip wget curl docker jq coreutils
+RUN apk add --update unzip wget curl docker jq coreutils alpine-sdk bash python cmake
+
+RUN curl https://codeload.github.com/edenhill/kafkacat/tar.gz/${kafkacat_version} | tar xzf - && cd kafkacat-* && bash ./bootstrap.sh && mv kafkacat /usr/bin && cd / && rm -rf /kafkacat-*  && apk del alpine-sdk python cmake wget curl unzip
 
 ENV KAFKA_VERSION=$kafka_version SCALA_VERSION=$scala_version
 ADD download-kafka.sh /tmp/download-kafka.sh

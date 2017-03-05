@@ -11,5 +11,6 @@ services:
     environment:
       KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "Topic1:1:1,Topic2:1:2:compact"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
