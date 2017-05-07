@@ -37,6 +37,11 @@ The default ```docker-compose.yml``` should be seen as a starting point. By defa
 
 ## Broker IDs
 
+You can configure the broker id in different ways
+
+1. explicitly, using ```KAFKA_BROKER_ID```
+2. via a command, using ```BROKER_ID_COMMAND```, e.g. ```BROKER_ID_COMMAND: "hostname | awk -F'-' '{print $2}'"```
+
 If you don't specify a broker id in your docker-compose file, it will automatically be generated (see [https://issues.apache.org/jira/browse/KAFKA-1070](https://issues.apache.org/jira/browse/KAFKA-1070). This allows scaling up and down. In this case it is recommended to use the ```--no-recreate``` option of docker-compose to ensure that containers are not re-created and thus keep their names and ids.
 
 
