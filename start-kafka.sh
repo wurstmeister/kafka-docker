@@ -1,12 +1,17 @@
 #!/bin/bash
 
+if [[ -z "$KAFKA_IMG_NAME" ]]; then
+    export KAFKA_IMG_NAME=wurstmeister/kafka
+fi
+
 if [[ -z "$KAFKA_PORT" ]]; then
     export KAFKA_PORT=9092
 fi
 if [[ -z "$KAFKA_ADVERTISED_PORT" && \
   -z "$KAFKA_LISTENERS" && \
   -z "$KAFKA_ADVERTISED_LISTENERS" ]]; then
-    export KAFKA_ADVERTISED_PORT=$(docker port `hostname` $KAFKA_PORT | sed -r "s/.*:(.*)/\1/g")
+    export CONTAINER_NAME=$(docker ps | grep $KAFKA_IMG_NAME | awk '{print $NF;}')
+    export KAFKA_ADVERTISED_PORT=$(docker port "$CONTAINER_NAME" $KAFKA_PORT | sed -r "s/.*:(.*)/\1/g")
 fi
 if [[ -z "$KAFKA_BROKER_ID" ]]; then
     if [[ -n "$BROKER_ID_COMMAND" ]]; then
