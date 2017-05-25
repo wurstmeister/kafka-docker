@@ -5,6 +5,8 @@ ARG scala_version=2.12
 
 MAINTAINER wurstmeister
 
+RUN echo "http://dl-4.alpinelinux.org/alpine/v3.4/main" >> /etc/apk/repositories
+RUN echo "ipv6" >> /etc/modules
 RUN apk add --update unzip wget curl docker jq coreutils
 
 ENV KAFKA_VERSION=$kafka_version SCALA_VERSION=$scala_version
