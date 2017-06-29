@@ -147,7 +147,7 @@ inter.broker.listener.name = INSIDE
 
 ## Docker Swarm Mode
 
-The listener configuration above is necessary when deploying Kafka in a Docker Swarm using an overlay network. By separating OUTSIDE and INSIDE listeners, a host can communicate with clients outside the overlay network while still benefitting from it from within the swarm.
+The listener configuration above is necessary when deploying Kafka in a Docker Swarm using an overlay network. By separating OUTSIDE and INSIDE listeners, a host can communicate with clients outside the overlay network while still benefiting from it from within the swarm.
 
 In addition to the multiple-listener configuration, additional best practices for operating Kafka in a Docker Swarm include:
 
