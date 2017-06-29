@@ -33,6 +33,61 @@ if [[ -z "$KAFKA_ADVERTISED_HOST_NAME" && -n "$HOSTNAME_COMMAND" ]]; then
     export KAFKA_ADVERTISED_HOST_NAME=$(eval $HOSTNAME_COMMAND)
 fi
 
+if [[ -n "$KAFKA_LISTENER_SECURITY_PROTOCOL_MAP" ]]; then
+  if [[ -n "$KAFKA_ADVERTISED_PORT" && -n "$KAFKA_ADVERTISED_PROTOCOL_NAME" ]]; then
+    if [[ -n "$KAFKA_ADVERTISED_HOST_NAME" ]]; then
+       export KAFKA_ADVERTISED_LISTENERS="$KAFKA_ADVERTISED_PROTOCOL_NAME://$KAFKA_ADVERTISED_HOST_NAME:$KAFKA_ADVERTISED_PORT"
+    else
+       export KAFKA_ADVERTISED_LISTENERS="$KAFKA_ADVERTISED_PROTOCOL_NAME://:$KAFKA_ADVERTISED_PORT"
+    fi
+
+    export KAFKA_LISTENERS="$KAFKA_ADVERTISED_PROTOCOL_NAME://:$KAFKA_ADVERTISED_PORT"
+    unset KAFKA_ADVERTISED_PORT
+  fi
+
+  if [[ -z "$KAFKA_PROTOCOL_NAME" ]]; then
+    export KAFKA_PROTOCOL_NAME="$KAFKA_ADVERTISED_PROTOCOL_NAME"
+  fi
+
+  if [[ -n "$KAFKA_PORT" && -n "$KAFKA_PROTOCOL_NAME" ]]; then
+    if [[ -n "$KAFKA_HOST_NAME" ]]; then
+       export ADD_LISTENER="$KAFKA_PROTOCOL_NAME://$KAFKA_HOST_NAME:$KAFKA_PORT"
+    else
+       export ADD_LISTENER="$KAFKA_PROTOCOL_NAME://:$KAFKA_PORT"
+    fi
+    unset KAFKA_PORT
+  fi
+
+  if [[ -z "$KAFKA_INTER_BROKER_LISTENER_NAME" ]]; then
+    export KAFKA_INTER_BROKER_LISTENER_NAME=$KAFKA_PROTOCOL_NAME
+  fi
+fi
+
+if [[ -n "$ADD_LISTENER" && -n "$KAFKA_LISTENERS" ]]; then
+  export KAFKA_LISTENERS="${KAFKA_LISTENERS},${ADD_LISTENER}"
+fi
+
+if [[ -n "$ADD_LISTENER" && -z "$KAFKA_LISTENERS" ]]; then
+  export KAFKA_LISTENERS="${ADD_LISTENER}"
+fi
+
+if [[ -n "$ADD_LISTENER" && -n "$KAFKA_ADVERTISED_LISTENERS" ]]; then
+  export KAFKA_ADVERTISED_LISTENERS="${KAFKA_ADVERTISED_LISTENERS},${ADD_LISTENER}"
+fi
+
+if [[ -n "$ADD_LISTENER" && -z "$KAFKA_ADVERTISED_LISTENERS" ]]; then
+  export KAFKA_ADVERTISED_LISTENERS="${ADD_LISTENER}"
+fi
+
+
+if [[ -n "$KAFKA_INTER_BROKER_LISTENER_NAME" && ! "$KAFKA_INTER_BROKER_LISTENER_NAME"X = "$KAFKA_PROTOCOL_NAME"X ]]; then
+   if [[ -n "$KAFKA_INTER_BROKER_PORT" ]]; then
+      export KAFKA_INTER_BROKER_PORT=$(( $KAFKA_PORT + 1 ))
+   fi
+   export KAFKA_LISTENERS="${KAFKA_LISTENERS},$KAFKA_INTER_BROKER_LISTENER_NAME://:$KAFKA_INTER_BROKER_PORT"
+   export KAFKA_ADVERTISED_LISTENERS="${KAFKA_ADVERTISED_LISTENERS},$KAFKA_INTER_BROKER_LISTENER_NAME://:$KAFKA_INTER_BROKER_PORT"
+fi
+
 if [[ -n "$RACK_COMMAND" && -z "$KAFKA_BROKER_RACK" ]]; then
     export KAFKA_BROKER_RACK=$(eval $RACK_COMMAND)
 fi
@@ -43,7 +98,8 @@ echo -e "\n" >> $KAFKA_HOME/config/server.properties
 for VAR in `env`
 do
   if [[ $VAR =~ ^KAFKA_ && ! $VAR =~ ^KAFKA_HOME && \
-      ! $VAR =~ ^KAFKA_CREATE_TOPICS ]]; then
+      ! $VAR =~ ^KAFKA_CREATE_TOPICS && \
+      ! $VAR =~ ^KAFKA_ADVERTISED_PROTOCOL_NAME && ! $VAR =~ ^KAFKA_PROTOCOL_NAME ]]; then
     kafka_name=`echo "$VAR" | sed -r "s/KAFKA_(.*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
     env_var=`echo "$VAR" | sed -r "s/(.*)=.*/\1/g"`
     if egrep -q "(^|^#)$kafka_name=" $KAFKA_HOME/config/server.properties; then
