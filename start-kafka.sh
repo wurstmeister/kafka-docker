@@ -5,7 +5,8 @@ if [[ -z "$KAFKA_PORT" ]]; then
 fi
 if [[ -z "$KAFKA_ADVERTISED_PORT" && \
   -z "$KAFKA_LISTENERS" && \
-  -z "$KAFKA_ADVERTISED_LISTENERS" ]]; then
+  -z "$KAFKA_ADVERTISED_LISTENERS" && \
+  -S /var/run/docker.sock ]]; then
     export KAFKA_ADVERTISED_PORT=$(docker port `hostname` $KAFKA_PORT | sed -r "s/.*:(.*)/\1/g")
 fi
 if [[ -z "$KAFKA_BROKER_ID" ]]; then
