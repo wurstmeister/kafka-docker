@@ -75,6 +75,15 @@ HOSTNAME_COMMAND=wget -t3 -T2 -qO-  http://169.254.169.254/latest/meta-data/loca
 ```
 Reference: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
 
+## Broker Rack
+
+You can configure the broker rack affinity in different ways
+
+1. explicitly, using ```KAFKA_BROKER_RACK```
+2. via a command, using ```RACK_COMMAND```, e.g. ```RACK_COMMAND: "curl http://169.254.169.254/latest/meta-data/placement/availability-zone"```
+
+In the above example the AWS metadata service is used to put the instance's availability zone in the ```broker.rack``` property.
+
 ## JMX
 
 For monitoring purposes you may wish to configure JMX. Additional to the standard JMX parameters, problems could arise from the underlying RMI protocol used to connect

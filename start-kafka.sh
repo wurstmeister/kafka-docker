@@ -33,6 +33,10 @@ if [[ -z "$KAFKA_ADVERTISED_HOST_NAME" && -n "$HOSTNAME_COMMAND" ]]; then
     export KAFKA_ADVERTISED_HOST_NAME=$(eval $HOSTNAME_COMMAND)
 fi
 
+if [[ -n "$RACK_COMMAND" && -z "$KAFKA_BROKER_RACK" ]]; then
+    export KAFKA_BROKER_RACK=$(eval $RACK_COMMAND)
+fi
+
 #Issue newline to config file in case there is not one already
 echo -e "\n" >> $KAFKA_HOME/config/server.properties
 
