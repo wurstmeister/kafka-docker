@@ -1,9 +1,17 @@
 FROM anapsix/alpine-java
 
+LABEL org.label-schema.schema-version="1.0" \
+      org.label-schema.name="kafka" \
+      org.label-schema.description="Apache Kafka" \
+      org.label-schema.url="http://kafka.apache.org" \
+      org.label-schema.version="0.11.0.0" \
+      org.label-schema.build-date="2017-07-01" \
+      org.apache.kafka.base-image="anapsix/alpine-java" \
+      org.apache.kafka.scala-version="2.12" \
+      org.apache.kafka.kafka-version="0.11.0.0"
+
 ARG kafka_version=0.11.0.0
 ARG scala_version=2.12
-
-MAINTAINER wurstmeister
 
 RUN apk add --update unzip wget curl docker jq coreutils
 
