@@ -18,6 +18,9 @@ KAFKA_SSL_SECURE_RANDOM_IMPLEMENTATION=${KAFKA_SSL_SECURE_RANDOM_IMPLEMENTATION-
 
 cd /etc/ssl/private
 
+#If the Keystore file already exists (i.e., has been volume-mounted) don't run this script any more
+if [[ ! -f ${KAFKA_SSL_KEYSTORE_LOCATION} ]]; then
+
 #If a secrets file named passwords has been created, source it.
 # Expect it to export environment variables for passwords and certificate names
 # Including
@@ -58,6 +61,8 @@ openssl req -new -x509 -keyout ca-key -out ca-cert -days 365 \
 -passout pass:${CA_PASSWORD-password1234} \
 -subj "$CA_DN"
 
+cat ca-cert
+
 echo "##########"
 echo "Importing Root CA certificate to Client and Server Truststores."
 
@@ -85,3 +90,5 @@ keytool -keystore server.keystore.jks -noprompt -alias localhost -import -file c
 -storepass ${KAFKA_SSL_KEYSTORE_PASSWORD} \
 -keypass ${KAFKA_SSL_KEY_PASSWORD}
 
+#End Keystore file check IF block
+fi
