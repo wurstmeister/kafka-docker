@@ -13,7 +13,7 @@ LABEL org.label-schema.schema-version="1.0" \
 ARG kafka_version=0.11.0.0
 ARG scala_version=2.12
 
-RUN apk add --update unzip wget curl docker jq coreutils
+RUN apk add --update unzip wget curl docker jq coreutils cyrus-sasl cyrus-sasl-gssapi krb5 openssl
 
 ENV KAFKA_VERSION=$kafka_version SCALA_VERSION=$scala_version
 ADD download-kafka.sh /tmp/download-kafka.sh
@@ -26,9 +26,11 @@ ENV PATH ${PATH}:${KAFKA_HOME}/bin
 ADD start-kafka.sh /usr/bin/start-kafka.sh
 ADD broker-list.sh /usr/bin/broker-list.sh
 ADD create-topics.sh /usr/bin/create-topics.sh
+ADD ssl-bootstrap.sh /usr/bin/ssl-bootstrap.sh
 # The scripts need to have executable permission
 RUN chmod a+x /usr/bin/start-kafka.sh && \
     chmod a+x /usr/bin/broker-list.sh && \
-    chmod a+x /usr/bin/create-topics.sh
+    chmod a+x /usr/bin/create-topics.sh && \
+    chmod a+x /usr/bin/ssl-bootstrap.sh
 # Use "exec" form so that it runs as PID 1 (useful for graceful shutdown)
 CMD ["start-kafka.sh"]
