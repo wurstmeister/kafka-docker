@@ -1,0 +1,172 @@
+# Usage: docker stack deploy --with-registry-auth -c kafka-stack.yml kafka
+#
+# Intended to be used with Production-Kafka.json CloudFormation template for AWS.
+#
+# This will create the overlay network 'kafka_default' and deploy services
+# to the various nodes in this swarm. Other useful commands include:
+#   docker stack ps kafka
+#   docker service ls
+#   docker network ls
+#   docker node ls
+#   docker ps
+#   docker stats
+#
+# To remove the stack: docker stack rm kafka
+
+# References
+#   http://git.iggcanada.com:7990/projects/SRV/repos/igg-kafka/browse/README.md
+#   https://bobcares.com/blog/error-137-docker/
+#   http://docs.confluent.io/current/kafka/deployment.html
+#   https://www.cloudera.com/documentation/kafka/latest/topics/kafka_performance.html
+#   http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html
+#   http://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/index.html
+#   http://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/g1_gc.html#garbage_first_garbage_collection
+#   https://docs.docker.com/compose/compose-file
+#   https://docs.docker.com/compose/swarm
+#   https://docs.docker.com/release-notes/docker-compose/
+#   https://docs.docker.com/engine/swarm/how-swarm-mode-works/services/
+#   https://docs.docker.com/engine/admin/resource_constraints/#understand-the-risks-of-running-out-of-memory
+
+# The current intent of this stack is to be the only stack running in a swarm.
+# This does not preclude running along side other stacks in the same swarm, only
+# that the stack has not been designed nor optimized for such a deployment.
+#
+# We deploy Zookeeper to the manager nodes because it is a fairly light-weight
+# service which should not tax the manager nodes, and it frees up the worker nodes
+# to run only Kafka. Note: our manager nodes are typically smaller, t2.medium.
+#
+# Kafka is the main meat of the service, so we deploy to worker nodes, which are
+# typically t2.large or better. Take care to coordinate docker compose resources,
+# such as memory, with JVM resources such as -Xmx. A t2.large has 8G of memory,
+# so a Kafka container with 7G should be be enough for a JVM heap of 6G.
+#
+# Be aware of Out Of Memory Exceptions, usually reported as "task: non-zero exit (1)"
+# on the 'docker stack ps kafka' command. It can take several seconds to many minutes
+# for a docker task to fail this way, so if you have restart enabled, the task will
+# fail, restart, fail,... indefinitely.
+#
+# This has not been configured for Rolling Updates yet, so the update_config section
+# needs to be implemented some day.
+#
+# depends_on is ignored by 'docker stack...' at the time of this writing, but is included
+# here to be clear we want Kafka to start after Zookeeper, and hopefully some day both
+# docker-compose and 'docker stack' will converge.
+#
+# Healthcheck: TBD
+#
+# The Kafka ports use the long-syntax. Not sure why, but read on the wurstmeister site that
+# we needed this for running Kafka in a swarm.
+#
+# Need to investigate https://docs.docker.com/compose/compose-file/#volumes-for-services-swarms-and-stack-files
+# further...
+#
+#
+# http://wurstmeister.github.io/kafka-docker
+# Note: this document is out of date wrt Listener Configuration, and trying to follow that can lead to frustration
+# and misery. The configuration below is the result of extensive trial and error, testing, and more testing.
+
+# If you want to customise any Kafka parameters, simply add them as environment variables
+# For example: delete.topic.enable=true becomes KAFKA_DELETE_TOPIC_ENABLE: "true"
+
+# It is critical to configure listeners correctly, because even if the broker is reachable, it may not be listening.
+# For example, you can test is a broker is reachable by using telnet. The broker will respond, and you can see in
+# the Kafka logs it is reacting to the incoming connection.
+
+# KAFKA_LISTENERS
+# "Listener List - Comma-separated list of URIs we will listen on and the listener names. If the listener name is not
+# a security protocol, listener.security.protocol.map must also be set. Specify hostname as 0.0.0.0 to bind to all
+# interfaces. Leave hostname empty to bind to default interface. Examples of legal listener lists:
+# PLAINTEXT://myhost:9092,SSL://:9091 CLIENT://0.0.0.0:9092,REPLICATION://localhost:9093"
+
+# KAFKA_ADVERTISED_LISTENERS
+# "Listeners to publish to ZooKeeper for clients to use, if different than the listeners above. In IaaS environments,
+# this may need to be different from the interface to which the broker binds. If this is not set, the value for
+# `listeners` will be used."
+
+# KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+# "Map between listener names and security protocols. This must be defined for the same security protocol to be usable
+# in more than one port or IP. For example, we can separate internal and external traffic even if SSL is required for
+# both. Concretely, we could define listeners with names INTERNAL and EXTERNAL and this property as:
+# `INTERNAL:SSL,EXTERNAL:SSL`. As shown, key and value are separated by a colon and map entries are separated by
+# commas. Each listener name should only appear once in the map."
+
+# KAFKA_INTER_BROKER_LISTENER_NAME
+# "Name of listener used for communication between brokers. If this is unset, the listener name is defined by
+# security.inter.broker.protocol. It is an error to set this and security.inter.broker.protocol properties at
+# the same time."
+
+# KAFKA_INTER_BROKER_PROTOCOL_VERSION
+# "Specify which version of the inter-broker protocol will be used. This is typically bumped after all brokers were
+# upgraded to a new version. Example of some valid values are: 0.8.0, 0.8.1, 0.8.1.1, 0.8.2, 0.8.2.0, 0.8.2.1, 0.9.0.0,
+# 0.9.0.1 Check ApiVersion for the full list."
+
+# KAFKA_AUTO_CREATE_TOPICS_ENABLE
+# KAFKA_DELETE_TOPIC_ENABLE
+# We use these so that the Kafka support in the server has complete control over topic management. The philosophy
+# is that it's better to automate this in the server, than document it as a manual DevOps process. An argument
+# could be made that allowing the server to delete topics is too dangerous to leave to the discretion of
+# software developers.
+
+# KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS
+# There is a bug in the version of Kafka we are using, in that the configuration system is not able to
+# resolve the default value, so we have to explicitly set it.
+
+# KAFKA_LOG_RETENTION_BYTES
+# Don't really need to set this as we are using the default value, but just expose it here as as reminder
+# to consider setting it.
+
+version: '3.2'
+
+services:
+
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    deploy:
+      replicas: 3
+      placement:
+        constraints:
+          - node.role == manager
+    ports:
+      - "2181"
+
+  kafka:
+    image: 003575935058.dkr.ecr.us-west-1.amazonaws.com/iggcanada/kafka
+    depends_on:
+      - kafka_zookeeper
+    healthcheck:
+      disable: true
+    deploy:
+      replicas: 3
+      placement:
+        constraints:
+          - node.role == worker
+      resources:
+        limits:
+          memory: 7G
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 10
+        window: 120s
+    ports:
+      - target: 9094
+        published: 9094
+        protocol: tcp
+        mode: host
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: kafka_zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://:9092,OUTSIDE://0.0.0.0:9094
+      # Note: replace aws-docker-swarm... with the ELB name of your swarm.
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://$$(exec hostname):9092,OUTSIDE://aws-docker-swarm.us-west-1.elb.amazonaws.com:9094
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: 0.11.0.0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+      KAFKA_LOG_RETENTION_BYTES: -1
+      KAFKA_LOG_RETENTION_DAYS: 2
+      # Required because of bugs in Kafka 0.11.0.0
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 3000
+#     http://docs.confluent.io/current/kafka/deployment.html#jvm
+      KAFKA_HEAP_OPTS: "-Xms6g -Xmx6g -XX:+UseG1GC -XX:G1HeapRegionSize=16M -XX:MetaspaceSize=96m -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
