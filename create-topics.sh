@@ -1,5 +1,8 @@
 #!/bin/bash
 
+if [[ -z "$KAFKA_CREATE_TOPICS" ]]; then
+    exit 0
+fi
 
 if [[ -z "$START_TIMEOUT" ]]; then
     START_TIMEOUT=600
@@ -23,14 +26,14 @@ if $start_timeout_exceeded; then
     exit 1
 fi
 
-if [[ -n $KAFKA_CREATE_TOPICS ]]; then
-    IFS=','; for topicToCreate in $KAFKA_CREATE_TOPICS; do
-        echo "creating topics: $topicToCreate"
-        IFS=':' read -a topicConfig <<< "$topicToCreate"
-        if [ ${topicConfig[3]} ]; then
-          JMX_PORT='' $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partitions ${topicConfig[1]} --topic "${topicConfig[0]}" --config cleanup.policy="${topicConfig[3]}" --if-not-exists
-        else
-          JMX_PORT='' $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partitions ${topicConfig[1]} --topic "${topicConfig[0]}" --if-not-exists
-        fi
-    done
-fi
+IFS=','; for topicToCreate in $KAFKA_CREATE_TOPICS; do
+    echo "creating topics: $topicToCreate"
+    IFS=':' read -a topicConfig <<< "$topicToCreate"
+    config=
+    if [ -n "${topicConfig[3]}" ]; then
+        config="--config cleanup.policy=${topicConfig[3]}"
+    fi
+    JMX_PORT='' $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partitions ${topicConfig[1]} --topic "${topicConfig[0]}" $config --if-not-exists &
+done
+
+wait
