@@ -11,7 +11,17 @@ fi
 start_timeout_exceeded=false
 count=0
 step=10
-while netstat -lnt | awk '$4 ~ /:'$KAFKA_PORT'$/ {exit 1}'; do
+
+check_kafka_running() {
+    if [[ "$KAFKA_BROKER_ID" != "-1" ]]; then
+        echo dump | nc -w 1 "$KAFKA_ZOOKEEPER_CONNECT" $KAFKA_PORT \
+            | grep -F "/brokers/ids/$KAFKA_BROKER_ID"
+    else
+        netstat -lnt | awk '{ print $4 }' | grep ":$KAFKA_PORT"
+    fi
+}
+
+while ! check_kafka_running; do
     echo "waiting for kafka to be ready"
     sleep $step;
     count=$(expr $count + $step)
