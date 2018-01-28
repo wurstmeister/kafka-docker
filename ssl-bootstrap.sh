@@ -11,32 +11,34 @@ export KAFKA_SSL_TRUSTSTORE_LOCATION=${KAFKA_SSL_TRUSTSTORE_LOCATION-/etc/ssl/pr
 export KAFKA_SSL_TRUSTSTORE_PASSWORD=${KAFKA_SSL_TRUSTSTORE_PASSWORD-password1234}
 
 #The following environment is optional
-#KAFKA_SSL_CLIENT_AUTH=none
-#KAFKA_SSL_KEYSTORE_TYPE=JKS
-#KAFKA_SSL_TRUSTSTORE_TYPE=JKS
-KAFKA_SSL_SECURE_RANDOM_IMPLEMENTATION=${KAFKA_SSL_SECURE_RANDOM_IMPLEMENTATION-SHA1PRNG}
+#export KAFKA_SSL_CLIENT_AUTH=none
+#export KAFKA_SSL_KEYSTORE_TYPE=JKS
+#export KAFKA_SSL_TRUSTSTORE_TYPE=JKS
+export KAFKA_SSL_SECURE_RANDOM_IMPLEMENTATION=${KAFKA_SSL_SECURE_RANDOM_IMPLEMENTATION-SHA1PRNG}
+
+#The following environment is not used by Kafka but controls the creation of bootstrap certificates
+# CA_DN for the DN used to generate the Root CA (in a format supported by openssl)
+# CA_PASSWORD to protect the CA private key
+# CERT_DN for the DN used to generate the server private key (in a format supported by keytool)
+export CA_KEY=${CA_KEY-/etc/ssl/private/ca_key} #The CA Private key used for signing
+export CA_PASSWORD=${CA_PASSWORD-password1234} #The CA Private key password
+export CA_P12_FILE = ${CA_P12_FILE-} #Use an outside CA key pair as a PKCS12 file
+export CA_P12_PASSWORD = ${CA_PA12_PASSWORD-password1234} #the password for the P12 file
 
 cd /etc/ssl/private
 
-#If the Keystore file already exists (i.e., has been volume-mounted) don't run this script any more
-if [[ ! -f ${KAFKA_SSL_KEYSTORE_LOCATION} ]]; then
-
-#If a secrets file named passwords has been created, source it.
-# Expect it to export environment variables for passwords and certificate names
-# Including
-# KEYSTORE_PASSWORD to protect the keystore JKS
-# KEY_PASSWORD to protect the broker private key
-# CA_PASSWORD to protect the CA private key
-# CERT_DN for the DN used to generate the server private key (in a format supported by keytool)
-# CA_DN for the DN used to generate the Root CA (in a format supported by openssl)
-
-if [[ -f /run/secret/passwords ]]; then
-. /run/secret/passwords
-fi
-
 #Check if the Keystore and/or Truststore files are available as Secrets; if they are, then
 #this script does not need to run.
-#TODO
+if [[ -f /run/secrets/server.keystore.jks ]]; then
+   export KAFKA_SSL_KEYSTORE_LOCATION=/run/secrets/server.keystore.jks
+fi
+
+if [[ -f /run/secrets/server.truststore.jks ]]; then
+   export KAFKA_SSL_TRUSTSTORE_LOCATION=/run/secrets/server.truststore.jks
+fi
+
+#If the Keystore file already exists (i.e., has been volume-mounted or loaded as a secret) don't run this script any more
+if [[ ! -f ${KAFKA_SSL_KEYSTORE_LOCATION} ]]; then
 
 if [[ -z "$CERT_DN" ]]; then
 export CERT_DN="cn=$(hostname), ou=GenericOU, o=GenericO, c=US"
@@ -57,11 +59,19 @@ keytool -keystore ${KAFKA_SSL_KEYSTORE_LOCATION} -alias localhost -validity 365 
 echo "##########"
 echo "Creating a Root CA key and certificate"
 
-openssl req -new -x509 -keyout ca-key -out ca-cert -days 365 \
--passout pass:${CA_PASSWORD-password1234} \
+#Only if there is no present Root CA key and the PKCS12 option is not set.
+if [[ ! -f ${CA_KEY} && -z ${CA_P12_FILE} ]]; then
+openssl req -new -x509 -keyout ${CA_KEY} -out ca-cert -days 365 \
+-passout pass:${CA_PASSWORD} \
 -subj "$CA_DN"
-
 cat ca-cert
+fi
+
+#Extract the certificate from the PKCS12 file if set
+if [[ -n "${CA_P12_FILE}" ]]; then
+openssl pkcs12 -in ${CA_P12_FILE} -out ca-cert -nokeys -nodes -passin pass:${CA_P12_PASSWORD}
+openssl pkcs12 -in ${CA_P12_FILE} -out ca-key -nocerts -nodes -passin pass:${CA_P12_PASSWORD}
+fi
 
 echo "##########"
 echo "Importing Root CA certificate to Client and Server Truststores."
@@ -78,8 +88,13 @@ keytool -keystore ${KAFKA_SSL_KEYSTORE_LOCATION} -alias localhost -certreq -file
 -keypass ${KAFKA_SSL_KEY_PASSWORD}
 
 #Sign the certificate request with the rootCA
-openssl x509 -req -CA ca-cert -CAkey ca-key -in cert-file -out cert-signed -days 365 \
--CAcreateserial -passin pass:${CA_PASSWORD-password1234}
+if [[ -n "$CA_P12_FILE}" ]]; then
+openssl x509 -req -CA ca-cert -CAkey ${CA_KEY} -in cert-file -out cert-signed -days 365 \
+-CAcreateserial -passin pass:${CA_PASSWORD}
+else
+openssl x509 -req -CA ca-cert -CAkey ${CA_KEY} -in cert-file -out cert-signed -days 365 \
+-CAcreateserial -passin pass:${CA_PASSWORD}
+fi
 
 #Import the CA and server signed certificate to the server keystores
 keytool -keystore server.keystore.jks -noprompt -alias CARoot -import -file ca-cert \
