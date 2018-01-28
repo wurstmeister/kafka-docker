@@ -169,9 +169,9 @@ See the included sample compose file ```docker-compose-swarm.yml```
 
 ## Secure Kafka (SSL)
 
-To secure a Kafka listener with SSL, the security protocol must be specified as SSL for at least of the names supplied in the `KAFKA_LISTENER_SECURITY_PROTOCOL_MAP`. During startup, the container detects the presence of "SSL" in the map and executes an SSL bootstrap script if it is present.
+To secure a Kafka listener with SSL, the security protocol must be specified as SSL for at least one of the names supplied in the `KAFKA_LISTENER_SECURITY_PROTOCOL_MAP`. During startup, the container detects the presence of "SSL" in the map and executes an SSL bootstrap script if it is present.
 
-Note: New (0.11.0.0) per-listener security settings are not supported in this container. This feature would support different certificates and keystores per SSL listener but this container supports only a single security configuration regardless of the number of SSL listeners.
+Note: New (>= 0.11.0.0) per-listener security settings are not supported in this container. This feature would support different certificates and keystores per SSL listener but this container supports only a single security configuration regardless of the number of SSL listeners.
 
 By default, the SSL bootstrap script will generate a CA root and server key for the broker to use. These are located at `/etc/ssl/private/ca-cert` and it may be necessary to retrieve this Root CA certificate for client use. The Root CA certificate is printed to stdout when it is generated and can be retrieved from the container log.
 
@@ -213,11 +213,6 @@ In Docker Swarm mode, secrets may be used to distribute sensitive data to contai
 * The exact file name used by the trust store is `server.truststore.jks`
 
 Note: the `KAFKA_SSL_KEYSTORE_PASSWORD` and `KAFKA_SSL_TRUSTSTORE_PASSWORD` environment is still used to configure the passwords Kafka needs to use the store files.
-
-This compose file snippet shows a secret defined and associated with a Kafka service:
-
-```
-```
 
 ## Tutorial
 
