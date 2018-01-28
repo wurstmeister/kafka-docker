@@ -8,15 +8,13 @@ LABEL org.label-schema.schema-version="1.0" \
       org.label-schema.description="Apache Kafka" \
       org.label-schema.url="http://kafka.apache.org" \
       org.label-schema.version="${kafka_version}" \
-      org.label-schema.build-date="2017-07-01" \
       org.apache.kafka.base-image="anapsix/alpine-java" \
       org.apache.kafka.scala-version="${scala_version}" \
       org.apache.kafka.kafka-version="${kafka_version}"
 
 MAINTAINER wurstmeister
 
-#RUN apk add --update unzip curl docker coreutils cyrus-sasl cyrus-sasl-gssapi krb5 openssl
-RUN apk add --update unzip curl docker coreutils 
+RUN apk add --update unzip curl docker coreutils cyrus-sasl cyrus-sasl-gssapi krb5 openssl
 
 ENV KAFKA_VERSION=$kafka_version \
     SCALA_VERSION=$scala_version \
