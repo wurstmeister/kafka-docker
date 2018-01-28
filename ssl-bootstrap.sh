@@ -22,8 +22,8 @@ export KAFKA_SSL_SECURE_RANDOM_IMPLEMENTATION=${KAFKA_SSL_SECURE_RANDOM_IMPLEMEN
 # CERT_DN for the DN used to generate the server private key (in a format supported by keytool)
 export CA_KEY=${CA_KEY-/etc/ssl/private/ca_key} #The CA Private key used for signing
 export CA_PASSWORD=${CA_PASSWORD-password1234} #The CA Private key password
-export CA_P12_FILE = ${CA_P12_FILE-} #Use an outside CA key pair as a PKCS12 file
-export CA_P12_PASSWORD = ${CA_PA12_PASSWORD-password1234} #the password for the P12 file
+export CA_P12_FILE=${CA_P12_FILE-} #Use an outside CA key pair as a PKCS12 file
+export CA_P12_PASSWORD=${CA_PA12_PASSWORD-password1234} #the password for the P12 file
 
 cd /etc/ssl/private
 
