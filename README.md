@@ -197,7 +197,27 @@ volumes:
 
 If the keystore file exists when the SSL bootstrap runs, i.e., you have volume-mounted it, the container will not attempt to create a keystore or truststore file. *Be sure to specify both a keystore and a truststore file when specifying either.*
 
-TODO distribute secrets for swarm mode
+### Root CA
+
+By default, the SSL bootstrap creates a Root CA inside the container and uses it to sign the broker's certificate. If you wish each broker in a scaled service to have its own certificate signed by the same CA you may provide a PKCS12 file containing a CA private and public keys.
+
+Set the variable to identify the PKCS12 file with the `CA_P12_FILE` variable and its password with `CA_P12_PASSWORD`.
+
+The PKCS12 file may be provided to the container as a volume mount or swarm secret. The case of a swarm secret, provide the full path to the file in the `/run/secrets/` directory.
+
+### Swarm Mode Secrets
+
+In Docker Swarm mode, secrets may be used to distribute sensitive data to containers regardless of the node on which they run. This container supports sharing the key and truststore JKS files as Docker Swarm secrets, as long as:
+
+* The exact file name used by the key store is `server.keystore.jks`
+* The exact file name used by the trust store is `server.truststore.jks`
+
+Note: the `KAFKA_SSL_KEYSTORE_PASSWORD` and `KAFKA_SSL_TRUSTSTORE_PASSWORD` environment is still used to configure the passwords Kafka needs to use the store files.
+
+This compose file snippet shows a secret defined and associated with a Kafka service:
+
+```
+```
 
 ## Tutorial
 
