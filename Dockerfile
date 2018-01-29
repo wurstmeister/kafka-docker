@@ -14,8 +14,6 @@ LABEL org.label-schema.schema-version="1.0" \
 
 MAINTAINER wurstmeister
 
-RUN apk add --update unzip curl docker coreutils cyrus-sasl cyrus-sasl-gssapi krb5 openssl
-
 ENV KAFKA_VERSION=$kafka_version \
     SCALA_VERSION=$scala_version \
     KAFKA_HOME=/opt/kafka \
@@ -23,7 +21,7 @@ ENV KAFKA_VERSION=$kafka_version \
 
 COPY start-kafka.sh broker-list.sh create-topics.sh ssl-bootstrap.sh /usr/bin/
 
-RUN apk add --update unzip curl docker coreutils \
+RUN apk add --update unzip curl docker coreutils cyrus-sasl cyrus-sasl-gssapi krb5 openssl \
  && chmod a+x /usr/bin/*.sh \
  && curl -L "https://www.apache.org/dyn/closer.cgi?action=download&filename=/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz" \
   | tar xzf - -C /opt \
