@@ -32,9 +32,9 @@ ifeq ($(ARCH),amd64)
 	cat Dockerfile.crossbuild \
                 | sed "s|BASEIMAGE|$(BASEIMAGE)|g" \
                 | sed "/CROSS_BUILD_COPY/d" \
-                > $(TEMP_DIR)/Dockerfile.crossbuild
+                > $(TEMP_DIR)/Dockerfile
 	# We just build it using the usual process.
-	docker build -t $(BUILD_IMAGE) -f $(TEMP_DIR)/Dockerfile.crossbuild $(TEMP_DIR)
+	docker build -t $(BUILD_IMAGE) -f $(TEMP_DIR)/Dockerfile $(TEMP_DIR)
 	rm -rf $(TEMP_DIR)
 
 else
@@ -46,8 +46,8 @@ else
 	docker run --rm --privileged multiarch/qemu-user-static:register --reset
 	curl -sSL https://github.com/multiarch/qemu-user-static/releases/download/$(QEMUVERSION)/x86_64_qemu-$(QEMUARCH)-static.tar.gz | tar -xz -C $(TEMP_DIR)
 	sed "s/CROSS_BUILD_//g" $(TEMP_DIR)/Dockerfile.crossbuild > $(TEMP_DIR)/Dockerfile.crossbuild.tmp
-	mv $(TEMP_DIR)/Dockerfile.crossbuild.tmp $(TEMP_DIR)/Dockerfile.crossbuild
-	docker build -t $(BUILD_IMAGE) -f $(TEMP_DIR)/Dockerfile.crossbuild $(TEMP_DIR)
+	mv $(TEMP_DIR)/Dockerfile.crossbuild.tmp $(TEMP_DIR)/Dockerfile.$(ARCH)
+	docker build -t $(BUILD_IMAGE) -f $(TEMP_DIR)/Dockerfile.$(ARCH) $(TEMP_DIR)
 	rm -rf $(TEMP_DIR)
  
 endif
