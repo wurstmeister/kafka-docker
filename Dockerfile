@@ -1,4 +1,4 @@
-FROM anapsix/alpine-java:9
+FROM anapsix/alpine-java
 
 ARG kafka_version=1.0.0
 ARG scala_version=2.12
