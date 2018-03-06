@@ -1,0 +1,23 @@
+sudo: required
+
+language: java
+
+services:
+  - docker
+
+install:
+  - docker --version
+  - docker-compose --version
+  - docker build -t wurstmeister/kafka .
+
+before_script:
+  - docker-compose -f test/docker-compose.yml up -d kafka zookeeper
+  - docker-compose -f test/docker-compose.yml scale kafka=2
+
+script:
+  - sleep 5 # Wait for containers to start
+  - export BROKER_LIST=$(./test/internal-broker-list.sh)
+  - docker-compose -f test/docker-compose.yml run tests
+
+after_script:
+  - docker-compose stop
