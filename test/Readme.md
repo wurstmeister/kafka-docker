@@ -9,6 +9,6 @@ To execute
 ```
 cd test
 docker-compose up -d zookeeper kafka
-docker-compose scale kafka=2    # or however many nodes you want
-BROKER_LIST=$(./internal-broker-list.sh) docker-compose run tests
+docker-compose scale kafka=2
+./runAllTests.sh
 ```
