@@ -13,7 +13,18 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-  tests:
+
+  kafkatest:
+    image: wurstmeister/kafka
+    volumes:
+      - .:/tests
+      - /var/run/docker.sock:/var/run/docker.sock
+    working_dir: /tests
+    entrypoint:
+      - ./runTestPattern.sh
+      - "*.kafka.sh"
+
+  kafkacattest:
     image: confluentinc/cp-kafkacat
     environment:
       BROKER_LIST: ${BROKER_LIST}
@@ -21,4 +32,5 @@ services:
       - .:/tests
     working_dir: /tests
     entrypoint:
-      - ./runTests.sh
+      - ./runTestPattern.sh
+      - "*.kafkacat.sh"
