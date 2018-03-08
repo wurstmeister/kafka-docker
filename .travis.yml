@@ -15,6 +15,7 @@ before_script:
   - docker-compose -f test/docker-compose.yml scale kafka=2
 
 script:
+  - shellcheck -s bash broker-list.sh
   - sleep 5 # Wait for containers to start
   - export BROKER_LIST=$(./test/internal-broker-list.sh)
   - docker-compose -f test/docker-compose.yml run tests
