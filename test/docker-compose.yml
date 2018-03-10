@@ -16,6 +16,9 @@ services:
 
   kafkatest:
     image: wurstmeister/kafka
+    environment:
+      KAFKA_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     volumes:
       - .:/tests
       - /var/run/docker.sock:/var/run/docker.sock
