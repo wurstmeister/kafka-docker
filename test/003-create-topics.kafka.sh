@@ -16,7 +16,7 @@ testCreateTopics() {
 	KAFKA_CREATE_TOPICS="${TOPICS[0]}:1:1,${TOPICS[1]}:2:1:compact" create-topics.sh
 
 	# Loop through each array, validate that topic exists, and correct cleanup policy is set
-	for i in ${!TOPICS[@]}; do
+	for i in "${!TOPICS[@]}"; do
 		TOPIC=${TOPICS[i]}
 
 		echo "Validating topic '$TOPIC'"
