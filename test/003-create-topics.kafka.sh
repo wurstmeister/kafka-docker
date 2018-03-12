@@ -5,17 +5,33 @@
 testCreateTopics() {
 	NOW=$(date +%s)
 
-	DEFAULT="default-$NOW"
-	KAFKA_CREATE_TOPICS="$DEFAULT:1:1" create-topics.sh
+	# TOPICS array contains the topic name to create / validate
+	# CLEANUP array contains the expected cleanup policy configuration for the topic
+	TOPICS[0]="default-$NOW"
+	CLEANUP[0]=""
 
-	DEFAULT_EXISTS=$(/opt/kafka/bin/kafka-topics.sh --zookeeper "$KAFKA_ZOOKEEPER_CONNECT" --list --topic "$DEFAULT")
-	DEFAULT_POLICY=$(/opt/kafka/bin/kafka-configs.sh --zookeeper "$KAFKA_ZOOKEEPER_CONNECT" --entity-type topics --entity-name "$DEFAULT" --describe | awk -F'cleanup.policy=' '{print $2}')
-	DEFAULT_RESULT="$DEFAULT_EXISTS:$DEFAULT_POLICY"
+	TOPICS[1]="compact-$NOW"
+	CLEANUP[1]="compact"
 
-	if [[ "$DEFAULT_RESULT" != "$DEFAULT:" ]]; then
-		echo "topic not configured correctly: $DEFAULT_RESULT"
-		return 1
-	fi
+	KAFKA_CREATE_TOPICS="${TOPICS[0]}:1:1,${TOPICS[1]}:2:1:compact" create-topics.sh
+
+	# Loop through each array, validate that topic exists, and correct cleanup policy is set
+	for i in "${!TOPICS[@]}"; do
+		TOPIC=${TOPICS[i]}
+
+		echo "Validating topic '$TOPIC'"
+
+		EXISTS=$(/opt/kafka/bin/kafka-topics.sh --zookeeper "$KAFKA_ZOOKEEPER_CONNECT" --list --topic "$TOPIC")
+		POLICY=$(/opt/kafka/bin/kafka-configs.sh --zookeeper "$KAFKA_ZOOKEEPER_CONNECT" --entity-type topics --entity-name "$TOPIC" --describe | awk -F'cleanup.policy=' '{print $2}')
+
+		RESULT="$EXISTS:$POLICY"
+		EXPECTED="$TOPIC:${CLEANUP[i]}"
+
+		if [[ "$RESULT" != "$EXPECTED" ]]; then
+			echo "$TOPIC topic not configured correctly: '$RESULT'"
+			return 1
+		fi
+	done
 
 	return 0
 }
