@@ -74,7 +74,7 @@ If ```KAFKA_ADVERTISED_HOST_NAME``` is specified, it takes precedence over ```HO
 
 For AWS deployment, you can use the Metadata service to get the container host's IP:
 ```
-HOSTNAME_COMMAND=wget -t3 -T2 -qO-  http://169.254.169.254/latest/meta-data/local-ipv4
+HOSTNAME_COMMAND=curl http://169.254.169.254/latest/meta-data/local-ipv4
 ```
 Reference: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
 
@@ -168,6 +168,53 @@ ports:
 Older compose files using the short-version of port mapping may encounter Kafka client issues if their connection to individual brokers cannot be guaranteed.
 
 See the included sample compose file ```docker-compose-swarm.yml```
+
+## Secure Kafka (SSL)
+
+To secure a Kafka listener with SSL, the security protocol must be specified as SSL for at least one of the names supplied in the `KAFKA_LISTENER_SECURITY_PROTOCOL_MAP`. During startup, the container detects the presence of "SSL" in the map and executes an SSL bootstrap script if it is present.
+
+Note: New (>= 0.11.0.0) per-listener security settings are not supported in this container. This feature would support different certificates and keystores per SSL listener but this container supports only a single security configuration regardless of the number of SSL listeners.
+
+By default, the SSL bootstrap script will generate a CA root and server key for the broker to use. These are located at `/etc/ssl/private/ca-cert` and it may be necessary to retrieve this Root CA certificate for client use. The Root CA certificate is printed to stdout when it is generated and can be retrieved from the container log.
+
+The container will not bootstrap SSL if listeners are not configured via `KAFKA_LISTENER_SECURITY_PROTOCOL_MAP`, although SSL can always be configured manually.
+
+To override any default behaviors, set the appropriate environment variables as shown here with their default values:
+
+```
+KAFKA_SSL_KEYSTORE_LOCATION=/etc/ssl/private/server.keystore.jks
+KAFKA_SSL_KEYSTORE_PASSWORD=[hidden]
+KAFKA_SSL_KEY_PASSWORD=[hidden]
+KAFKA_SSL_TRUSTSTORE_LOCATION=/etc/ssl/private/server.truststore.jks
+KAFKA_SSL_TRUSTSTORE_PASSWORD=[hidden]
+```
+
+If you are publishing your own JKS files to the container, be sure to mount them appropriately in addition to providing the relevant passwords in the environment as shown above:
+
+```
+volumes:
+   - /path/to/your/keystore.jks:/etc/ssl/private/server.keystore.jks
+   - /path/to/your/truststore.jks:/etc/ssl/private/server.truststore.jks
+```
+
+If the keystore file exists when the SSL bootstrap runs, i.e., you have volume-mounted it, the container will not attempt to create a keystore or truststore file. *Be sure to specify both a keystore and a truststore file when specifying either.*
+
+### Root CA
+
+By default, the SSL bootstrap creates a Root CA inside the container and uses it to sign the broker's certificate. If you wish each broker in a scaled service to have its own certificate signed by the same CA you may provide a PKCS12 file containing a CA private and public keys.
+
+Set the variable to identify the PKCS12 file with the `CA_P12_FILE` variable and its password with `CA_P12_PASSWORD`.
+
+The PKCS12 file may be provided to the container as a volume mount or swarm secret. The case of a swarm secret, provide the full path to the file in the `/run/secrets/` directory.
+
+### Swarm Mode Secrets
+
+In Docker Swarm mode, secrets may be used to distribute sensitive data to containers regardless of the node on which they run. This container supports sharing the key and truststore JKS files as Docker Swarm secrets, as long as:
+
+* The exact file name used by the key store is `server.keystore.jks`
+* The exact file name used by the trust store is `server.truststore.jks`
+
+Note: the `KAFKA_SSL_KEYSTORE_PASSWORD` and `KAFKA_SSL_TRUSTSTORE_PASSWORD` environment is still used to configure the passwords Kafka needs to use the store files.
 
 ## Tutorial
 
