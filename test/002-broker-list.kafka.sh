@@ -9,7 +9,7 @@ testBrokerList() {
 
 	echo "$RESULT"
 
-	if [[ "$RESULT" == "1.2.3.4$PORT1,1.2.3.4:$PORT2" || "$RESULT" == "1.2.3.4:$PORT2,1.2.3.4:$PORT1" ]]; then
+	if [[ "$RESULT" == "1.2.3.4:$PORT1,1.2.3.4:$PORT2" || "$RESULT" == "1.2.3.4:$PORT2,1.2.3.4:$PORT1" ]]; then
 		return 0
 	else
 		return 1
