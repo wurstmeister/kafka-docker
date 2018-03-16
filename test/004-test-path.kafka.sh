@@ -4,7 +4,7 @@
 
 testPath() {
 	echo "Checking PATH '$PATH'"
-	if [[ "$PATH" =~ "/opt/kafka/bin" ]]; then
+	if [[ ! "$PATH" =~ "/opt/kafka/bin" ]]; then
 		echo "path is not set correctly: $PATH"
 		return 1
 	fi
