@@ -11,11 +11,11 @@ ENV KAFKA_VERSION=$kafka_version \
 
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
 
-COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh /tmp/
+COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh start-console-consumer.sh start-console-producer.sh /tmp/
 
 RUN apk add --update unzip wget curl docker jq coreutils \
  && chmod a+x /tmp/*.sh \
- && mv /tmp/start-kafka.sh /tmp/broker-list.sh /tmp/create-topics.sh /usr/bin \
+ && mv /tmp/start-kafka.sh /tmp/broker-list.sh /tmp/create-topics.sh /tmp/start-console-consumer.sh /tmp/start-console-producer.sh /usr/bin \
  && /tmp/download-kafka.sh \
  && tar xfz /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz -C /opt \
  && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
