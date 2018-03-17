@@ -12,7 +12,7 @@ testStartKafka() {
 	source "$START_KAFKA"
 
 	# Then the configuration file is correct
-	assertExpectedConfig 'advertised.listeners=PLAINTEXT://:9092'
+	assertAbsent 'advertised.listeners'
 	assertExpectedConfig 'listeners=PLAINTEXT://:9092'
 }
 

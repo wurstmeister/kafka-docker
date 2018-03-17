@@ -2,17 +2,17 @@
 
 source test.functions
 
-testAdvertisedHost() {
+testListeners() {
 	# Given a hostname is provided
-	export KAFKA_ADVERTISED_HOST_NAME=monkey
-	export KAFKA_ADVERTISED_PORT=8888
+	EXPLICIT_LISTENERS="PLAINTEXT://my.domain.com:9040"
+	export KAFKA_LISTENERS="$EXPLICIT_LISTENERS"
 
 	# When the script is invoked
 	source "$START_KAFKA"
 
 	# Then the configuration file is correct
 	assertAbsent 'advertised.listeners'
-	assertExpectedConfig 'listeners=PLAINTEXT://monkey:8888'
+	assertExpectedConfig 'listeners=PLAINTEXT://my.domain.com:9040'
 }
 
-testAdvertisedHost
+testListeners

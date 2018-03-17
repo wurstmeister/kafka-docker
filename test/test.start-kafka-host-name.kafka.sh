@@ -10,8 +10,8 @@ testHostnameCommand() {
 	source "$START_KAFKA"
 
 	# Then the configuration uses the value from the command
-	assertExpectedConfig 'advertised.listeners=PLAINTEXT://my-host:9092'
-	assertExpectedConfig 'listeners=PLAINTEXT://:9092'
+	assertAbsent 'advertised.listeners'
+	assertExpectedConfig 'listeners=PLAINTEXT://my-host:9092'
 }
 
 testHostnameCommand
