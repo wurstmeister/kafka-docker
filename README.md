@@ -1,6 +1,8 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/wurstmeister/kafka.svg)](https://hub.docker.com/r/wurstmeister/kafka/)
 [![Docker Stars](https://img.shields.io/docker/stars/wurstmeister/kafka.svg)](https://hub.docker.com/r/wurstmeister/kafka/)
-[![](https://badge.imagelayers.io/wurstmeister/kafka:latest.svg)](https://imagelayers.io/?images=wurstmeister/kafka:latest)
+[![](https://images.microbadger.com/badges/version/wurstmeister/kafka.svg)](https://microbadger.com/images/wurstmeister/kafka "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/wurstmeister/kafka.svg)](https://microbadger.com/images/wurstmeister/kafka "Get your own image badge on microbadger.com")
+[![Build Status](https://travis-ci.org/wurstmeister/kafka-docker.svg?branch=master)](https://travis-ci.org/wurstmeister/kafka-docker)
 
 kafka-docker
 ============
@@ -112,7 +114,7 @@ Note: if the below listener configuration is not used, legacy conventions for "a
 4. Use ```KAFKA_INTER_BROKER_LISTENER_NAME``` to set the name from the protocol map to be used for the "inter.broker.listener.name". This defaults to ```KAFKA_PROTOCOL_NAME``` if not supplied. This is "BROKER" in the example.
 5. Use ```KAFKA_ADVERTISED_PORT``` and ```KAFKA_ADVERTISED_HOST_NAME``` (or the ```HOSTNAME_COMMAND``` option) to set the name and port to be used in the ```advertised.listeners``` list.
 6. Use ```KAFKA_PORT``` and ```KAFKA_HOST_NAME``` (optional) to set the name (optional) and port to be used in the ```listeners``` list. If ```KAFKA_HOST_NAME``` is not defined, Kafka's reasonable default behavior will be used and is sufficient. Note that ```KAFKA_PORT``` defaults to "9092" if not defined.
-7. Use ```KAFKA_INTER_BROKER_LISTENER_PORT``` to set the port number to be used in both ```advertised.listeners``` and ```listeners``` for the Inter-broker listener. The host name for this listener is not configurable. Kafka's reasonable default behavior is used.
+7. Use ```KAFKA_INTER_BROKER_PORT``` to set the port number to be used in both ```advertised.listeners``` and ```listeners``` for the Inter-broker listener. The host name for this listener is not configurable. Kafka's reasonable default behavior is used.
 
 ### Example
 

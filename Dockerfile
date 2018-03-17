@@ -1,14 +1,15 @@
 FROM anapsix/alpine-java
 
-ARG kafka_version=1.0.0
+ARG kafka_version=1.0.1
 ARG scala_version=2.12
 
 MAINTAINER wurstmeister
 
 ENV KAFKA_VERSION=$kafka_version \
     SCALA_VERSION=$scala_version \
-    KAFKA_HOME=/opt/kafka \
-    PATH=${PATH}:${KAFKA_HOME}/bin
+    KAFKA_HOME=/opt/kafka 
+
+ENV PATH=${PATH}:${KAFKA_HOME}/bin
 
 COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh /tmp/
 

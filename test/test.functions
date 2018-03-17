@@ -1,0 +1,44 @@
+#!/bin/bash -e
+
+# Sourcing this script will replace any of the external calls in the start-kafka.sh script and mock
+# any outbound calls (i.e. to docker)
+
+export START_KAFKA=/usr/bin/start-kafka.sh
+export BROKER_CONFIG=/opt/kafka/config/server.properties
+
+START_KAFKA_BACKUP="$START_KAFKA.bak"
+
+if [[ ! -f "$START_KAFKA_BACKUP" ]]; then
+	echo "Backing up $START_KAFKA file to $START_KAFKA_BACKUP"
+	cp "$START_KAFKA" "$START_KAFKA_BACKUP"
+else
+	echo "Restoring $START_KAFKA file from $START_KAFKA_BACKUP"
+	cp "$START_KAFKA_BACKUP" "$START_KAFKA"
+fi
+
+setupStartKafkaScript() {
+	echo "Preparing $START_KAFKA script for test"
+
+	# We need to remove all executable commands from the start-kafka.sh script, so it can be sourced to evaluate
+	# the environment variables
+	sed  -i.bak -E -e '/^create-topics.sh/d' -e '/^exec "\$KAFKA_HOME\/bin\/kafka-server-start.sh"/d' "$START_KAFKA"
+
+	# Mock the call to docker port to return valid result
+	function docker() { echo "0.0.0.0:9092"; }
+	export -f docker
+}
+
+setupStartKafkaScript
+
+
+# Will look in the server.properties file, and check if there is an exact match for the provided input
+# i.e. `assertExpectedConfig 'broker.id=123'`
+# This will only succeed if there is exactly one line matching `broker.id=123`
+assertExpectedConfig() {
+	EXPECTED=$1
+
+	RESULT=$(grep -E '^'"$EXPECTED"'$' "$BROKER_CONFIG")
+	echo " > $RESULT"
+
+	[[ "$RESULT" == "$EXPECTED" ]]
+}
