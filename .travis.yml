@@ -17,7 +17,7 @@ before_script:
 
 script:
   # Shellcheck main source files
-  - shellcheck -s bash broker-list.sh create-topics.sh start-kafka.sh
+  - shellcheck -s bash broker-list.sh create-topics.sh start-kafka.sh download-kafka.sh
   - cd test
   # Shellcheck the tests
   - shellcheck -x -e SC1090 -s bash *sh
