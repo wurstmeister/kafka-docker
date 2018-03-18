@@ -16,7 +16,7 @@ COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh /tmp/
 RUN apk add --update unzip wget curl docker jq coreutils \
  && chmod a+x /tmp/*.sh \
  && mv /tmp/start-kafka.sh /tmp/broker-list.sh /tmp/create-topics.sh /usr/bin \
- && /tmp/download-kafka.sh \
+ && sync && /tmp/download-kafka.sh \
  && tar xfz /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz -C /opt \
  && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} /opt/kafka \
