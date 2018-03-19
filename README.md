@@ -172,3 +172,12 @@ See the included sample compose file ```docker-compose-swarm.yml```
 ## Tutorial
 
 [http://wurstmeister.github.io/kafka-docker/](http://wurstmeister.github.io/kafka-docker/)
+
+## Docker OSX Native
+
+Use the docker-compose-osx-native.yaml to start your containers. This docker-compose file uses the docker.for.mac.localhost network feature from docker.
+
+To connect to the kafka container: 
+`./start-kafka-shell-osx-native.sh kafka zookeeper:2181 kafkadocker_default`
+
+This script accepts a third argument that to set the docker network to connect to. This allows you to use the named containers from the docker-compose and alleviates the issues with kafka not reaching zookeeper when creating topics with the kafka scripts. 
