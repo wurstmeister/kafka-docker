@@ -41,23 +41,16 @@ if [[ -n "$KAFKA_HEAP_OPTS" ]]; then
     unset KAFKA_HEAP_OPTS
 fi
 
-if [[ -z "$KAFKA_ADVERTISED_HOST_NAME" && -n "$HOSTNAME_COMMAND" ]]; then
-    KAFKA_ADVERTISED_HOST_NAME=$(eval "$HOSTNAME_COMMAND")
-    export KAFKA_ADVERTISED_HOST_NAME
+if [[ -n "$HOSTNAME_COMMAND" ]]; then
+    HOSTNAME_VALUE=$(eval "$HOSTNAME_COMMAND")
 
     # Replace any occurences of _{HOSTNAME_COMMAND} with the value
     for VAR in $(env); do
-      if [[ $VAR =~ ^KAFKA_ && "$VAR" =~ "_{HOSTNAME_COMMAND}" ]]; then
-        # shellcheck disable=SC2163
-        export "${VAR//_\{HOSTNAME_COMMAND\}/$KAFKA_ADVERTISED_HOST_NAME}"
-      fi
+        if [[ $VAR =~ ^KAFKA_ && "$VAR" =~ "_{HOSTNAME_COMMAND}" ]]; then
+            # shellcheck disable=SC2163
+            export "${VAR//_\{HOSTNAME_COMMAND\}/$HOSTNAME_VALUE}"
+        fi
     done
-fi
-
-
-# For a valid config, we need to specify atleast the 'listeners' config
-if [[ -z "$KAFKA_LISTENERS" ]]; then
-  export KAFKA_LISTENERS="PLAINTEXT://${KAFKA_ADVERTISED_HOST_NAME-}:${KAFKA_ADVERTISED_PORT-9092}"
 fi
 
 if [[ -n "$RACK_COMMAND" && -z "$KAFKA_BROKER_RACK" ]]; then
@@ -65,11 +58,24 @@ if [[ -n "$RACK_COMMAND" && -z "$KAFKA_BROKER_RACK" ]]; then
     export KAFKA_BROKER_RACK
 fi
 
+# Try and configure minimal settings or exit with error if there isn't enough information
+if [[ -z "$KAFKA_ADVERTISED_HOST_NAME$KAFKA_LISTENERS" ]]; then
+    if [[ -n "$KAFKA_ADVERTISED_LISTENERS" ]]; then
+        echo "ERROR: Missing environment variable KAFKA_LISTENERS. Must be specified when using KAFKA_ADVERTISED_LISTENERS"
+        exit 1
+    elif [[ -z "$HOSTNAME_VALUE" ]]; then
+        echo "ERROR: No listener or advertised hostname configuration provided in environment."
+        echo "       Please define KAFKA_LISTENERS / (deprecated) KAFKA_ADVERTISED_HOST_NAME"
+        exit 1
+    fi
+
+    # Maintain existing behaviour
+    # If HOSTNAME_COMMAND is provided, set that to the advertised.host.name value if listeners are not defined.
+    export KAFKA_ADVERTISED_HOST_NAME="$HOSTNAME_VALUE"
+fi
+
 #Issue newline to config file in case there is not one already
 echo "" >> "$KAFKA_HOME/config/server.properties"
-
-unset KAFKA_ADVERTISED_PORT
-unset KAFKA_ADVERTISED_HOST_NAME
 
 for VAR in $(env)
 do

@@ -32,4 +32,4 @@ These tests require zookeeper and kafka to be running
 docker-compose run --rm kafkacattest <testname pattern>
 ```
 
-`<testname pattern>` can be an individual filename, or a pattern such as `test.start-kafka*.kafka.sh`
+`<testname pattern>` can be an individual filename, or a pattern such as `'test.start-kafka*.kafka.sh'`

@@ -11,8 +11,10 @@ testAdvertisedHost() {
 	source "$START_KAFKA"
 
 	# Then the configuration file is correct
+	assertExpectedConfig "advertised.host.name=monkey"
+	assertExpectedConfig "advertised.port=8888"
 	assertAbsent 'advertised.listeners'
-	assertExpectedConfig 'listeners=PLAINTEXT://monkey:8888'
+	assertAbsent 'listeners'
 }
 
 testAdvertisedHost
