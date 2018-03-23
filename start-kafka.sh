@@ -106,6 +106,8 @@ unset KAFKA_PROTOCOL_NAME
 if [[ -n "$KAFKA_ADVERTISED_LISTENERS" ]]; then
   unset KAFKA_ADVERTISED_PORT
   unset KAFKA_ADVERTISED_HOST_NAME
+  # Handle the case of PLAINTEXT:$(exec hostname) by evaluating the string
+  export KAFKA_ADVERTISED_LISTENERS=$(eval echo $KAFKA_ADVERTISED_LISTENERS)
 fi
 
 if [[ -n "$KAFKA_LISTENERS" ]]; then
