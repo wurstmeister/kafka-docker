@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+if [[ -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
+    echo "ERROR: missing mandatory config: KAFKA_ZOOKEEPER_CONNECT"
+    exit 1
+fi
+
 if [[ -z "$KAFKA_PORT" ]]; then
     export KAFKA_PORT=9092
 fi
@@ -28,12 +33,6 @@ fi
 
 if [[ -z "$KAFKA_LOG_DIRS" ]]; then
     export KAFKA_LOG_DIRS="/kafka/kafka-logs-$HOSTNAME"
-fi
-
-# DEPRECATED(sscaling): Remove and document
-if [[ -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
-    KAFKA_ZOOKEEPER_CONNECT=$(env | grep 'ZK.*PORT_2181_TCP=' | sed -e 's|.*tcp://||' | paste -sd ,)
-    export KAFKA_ZOOKEEPER_CONNECT
 fi
 
 if [[ -n "$KAFKA_HEAP_OPTS" ]]; then
