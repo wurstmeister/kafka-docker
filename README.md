@@ -11,6 +11,14 @@ Dockerfile for [Apache Kafka](http://kafka.apache.org/)
 
 The image is available directly from [Docker Hub](https://hub.docker.com/r/wurstmeister/kafka/)
 
+---
+
+## Announcements
+
+* **03-Apr-2018** - *BREAKING* - `KAFKA_ADVERTISED_PROTOCOL_NAME` and `KAFKA_PROTOCOL_NAME` removed. Please update to canonical kafka settings.
+
+---
+
 ## Pre-Requisites
 
 - install docker-compose [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
