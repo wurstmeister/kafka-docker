@@ -80,6 +80,47 @@ HOSTNAME_COMMAND=wget -t3 -T2 -qO-  http://169.254.169.254/latest/meta-data/loca
 ```
 Reference: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
 
+### Injecting HOSTNAME_COMMAND into configuration
+
+If you require the value of `HOSTNAME_COMMAND` in any of your other `KAFKA_XXX` variables, use the `_{HOSTNAME_COMMAND}` string in your variable value, i.e.
+
+```
+KAFKA_ADVERTISED_LISTENERS=SSL://_{HOSTNAME_COMMAND}:9093,PLAINTEXT://9092
+```
+
+## Listener Configuration
+
+It may be useful to have the [Kafka Documentation](https://kafka.apache.org/documentation/) open, to understand the various broker listener configuration options.
+
+Since 0.9.0, Kafka has supported [multiple listener configurations](https://issues.apache.org/jira/browse/KAFKA-1809) for brokers to help support different protocols and discriminate between internal and external traffic. Later versions of Kafka have deprecated ```advertised.host.name``` and ```advertised.port```.
+
+**NOTE:** ```advertised.host.name``` and ```advertised.port``` still work as expected, but should not be used if configuring the listeners.
+
+### Example
+
+The example environment below:
+
+```
+HOSTNAME_COMMAND: curl http://169.254.169.254/latest/meta-data/public-hostname
+KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094
+KAFKA_LISTENERS: INSIDE://9092,OUTSIDE://9094
+KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+```
+
+Will result in the following broker config:
+
+```
+advertised.listeners = OUTSIDE://ec2-xx-xx-xxx-xx.us-west-2.compute.amazonaws.com:9094,INSIDE://:9092
+listeners = OUTSIDE://:9094,INSIDE://:9092
+inter.broker.listener.name = INSIDE
+```
+
+### Rules
+
+* No listeners may share a port number.
+* An advertised.listener must be present by protocol name and port number in the list of listeners.
+
 ## Broker Rack
 
 You can configure the broker rack affinity in different ways
@@ -102,53 +143,6 @@ For example, to connect to a kafka running locally (assumes exposing port 1099)
       JMX_PORT: 1099
 
 Jconsole can now connect at ```jconsole 192.168.99.100:1099```
-
-## Listener Configuration
-
-Newer versions of Kafka have deprecated ```advertised.host.name``` and ```advertised.port``` in favor of a more flexible listener configuration that supports multiple listeners using the same or different protocols. This image supports up to three listeners to be configured automatically as shown below.
-
-Note: if the below listener configuration is not used, legacy conventions for "advertised.host.name" and "advertised.port" still operate without change.
-
-1. Use ```KAFKA_LISTENER_SECURITY_PROTOCOL_MAP``` to configure an INSIDE, OUTSIDE, and optionally a BROKER protocol. These names are arbitrary but used for consistency and clarity.
-   * ```KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:SSL,BROKER:PLAINTEXT``` configures three listener names, but only the listener named OUTSIDE uses SSL. Note this example does not concern extra steps in configuring SSL on a broker.
-2. Use ```KAFKA_ADVERTISED_PROTOCOL_NAME``` to set the name from the protocol map to be used for the "advertised.listeners" property. This is "OUTSIDE" in this example.
-3. Use ```KAFKA_PROTOCOL_NAME``` to set the name from the protocol map to be used for the "listeners" property. This is "INSIDE" in this example.
-4. Use ```KAFKA_INTER_BROKER_LISTENER_NAME``` to set the name from the protocol map to be used for the "inter.broker.listener.name". This defaults to ```KAFKA_PROTOCOL_NAME``` if not supplied. This is "BROKER" in the example.
-5. Use ```KAFKA_ADVERTISED_PORT``` and ```KAFKA_ADVERTISED_HOST_NAME``` (or the ```HOSTNAME_COMMAND``` option) to set the name and port to be used in the ```advertised.listeners``` list.
-6. Use ```KAFKA_PORT``` and ```KAFKA_HOST_NAME``` (optional) to set the name (optional) and port to be used in the ```listeners``` list. If ```KAFKA_HOST_NAME``` is not defined, Kafka's reasonable default behavior will be used and is sufficient. Note that ```KAFKA_PORT``` defaults to "9092" if not defined.
-7. Use ```KAFKA_INTER_BROKER_PORT``` to set the port number to be used in both ```advertised.listeners``` and ```listeners``` for the Inter-broker listener. The host name for this listener is not configurable. Kafka's reasonable default behavior is used.
-
-### Example
-
-Given the environment seen here, the following configuration will be written to the Kafka broker properties.
-
-```
-HOSTNAME_COMMAND: curl http://169.254.169.254/latest/meta-data/public-hostname
-KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-KAFKA_ADVERTISED_PROTOCOL_NAME: OUTSIDE
-KAFKA_PROTOCOL_NAME: INSIDE
-KAFKA_ADVERTISED_PORT: 9094
-```
-
-The resulting configuration:
-
-```
-advertised.listeners = OUTSIDE://ec2-xx-xx-xxx-xx.us-west-2.compute.amazonaws.com:9094,INSIDE://:9092
-listeners = OUTSIDE://:9094,INSIDE://:9092
-inter.broker.listener.name = INSIDE
-```
-
-### Rules
-
-* No listeners may share a port number.
-* An advertised.listener must be present by name and port number in the list of listeners.
-* You must not set "security.inter.broker.protocol" at the same time as using this multiple-listener mechanism.
-
-### Best Practices
-
-* Reserve port 9092 for INSIDE listeners.
-* Reserve port 9093 for BROKER listeners.
-* Reserve port 9094 for OUTSIDE listeners.
 
 ## Docker Swarm Mode
 

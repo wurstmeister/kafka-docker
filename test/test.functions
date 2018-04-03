@@ -6,22 +6,28 @@
 export START_KAFKA=/usr/bin/start-kafka.sh
 export BROKER_CONFIG=/opt/kafka/config/server.properties
 
-START_KAFKA_BACKUP="$START_KAFKA.bak"
+enforceOriginalFile() {
+	SOURCE="$1"
+	BACKUP="$1.bak"
 
-if [[ ! -f "$START_KAFKA_BACKUP" ]]; then
-	echo "Backing up $START_KAFKA file to $START_KAFKA_BACKUP"
-	cp "$START_KAFKA" "$START_KAFKA_BACKUP"
-else
-	echo "Restoring $START_KAFKA file from $START_KAFKA_BACKUP"
-	cp "$START_KAFKA_BACKUP" "$START_KAFKA"
-fi
+	if [[ ! -f "$BACKUP" ]]; then
+		echo "Backing up $SOURCE to $BACKUP"
+		cp "$SOURCE" "$BACKUP"
+	else
+		echo "Restoring $SOURCE from $BACKUP"
+		cp "$BACKUP" "$SOURCE"
+	fi
+}
 
 setupStartKafkaScript() {
 	echo "Preparing $START_KAFKA script for test"
 
+	enforceOriginalFile "$START_KAFKA"
+	enforceOriginalFile "$BROKER_CONFIG"
+
 	# We need to remove all executable commands from the start-kafka.sh script, so it can be sourced to evaluate
 	# the environment variables
-	sed  -i.bak -E -e '/^create-topics.sh/d' -e '/^exec "\$KAFKA_HOME\/bin\/kafka-server-start.sh"/d' "$START_KAFKA"
+	sed  -i -E -e '/^create-topics.sh/d' -e '/^exec "\$KAFKA_HOME\/bin\/kafka-server-start.sh"/d' "$START_KAFKA"
 
 	# Mock the call to docker port to return valid result
 	function docker() { echo "0.0.0.0:9092"; }
@@ -41,4 +47,19 @@ assertExpectedConfig() {
 	echo " > $RESULT"
 
 	[[ "$RESULT" == "$EXPECTED" ]]
+}
+
+assertAbsent() {
+	EXPECTED_ABSENT=$1
+
+	RESULT=$(grep -E '^'"$EXPECTED_ABSENT" "$BROKER_CONFIG" | wc -l)
+	echo " > $RESULT matches for ^$EXPECTED_ABSENT"
+
+	[[ "$RESULT" == "0" ]]
+}
+
+printBrokerConfig() {
+	echo "----[ $BROKER_CONFIG ]----"
+	cat "$BROKER_CONFIG" | sed -nE '/^[^#]/p'
+	echo "--------------------------"
 }

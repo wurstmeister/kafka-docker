@@ -6,6 +6,7 @@ testManualBrokerId() {
 	echo "testManualBrokerId"
 
 	# Given a Broker Id is provided
+	export KAFKA_LISTENERS=PLAINTEXT://:9092
 	export KAFKA_BROKER_ID=57
 
 	# When the script is invoked
@@ -19,6 +20,7 @@ testAutomaticBrokerId() {
 	echo "testAutomaticBrokerId"
 
 	# Given no Broker Id is provided
+	export KAFKA_LISTENERS=PLAINTEXT://:9092
 	unset KAFKA_BROKER_ID
 
 	# When the script is invoked
@@ -32,6 +34,7 @@ testBrokerIdCommand() {
 	echo "testBrokerIdCommand"
 
 	# Given a Broker Id command is provided
+	export KAFKA_LISTENERS=PLAINTEXT://:9092
 	unset KAFKA_BROKER_ID
 	export BROKER_ID_COMMAND='f() { echo "23"; }; f'
 
