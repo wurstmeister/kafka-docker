@@ -8,3 +8,4 @@ Kafka features are not tied to a specific kafka-docker version (ideally all chan
 
 -	**BREAKING:** removed `KAFKA_ADVERTISED_PROTOCOL_NAME` and `KAFKA_PROTOCOL_NAME`. Use the canonical [Kafka Configuration](http://kafka.apache.org/documentation.html#brokerconfigs) instead.
 -	Support `_{HOSTNAME_COMMAND}` placeholder.
+-	**BREAKING:** Make `KAFKA_ZOOKEEPER_CONNECT` mandatory

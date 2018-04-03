@@ -16,6 +16,7 @@ The image is available directly from [Docker Hub](https://hub.docker.com/r/wurst
 ## Announcements
 
 * **03-Apr-2018** - *BREAKING* - `KAFKA_ADVERTISED_PROTOCOL_NAME` and `KAFKA_PROTOCOL_NAME` removed. Please update to canonical kafka settings.
+* **03-Apr-2018** - *BREAKING* - `KAFKA_ZOOKEEPER_CONNECT` is now a mandatory environment var.
 
 ---
 
