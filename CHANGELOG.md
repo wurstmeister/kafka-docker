@@ -3,6 +3,11 @@ Changelog
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
 
+04-Apr-2018
+-----------
+
+-	Support `_{PORT_COMMAND}` placeholder.
+
 03-Apr-2018
 -----------
 

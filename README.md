@@ -97,6 +97,20 @@ If you require the value of `HOSTNAME_COMMAND` in any of your other `KAFKA_XXX` 
 KAFKA_ADVERTISED_LISTENERS=SSL://_{HOSTNAME_COMMAND}:9093,PLAINTEXT://9092
 ```
 
+## Advertised port
+
+If the required advertised port is not static, it may be necessary to determine this programatically. This can be done with the `PORT_COMMAND` environment variable.
+
+```
+PORT_COMMAND: "docker port $$(hostname) 9092/tcp | cut -d: -f2
+```
+
+This can be then interpolated in any other `KAFKA_XXX` config using the `_{PORT_COMMAND}` string, i.e.
+
+```
+KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://1.2.3.4:_{PORT_COMMAND}
+```
+
 ## Listener Configuration
 
 It may be useful to have the [Kafka Documentation](https://kafka.apache.org/documentation/) open, to understand the various broker listener configuration options.
