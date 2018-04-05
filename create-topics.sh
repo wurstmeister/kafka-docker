@@ -41,7 +41,7 @@ IFS="${KAFKA_CREATE_TOPICS_SEPARATOR-,}"; for topicToCreate in $KAFKA_CREATE_TOP
             config="${config} --config=${topicConfig[i]}"
         fi
     done
-    COMMAND="${KAFKA_HOME}/bin/kafka-topics.sh
+    COMMAND="JMX_PORT='' ${KAFKA_HOME}/bin/kafka-topics.sh
 		--create
 		--zookeeper ${KAFKA_ZOOKEEPER_CONNECT}
 		--topic ${topicConfig[0]}
@@ -49,7 +49,7 @@ IFS="${KAFKA_CREATE_TOPICS_SEPARATOR-,}"; for topicToCreate in $KAFKA_CREATE_TOP
 		--replication-factor ${topicConfig[2]}
 		${config}
 		--if-not-exists &"
-    JMX_PORT='' eval "${COMMAND//$'\n'/}"
+    eval "${COMMAND//$'\n'/}"
 done
 
 wait
