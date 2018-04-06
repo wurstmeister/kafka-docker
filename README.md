@@ -72,7 +72,9 @@ Here is an example snippet from ```docker-compose.yml```:
 
 ```Topic 1``` will have 1 partition and 3 replicas, ```Topic 2``` will have 1 partition, 1 replica and a `cleanup.policy` set to `compact`.
 
-If you wish to use multi-line YAML or some other delimiter between your topic definitions, then can override the default `,` separator by specifying the `KAFKA_CREATE_TOPICS_SEPARATOR` variable. i.e. `"$$'\n"'` would be a newline following docker-compose escaping rules, and [ANSI-C](https://www.gnu.org/software/bash/manual/html_node/ANSI_002dC-Quoting.html) quoting.
+If you wish to use multi-line YAML or some other delimiter between your topic definitions, override the default `,` separator by specifying the `KAFKA_CREATE_TOPICS_SEPARATOR` environment variable.
+
+For example, `KAFKA_CREATE_TOPICS_SEPARATOR: "$$'\n"'` would use a newline to split the topic definitions. Syntax has to follow docker-compose escaping rules, and [ANSI-C](https://www.gnu.org/software/bash/manual/html_node/ANSI_002dC-Quoting.html) quoting.
 
 ## Advertised hostname
 

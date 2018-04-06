@@ -6,7 +6,7 @@ Kafka features are not tied to a specific kafka-docker version (ideally all chan
 TBC
 ---
 
--	Issue #208 - Add `KAFKA_CREATE_TOPICS_SEPARATOR` to allow custom input, such as multiline YAML.
+-	Issue #208 - Add `KAFKA_CREATE_TOPICS_SEPARATOR` to allow custom input, such as multi-line YAML.
 
 04-Apr-2018
 -----------
