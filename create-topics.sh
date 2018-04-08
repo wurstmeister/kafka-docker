@@ -28,7 +28,7 @@ fi
 
 # Expected format:
 #   name:partitions:replicas:cleanup.policy
-IFS=','; for topicToCreate in $KAFKA_CREATE_TOPICS; do
+IFS="${KAFKA_CREATE_TOPICS_SEPARATOR-,}"; for topicToCreate in $KAFKA_CREATE_TOPICS; do
     echo "creating topics: $topicToCreate"
     IFS=':' read -r -a topicConfig <<< "$topicToCreate"
     config=
