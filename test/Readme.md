@@ -29,7 +29,7 @@ docker-compose run --rm kafkatest <testname pattern>
 These tests require zookeeper and kafka to be running
 
 ```
-docker-compose run --rm kafkacattest <testname pattern>
+BROKER_LIST=$(./internal-broker-list.sh) docker-compose run --rm kafkacattest <testname pattern>
 ```
 
 `<testname pattern>` can be an individual filename, or a pattern such as `'test.start-kafka*.kafka.sh'`
