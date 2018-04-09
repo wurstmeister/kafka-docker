@@ -5,7 +5,7 @@ services:
     ports:
       - "2181:2181"
   kafka:
-    image: kafka:latest
+    image: wurstmeister/kafka:latest
     ports:
       - target: 9094
         published: 9094
