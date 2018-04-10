@@ -35,7 +35,15 @@ IFS="${KAFKA_CREATE_TOPICS_SEPARATOR-,}"; for topicToCreate in $KAFKA_CREATE_TOP
     if [ -n "${topicConfig[3]}" ]; then
         config="--config=cleanup.policy=${topicConfig[3]}"
     fi
-    JMX_PORT='' "$KAFKA_HOME/bin/kafka-topics.sh" --create --zookeeper "$KAFKA_ZOOKEEPER_CONNECT" --replication-factor "${topicConfig[2]}" --partitions "${topicConfig[1]}" --topic "${topicConfig[0]}" "$config" --if-not-exists &
+    COMMAND="JMX_PORT='' ${KAFKA_HOME}/bin/kafka-topics.sh \\
+		--create \\
+		--zookeeper ${KAFKA_ZOOKEEPER_CONNECT} \\
+		--topic ${topicConfig[0]} \\
+		--partitions ${topicConfig[1]} \\
+		--replication-factor ${topicConfig[2]} \\
+		${config} \\
+		--if-not-exists &"
+    eval "${COMMAND}"
 done
 
 wait

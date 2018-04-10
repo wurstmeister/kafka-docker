@@ -11,9 +11,9 @@ testCreateTopics() {
 	CLEANUP[0]=""
 
 	TOPICS[1]="compact-$NOW"
-	CLEANUP[1]="compact"
+	CLEANUP[1]="compact,compression.type=snappy"
 
-	KAFKA_CREATE_TOPICS="${TOPICS[0]}:1:1,${TOPICS[1]}:2:1:compact" create-topics.sh
+	KAFKA_CREATE_TOPICS="${TOPICS[0]}:1:1,${TOPICS[1]}:2:1:compact --config=compression.type=snappy" create-topics.sh
 
 	# Loop through each array, validate that topic exists, and correct cleanup policy is set
 	for i in "${!TOPICS[@]}"; do
