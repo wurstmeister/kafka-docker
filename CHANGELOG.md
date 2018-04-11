@@ -3,6 +3,11 @@ Changelog
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
 
+11-Apr-2018
+-----------
+
+-	Issue #313 - Fix parsing of environment value substitution when spaces included.
+
 08-Apr-2018
 -----------
 

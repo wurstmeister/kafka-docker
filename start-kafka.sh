@@ -40,6 +40,10 @@ if [[ -n "$KAFKA_HEAP_OPTS" ]]; then
     unset KAFKA_HEAP_OPTS
 fi
 
+# (#313) Make sure `env` is evaluated as separate entries
+ORIG_IFS=$IFS
+IFS=$'\n'
+
 if [[ -n "$HOSTNAME_COMMAND" ]]; then
     HOSTNAME_VALUE=$(eval "$HOSTNAME_COMMAND")
 
@@ -60,6 +64,8 @@ if [[ -n "$PORT_COMMAND" ]]; then
         fi
     done
 fi
+
+IFS=$ORIG_IFS
 
 if [[ -n "$RACK_COMMAND" && -z "$KAFKA_BROKER_RACK" ]]; then
     KAFKA_BROKER_RACK=$(eval "$RACK_COMMAND")
@@ -85,7 +91,8 @@ fi
 #Issue newline to config file in case there is not one already
 echo "" >> "$KAFKA_HOME/config/server.properties"
 
-for VAR in $(env)
+# Read in env as a new-line separated array. This handles the case of env variables have spaces and/or carriage returns. See #313
+IFS=$'\n'; for VAR in $(env)
 do
   if [[ $VAR =~ ^KAFKA_ && ! $VAR =~ ^KAFKA_HOME ]]; then
     kafka_name=$(echo "$VAR" | sed -r 's/KAFKA_(.*)=.*/\1/g' | tr '[:upper:]' '[:lower:]' | tr _ .)
@@ -107,6 +114,7 @@ do
     fi
   fi
 done
+IFS=$ORIG_IFS
 
 if [[ -n "$CUSTOM_INIT_SCRIPT" ]] ; then
   eval "$CUSTOM_INIT_SCRIPT"
