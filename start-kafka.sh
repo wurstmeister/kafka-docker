@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+# Store original IFS config, so we can restore it at various stages
+ORIG_IFS=$IFS
+
 if [[ -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
     echo "ERROR: missing mandatory config: KAFKA_ZOOKEEPER_CONNECT"
     exit 1
@@ -44,21 +47,26 @@ if [[ -n "$HOSTNAME_COMMAND" ]]; then
     HOSTNAME_VALUE=$(eval "$HOSTNAME_COMMAND")
 
     # Replace any occurences of _{HOSTNAME_COMMAND} with the value
+    IFS=$'\n'
     for VAR in $(env); do
         if [[ $VAR =~ ^KAFKA_ && "$VAR" =~ "_{HOSTNAME_COMMAND}" ]]; then
             eval "export ${VAR//_\{HOSTNAME_COMMAND\}/$HOSTNAME_VALUE}"
         fi
     done
+    IFS=$ORIG_IFS
 fi
 
 if [[ -n "$PORT_COMMAND" ]]; then
     PORT_VALUE=$(eval "$PORT_COMMAND")
+
     # Replace any occurences of _{PORT_COMMAND} with the value
+    IFS=$'\n'
     for VAR in $(env); do
         if [[ $VAR =~ ^KAFKA_ && "$VAR" =~ "_{PORT_COMMAND}" ]]; then
 	    eval "export ${VAR//_\{PORT_COMMAND\}/$PORT_VALUE}"
         fi
     done
+    IFS=$ORIG_IFS
 fi
 
 if [[ -n "$RACK_COMMAND" && -z "$KAFKA_BROKER_RACK" ]]; then
@@ -85,28 +93,32 @@ fi
 #Issue newline to config file in case there is not one already
 echo "" >> "$KAFKA_HOME/config/server.properties"
 
-for VAR in $(env)
-do
-  if [[ $VAR =~ ^KAFKA_ && ! $VAR =~ ^KAFKA_HOME ]]; then
-    kafka_name=$(echo "$VAR" | sed -r 's/KAFKA_(.*)=.*/\1/g' | tr '[:upper:]' '[:lower:]' | tr _ .)
-    env_var=$(echo "$VAR" | sed -r 's/(.*)=.*/\1/g')
-    if grep -E -q '(^|^#)'"$kafka_name=" "$KAFKA_HOME/config/server.properties"; then
-        sed -r -i 's@(^|^#)('"$kafka_name"')=(.*)@\2='"${!env_var}"'@g' "$KAFKA_HOME/config/server.properties" #note that no config values may contain an '@' char
-    else
-        echo "$kafka_name=${!env_var}" >> "$KAFKA_HOME/config/server.properties"
-    fi
-  fi
+(
+    # Read in env as a new-line separated array. This handles the case of env variables have spaces and/or carriage returns. See #313
+    IFS=$'\n'
+    for VAR in $(env)
+    do
+      if [[ $VAR =~ ^KAFKA_ && ! $VAR =~ ^KAFKA_HOME ]]; then
+        kafka_name=$(echo "$VAR" | sed -r 's/KAFKA_(.*)=.*/\1/g' | tr '[:upper:]' '[:lower:]' | tr _ .)
+        env_var=$(echo "$VAR" | sed -r 's/(.*)=.*/\1/g')
+        if grep -E -q '(^|^#)'"$kafka_name=" "$KAFKA_HOME/config/server.properties"; then
+            sed -r -i 's@(^|^#)('"$kafka_name"')=(.*)@\2='"${!env_var}"'@g' "$KAFKA_HOME/config/server.properties" #note that no config values may contain an '@' char
+        else
+            echo "$kafka_name=${!env_var}" >> "$KAFKA_HOME/config/server.properties"
+        fi
+      fi
 
-  if [[ $VAR =~ ^LOG4J_ ]]; then
-    log4j_name=$(echo "$VAR" | sed -r 's/(LOG4J_.*)=.*/\1/g' | tr '[:upper:]' '[:lower:]' | tr _ .)
-    log4j_env=$(echo "$VAR" | sed -r 's/(.*)=.*/\1/g')
-    if grep -E -q '(^|^#)'"$log4j_name=" "$KAFKA_HOME/config/log4j.properties"; then
-        sed -r -i 's@(^|^#)('"$log4j_name"')=(.*)@\2='"${!log4j_env}"'@g' "$KAFKA_HOME/config/log4j.properties" #note that no config values may contain an '@' char
-    else
-        echo "$log4j_name=${!log4j_env}" >> "$KAFKA_HOME/config/log4j.properties"
-    fi
-  fi
-done
+      if [[ $VAR =~ ^LOG4J_ ]]; then
+        log4j_name=$(echo "$VAR" | sed -r 's/(LOG4J_.*)=.*/\1/g' | tr '[:upper:]' '[:lower:]' | tr _ .)
+        log4j_env=$(echo "$VAR" | sed -r 's/(.*)=.*/\1/g')
+        if grep -E -q '(^|^#)'"$log4j_name=" "$KAFKA_HOME/config/log4j.properties"; then
+            sed -r -i 's@(^|^#)('"$log4j_name"')=(.*)@\2='"${!log4j_env}"'@g' "$KAFKA_HOME/config/log4j.properties" #note that no config values may contain an '@' char
+        else
+            echo "$log4j_name=${!log4j_env}" >> "$KAFKA_HOME/config/log4j.properties"
+        fi
+      fi
+    done
+)
 
 if [[ -n "$CUSTOM_INIT_SCRIPT" ]] ; then
   eval "$CUSTOM_INIT_SCRIPT"
