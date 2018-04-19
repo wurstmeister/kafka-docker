@@ -23,6 +23,9 @@ script:
   - shellcheck -x -e SC1090 -s bash *sh
   - sleep 5 # Wait for containers to start
   - ./runAllTests.sh
+  # End-to-End scenario tests
+  - cd scenarios
+  - ./runJmxScenario.sh
 
 after_script:
   - docker-compose stop

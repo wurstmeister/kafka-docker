@@ -1,0 +1,9 @@
+---
+startDelaySeconds: 3
+hostPort: kafka:1099
+username:
+password:
+
+whitelistObjectNames: ["kafka.server:type=BrokerTopicMetrics,*"]
+rules:
+  - pattern: ".*"
