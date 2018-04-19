@@ -3,6 +3,11 @@ Changelog
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
 
+19-Apr-2018
+-----------
+
+-	Issue #310 - Only return Apache download mirrors that can supply required kafka/scala version
+
 11-Apr-2018
 -----------
 
