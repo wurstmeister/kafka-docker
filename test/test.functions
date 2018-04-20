@@ -5,6 +5,7 @@
 
 export START_KAFKA=/usr/bin/start-kafka.sh
 export BROKER_CONFIG=/opt/kafka/config/server.properties
+export ORIG_LOG4J_CONFIG=/opt/kafka/config/log4j.properties
 
 enforceOriginalFile() {
 	SOURCE="$1"
@@ -24,6 +25,7 @@ setupStartKafkaScript() {
 
 	enforceOriginalFile "$START_KAFKA"
 	enforceOriginalFile "$BROKER_CONFIG"
+	enforceOriginalFile "$ORIG_LOG4J_CONFIG"
 
 	# We need to remove all executable commands from the start-kafka.sh script, so it can be sourced to evaluate
 	# the environment variables
@@ -43,11 +45,22 @@ setupStartKafkaScript
 assertExpectedConfig() {
 	EXPECTED=$1
 
+	COUNT=$(grep -E '^'"$EXPECTED"'$' "$BROKER_CONFIG" | wc -l)
 	RESULT=$(grep -E '^'"$EXPECTED"'$' "$BROKER_CONFIG")
+	echo " > $COUNT matches of $RESULT"
+
+	[[ "$RESULT" == "$EXPECTED" && "$COUNT" == "1" ]]
+}
+
+assertExpectedLog4jConfig() {
+	EXPECTED=$1
+
+	RESULT=$(grep -E '^'"$EXPECTED"'$' "$ORIG_LOG4J_CONFIG")
 	echo " > $RESULT"
 
 	[[ "$RESULT" == "$EXPECTED" ]]
 }
+
 
 assertAbsent() {
 	EXPECTED_ABSENT=$1

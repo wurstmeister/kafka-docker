@@ -94,29 +94,45 @@ fi
 echo "" >> "$KAFKA_HOME/config/server.properties"
 
 (
+    function updateConfig() {
+        key=$1
+        value=$2
+        file=$3
+
+        # Omit $value here, in case there is sensitive information
+        echo "[Configuring] '$key' in '$file'"
+
+        # If config exists in file, replace it. Otherwise, append to file.
+        if grep -E -q "^#?$key=" "$file"; then
+            sed -r -i "s@^#?$key=.*@$key=$value@g" "$file" #note that no config values may contain an '@' char
+        else
+            echo "$key=$value" >> "$file"
+        fi
+    }
+
+    # Fixes #312
+    # KAFKA_VERSION + KAFKA_HOME + grep -rohe KAFKA[A-Z0-0_]* /opt/kafka/bin | sort | uniq | tr '\n' '|'
+    EXCLUSIONS="|KAFKA_VERSION|KAFKA_HOME|KAFKA_DEBUG|KAFKA_GC_LOG_OPTS|KAFKA_HEAP_OPTS|KAFKA_JMX_OPTS|KAFKA_JVM_PERFORMANCE_OPTS|KAFKA_LOG|KAFKA_OPTS|"
+
     # Read in env as a new-line separated array. This handles the case of env variables have spaces and/or carriage returns. See #313
     IFS=$'\n'
     for VAR in $(env)
     do
-      if [[ $VAR =~ ^KAFKA_ && ! $VAR =~ ^KAFKA_HOME ]]; then
-        kafka_name=$(echo "$VAR" | sed -r 's/KAFKA_([^=]*)=.*/\1/g' | tr '[:upper:]' '[:lower:]' | tr _ .)
-        kafka_env=$(echo "$VAR" | sed -r 's/([^=]*)=.*/\1/g')
-        if grep -E -q '(^|^#)'"$kafka_name=" "$KAFKA_HOME/config/server.properties"; then
-            sed -r -i 's@(^|^#)('"$kafka_name"')=(.*)@\2='"${!kafka_env}"'@g' "$KAFKA_HOME/config/server.properties" #note that no config values may contain an '@' char
-        else
-            echo "$kafka_name=${!kafka_env}" >> "$KAFKA_HOME/config/server.properties"
+        env_var=$(echo "$VAR" | cut -d= -f1)
+        if [[ "$EXCLUSIONS" = *"|$env_var|"* ]]; then
+            echo "Excluding $env_var from broker config"
+            continue
         fi
-      fi
 
-      if [[ $VAR =~ ^LOG4J_ ]]; then
-        log4j_name=$(echo "$VAR" | sed -r 's/(LOG4J_[^=]*)=.*/\1/g' | tr '[:upper:]' '[:lower:]' | tr _ .)
-        log4j_env=$(echo "$VAR" | sed -r 's/([^=]*)=.*/\1/g')
-        if grep -E -q '(^|^#)'"$log4j_name=" "$KAFKA_HOME/config/log4j.properties"; then
-            sed -r -i 's@(^|^#)('"$log4j_name"')=(.*)@\2='"${!log4j_env}"'@g' "$KAFKA_HOME/config/log4j.properties" #note that no config values may contain an '@' char
-        else
-            echo "$log4j_name=${!log4j_env}" >> "$KAFKA_HOME/config/log4j.properties"
+        if [[ $env_var =~ ^KAFKA_ ]]; then
+            kafka_name=$(echo "$env_var" | cut -d_ -f2- | tr '[:upper:]' '[:lower:]' | tr _ .)
+            updateConfig "$kafka_name" "${!env_var}" "$KAFKA_HOME/config/server.properties"
         fi
-      fi
+
+        if [[ $env_var =~ ^LOG4J_ ]]; then
+            log4j_name=$(echo "$env_var" | tr '[:upper:]' '[:lower:]' | tr _ .)
+            updateConfig "$log4j_name" "${!env_var}" "$KAFKA_HOME/config/log4j.properties"
+        fi
     done
 )
 

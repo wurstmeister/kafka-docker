@@ -3,6 +3,11 @@ Changelog
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
 
+20-Apr-2018
+-----------
+
+-	Issue #312 - Fix conflict between KAFKA_xxx broker config values (e.g. KAFKA_JMX_OPTS) and container configuration options (e.g. KAFKA_CREATE_TOPICS)
+
 19-Apr-2018
 -----------
 

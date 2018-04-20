@@ -1,0 +1,41 @@
+version: '2'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181"
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092"
+      - "1099"
+    environment:
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka -Dcom.sun.management.jmxremote.rmi.port=1099"
+      JMX_PORT: 1099
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  jmxexporter:
+    image: sscaling/jmx-prometheus-exporter
+    ports:
+      - "5556:5556"
+    environment:
+      SERVICE_PORT: 5556
+    volumes:
+      - $PWD/jmxexporter.yml:/opt/jmx_exporter/config.yml
+
+  test:
+    image: wurstmeister/kafka
+    environment:
+      KAFKA_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - .:/scenario
+    working_dir: /scenario
+    entrypoint:
+      - /bin/bash
+      - -c
+    command:
+      - /scenario/test.sh
+
