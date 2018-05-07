@@ -9,7 +9,10 @@ services:
     ports:
       - "9092"
     environment:
-      KAFKA_LISTENERS: PLAINTEXT://:9092
+      HOSTNAME_COMMAND: "echo $$(hostname)"
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_PORT: 9092
+      BROKER_ID_COMMAND: "docker inspect --format '{{ .Name }}' $$(hostname) | awk -F_ '{ printf $$NF }'"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -31,13 +34,12 @@ services:
   kafkacattest:
     image: confluentinc/cp-kafkacat
     environment:
-      BROKER_LIST: ${BROKER_LIST}
+       - BROKER_LIST
+       - KAFKA_VERSION=${KAFKA_VERSION-1.1.0}
     volumes:
       - .:/tests
     working_dir: /tests
     entrypoint:
       - ./runTestPattern.sh
     command:
-      - -v
-      - ${KAFKA_VERSION-1.1.0}
       - "*/*.kafkacat.sh"

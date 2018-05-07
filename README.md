@@ -11,10 +11,25 @@ Dockerfile for [Apache Kafka](http://kafka.apache.org/)
 
 The image is available directly from [Docker Hub](https://hub.docker.com/r/wurstmeister/kafka/)
 
+Tags and releases
+-----------------
+
+All versions of the image are built from the same set of scripts with only minor variations (i.e. certain features are not supported on older versions). The version format mirrors the Kafka format, `<scala version>-<kafka version>`. Initially, all images are built with the recommended version of scala documented on [http://kafka.apache.org/downloads](http://kafka.apache.org/downloads). Available tags are:
+
+- `2.11-1.1.0`
+- `2.11-1.0.1`
+- `2.11-0.11.0.2`
+- `2.11-0.10.2.1`
+- `2.11-0.9.0.1`
+- `2.10-0.8.2.2`
+
+Everytime the image is updated, all tags will be pushed with the latest updates. This should allow for greater consistency across tags, as well as any security updates that have been made to the base image.
+
 ---
 
 ## Announcements
 
+* **28-May-2018** - New docker image tag format - see Readme.
 * **03-Apr-2018** - *BREAKING* - `KAFKA_ADVERTISED_PROTOCOL_NAME` and `KAFKA_PROTOCOL_NAME` removed. Please update to canonical kafka settings.
 * **03-Apr-2018** - *BREAKING* - `KAFKA_ZOOKEEPER_CONNECT` is now a mandatory environment var.
 
