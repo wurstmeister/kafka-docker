@@ -29,7 +29,8 @@ docker-compose run --rm kafkatest <testname pattern>
 These tests require zookeeper and kafka to be running
 
 ```
-BROKER_LIST=$(./internal-broker-list.sh) docker-compose run --rm kafkacattest <testname pattern>
+BROKER_LIST=$(./internal-broker-list.sh) [KAFKA_VERSION=<version>] docker-compose run --rm kafkacattest <testname pattern>
 ```
 
-`<testname pattern>` can be an individual filename, or a pattern such as `'test.start-kafka*.kafka.sh'`
+-	`<version>` is the kafka version that the tests are targeting. Normally this environment variable should not need to be specified. The default should be the latest image version. Added for CI support.
+-	`<testname pattern>` can be an individual filename, or a pattern such as `'0.0/test.start-kafka*.kafka.sh'`

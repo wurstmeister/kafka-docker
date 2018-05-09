@@ -4,9 +4,7 @@ source test.functions
 
 testLog4jConfig() {
 	# Given Log4j overrides are provided
-	export KAFKA_LISTENERS=PLAINTEXT://:9092
-	export KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-
+	export KAFKA_ADVERTISED_HOST_NAME="testhost"
 	export LOG4J_LOGGER_KAFKA=DEBUG
 
 	# When the script is invoked
