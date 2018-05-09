@@ -4,8 +4,7 @@ source test.functions
 
 testKafkaOpts() {
     # Given required settings are provided
-    export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://:9092"
-    export KAFKA_LISTENERS="PLAINTEXT://:9092"
+    export KAFKA_ADVERTISED_HOST_NAME="testhost"
     # .. and a CUSTOM_INIT_SCRIPT with spaces
     export CUSTOM_INIT_SCRIPT="export KAFKA_OPTS=-Djava.security.auth.login.config=/kafka_server_jaas.conf"
 

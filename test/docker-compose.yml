@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
   zookeeper:
     image: wurstmeister/zookeeper
@@ -26,7 +26,7 @@ services:
     entrypoint:
       - ./runTestPattern.sh
     command:
-      - "*.kafka.sh"
+      - "*/*.kafka.sh"
 
   kafkacattest:
     image: confluentinc/cp-kafkacat
@@ -38,4 +38,6 @@ services:
     entrypoint:
       - ./runTestPattern.sh
     command:
-      - "*.kafkacat.sh"
+      - -v
+      - ${KAFKA_VERSION-1.1.0}
+      - "*/*.kafkacat.sh"
