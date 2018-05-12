@@ -1,5 +1,12 @@
 #!/bin/bash -e
 
+# Allow specific kafka versions to perform any unique bootstrap operations
+OVERRIDE_FILE="/opt/overrides/${KAFKA_VERSION}.sh"
+if [[ -x "$OVERRIDE_FILE" ]]; then
+    echo "Executing override file $OVERRIDE_FILE"
+    eval "$OVERRIDE_FILE"
+fi
+
 # Store original IFS config, so we can restore it at various stages
 ORIG_IFS=$IFS
 
