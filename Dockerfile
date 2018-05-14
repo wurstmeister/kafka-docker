@@ -28,6 +28,8 @@ RUN apk add --no-cache bash curl jq docker \
  && apk add --no-cache --allow-untrusted glibc-${GLIBC_VERSION}.apk \
  && rm glibc-${GLIBC_VERSION}.apk
 
+COPY overrides /opt/overrides
+
 VOLUME ["/kafka"]
 
 # Use "exec" form so that it runs as PID 1 (useful for graceful shutdown)
