@@ -21,6 +21,7 @@ fi
 
 create-topics.sh &
 unset KAFKA_CREATE_TOPICS
+unset KAFKA_CONFIGS
 
 # DEPRECATED: but maintained for compatibility with older brokers pre 0.9.0 (https://issues.apache.org/jira/browse/KAFKA-1809)
 if [[ -z "$KAFKA_ADVERTISED_PORT" && \

@@ -76,6 +76,13 @@ If you wish to use multi-line YAML or some other delimiter between your topic de
 
 For example, `KAFKA_CREATE_TOPICS_SEPARATOR: "$$'\n"'` would use a newline to split the topic definitions. Syntax has to follow docker-compose escaping rules, and [ANSI-C](https://www.gnu.org/software/bash/manual/html_node/ANSI_002dC-Quoting.html) quoting.
 
+Another environment variable can be added to perform further configuration changes: ```KAFKA_CONFIGS```. For example:
+
+    environment:
+      - KAFKA_CONFIGS=topics:Topic1:add:retention.ms=604800000 cleanup.policy=delete segment.bytes=1024
+
+The format for this variable mirrors the ```kafka-configs.sh``` script. For multi-line YAML a separate delimiter variable ```KAFKA_CREATE_TOPICS_SEPARATOR``` is available.
+
 ## Advertised hostname
 
 You can configure the advertised hostname in different ways
