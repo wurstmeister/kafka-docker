@@ -19,7 +19,7 @@ if [[ -z "$KAFKA_PORT" ]]; then
     export KAFKA_PORT=9092
 fi
 
-configs.sh &
+create-topics.sh &
 unset KAFKA_CREATE_TOPICS
 unset KAFKA_CONFIGS
 
