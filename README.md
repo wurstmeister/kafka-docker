@@ -16,14 +16,14 @@ The image is available directly from [Docker Hub](https://hub.docker.com/r/wurst
 ## Announcements
 
 * **03-Apr-2018** - *BREAKING* - `KAFKA_ADVERTISED_PROTOCOL_NAME` and `KAFKA_PROTOCOL_NAME` removed. Please update to canonical kafka settings.
-* **03-Apr-2018** - *BREAKING* - `KAFKA_ZOOKEEPER_CONNECT` is now a mandatory environment var (see examples).
+* **03-Apr-2018** - *BREAKING* - `KAFKA_ZOOKEEPER_CONNECT` is now a mandatory environment var.
 
 ---
 
 ## Pre-Requisites
 
 - install docker-compose [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
-- modify the ```KAFKA_ADVERTISED_HOST_NAME``` in ```docker-compose.yml``` to match your docker host IP (Note: Do not use localhost or 127.0.0.1 as the host ip if you want to run multiple brokers.)
+- modify the ```KAFKA_ADVERTISED_HOST_NAME``` in [docker-compose.yml](https://raw.githubusercontent.com/wurstmeister/kafka-docker/master/docker-compose.yml) to match your docker host IP (Note: Do not use localhost or 127.0.0.1 as the host ip if you want to run multiple brokers.)
 - if you want to customize any Kafka parameters, simply add them as environment variables in ```docker-compose.yml```, e.g. in order to increase the ```message.max.bytes``` parameter set the environment to ```KAFKA_MESSAGE_MAX_BYTES: 2000000```. To turn off automatic topic creation set ```KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'```
 - Kafka's log4j usage can be customized by adding environment variables prefixed with ```LOG4J_```. These will be mapped to ```log4j.properties```. For example: ```LOG4J_LOGGER_KAFKA_AUTHORIZER_LOGGER=DEBUG, authorizerAppender```
 
@@ -48,15 +48,6 @@ Destroy a cluster:
 The default ```docker-compose.yml``` should be seen as a starting point. By default each broker will get a new port number and broker id on restart. Depending on your use case this might not be desirable. If you need to use specific ports and broker ids, modify the docker-compose configuration accordingly, e.g. [docker-compose-single-broker.yml](https://github.com/wurstmeister/kafka-docker/blob/master/docker-compose-single-broker.yml):
 
 - ```docker-compose -f docker-compose-single-broker.yml up```
-
-## Examples
-
-To see how different parameters and environment vars are set please refer to various docker-compose*.yml files on github:
-* https://github.com/wurstmeister/kafka-docker/blob/master/docker-compose-single-broker.yml
-* https://github.com/wurstmeister/kafka-docker/blob/master/docker-compose-swarm.yml
-* https://github.com/wurstmeister/kafka-docker/blob/master/docker-compose.yml
-* https://github.com/wurstmeister/kafka-docker/blob/master/test/docker-compose.yml
-* https://github.com/wurstmeister/kafka-docker/blob/master/test/scenarios/jmx/docker-compose.yml
 
 ## Broker IDs
 
