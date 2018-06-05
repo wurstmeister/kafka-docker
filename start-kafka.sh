@@ -50,31 +50,19 @@ if [[ -n "$KAFKA_HEAP_OPTS" ]]; then
     unset KAFKA_HEAP_OPTS
 fi
 
-if [[ -n "$HOSTNAME_COMMAND" ]]; then
-    HOSTNAME_VALUE=$(eval "$HOSTNAME_COMMAND")
-
-    # Replace any occurences of _{HOSTNAME_COMMAND} with the value
-    IFS=$'\n'
-    for VAR in $(env); do
-        if [[ $VAR =~ ^KAFKA_ && "$VAR" =~ "_{HOSTNAME_COMMAND}" ]]; then
-            eval "export ${VAR//_\{HOSTNAME_COMMAND\}/$HOSTNAME_VALUE}"
-        fi
-    done
-    IFS=$ORIG_IFS
-fi
-
-if [[ -n "$PORT_COMMAND" ]]; then
-    PORT_VALUE=$(eval "$PORT_COMMAND")
-
-    # Replace any occurences of _{PORT_COMMAND} with the value
-    IFS=$'\n'
-    for VAR in $(env); do
-        if [[ $VAR =~ ^KAFKA_ && "$VAR" =~ "_{PORT_COMMAND}" ]]; then
-	    eval "export ${VAR//_\{PORT_COMMAND\}/$PORT_VALUE}"
-        fi
-    done
-    IFS=$ORIG_IFS
-fi
+IFS=$'\n'
+for COMMAND in $(env); do
+    if [[ $COMMAND =~ _COMMAND= ]]; then
+        COMMAND_KEY=${COMMAND%=*}
+        COMMAND_VALUE=$(eval "${COMMAND#*=}")
+        for VAR in $(env); do
+            if [[ $VAR =~ ^KAFKA_ && "$VAR" =~ "_{$COMMAND_KEY}" ]]; then
+                eval "export ${VAR//_\{$COMMAND_KEY\}/$COMMAND_VALUE}"
+            fi
+        done
+    fi
+done
+IFS=$ORIG_IFS
 
 if [[ -n "$RACK_COMMAND" && -z "$KAFKA_BROKER_RACK" ]]; then
     KAFKA_BROKER_RACK=$(eval "$RACK_COMMAND")
