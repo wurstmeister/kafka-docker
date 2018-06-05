@@ -56,7 +56,7 @@ for COMMAND in $(env); do
         COMMAND_KEY=${COMMAND%=*}
         COMMAND_VALUE=$(eval "${COMMAND#*=}")
         for VAR in $(env); do
-            if [[ $VAR =~ ^KAFKA_ && "$VAR" =~ "_{$COMMAND_KEY}" ]]; then
+            if [[ $VAR =~ ^KAFKA_ && "$VAR" =~ _{$COMMAND_KEY} ]]; then
                 eval "export ${VAR//_\{$COMMAND_KEY\}/$COMMAND_VALUE}"
             fi
         done
