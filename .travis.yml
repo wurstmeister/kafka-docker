@@ -65,6 +65,7 @@ script:
   # End-to-End scenario tests
   - cd scenarios
   - ./runJmxScenario.sh
+  - cd $TRAVIS_BUILD_DIR
 
 after_script:
   - docker-compose stop
