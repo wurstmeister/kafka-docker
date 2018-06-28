@@ -1,0 +1,37 @@
+#!/bin/bash -e
+
+# Modified from https://stackoverflow.com/a/4025065
+compareVersion() {
+    # Only care about major / minor
+    LEFT=$(echo "$1" | cut -d. -f1-2)
+    RIGHT=$(echo "$2" | cut -d. -f1-2)
+    if [[ "$LEFT" != "$RIGHT" ]]
+    then
+        local IFS=.
+        local i ver1=($LEFT) ver2=($RIGHT)
+        for ((i=0; i<${#ver1[@]}; i++))
+        do
+            if (( "${ver1[i]}" > "${ver2[i]}" ))
+            then
+                echo ">"
+                return
+            fi
+            if (( "${ver1[i]}" < "${ver2[i]}" ))
+            then
+                echo "<"
+                return
+            fi
+        done
+    fi
+    echo "="
+}
+
+# https://github.com/edenhill/librdkafka/wiki/Broker-version-compatibility
+# To support different broker versions, we need to configure kafkacat differently
+VERSION_8=$(compareVersion "$KAFKA_VERSION" "0.8")
+VERSION_9=$(compareVersion "$KAFKA_VERSION" "0.9")
+
+if [[ "$VERSION_8" == "=" || "$VERSION_9" == "=" ]]; then
+	export KAFKACAT_OPTS="-Xapi.version.request=false -Xbroker.version.fallback=$KAFKA_VERSION"
+	echo "[INFO] Using kafkacat opts on older version '$KAFKACAT_OPTS'"
+fi
