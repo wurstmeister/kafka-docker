@@ -3,6 +3,12 @@ Changelog
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
 
+29-Jun-2018
+-----------
+
+-	**MAJOR:** Use new docker image labelling (`<scala-version>-<kafka-version>`) and use travis to publish images.
+-	Update base image to openjdk:8u171-jre-alpine
+
 20-Apr-2018
 -----------
 
