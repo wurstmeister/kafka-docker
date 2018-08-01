@@ -1,0 +1,11 @@
+image: scrapinghub
+
+script:
+  - "true"
+
+publish:
+  docker:
+    docker_host: $DOCKER_HOST
+    image_name: i.scrapinghub.com/kafka/$CI_BRANCH
+    keep_build: true
+
