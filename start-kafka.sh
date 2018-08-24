@@ -99,10 +99,6 @@ fi
 #Issue newline to config file in case there is not one already
 echo "" >> "$KAFKA_HOME/config/server.properties"
 
-if [ "$KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR" != "" ]; then
-    sed -i "s#offsets.topic.replication.factor=1#offsets.topic.replication.factor=$KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR#g" $KAFKA_HOME/config/server.properties
-fi
-
 (
     function updateConfig() {
         key=$1
