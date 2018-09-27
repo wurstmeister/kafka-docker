@@ -34,13 +34,13 @@ if [[ "$MAJOR_VERSION" == "0" && "$MINOR_VERSION" -gt "9" ]] || [[ "$MAJOR_VERSI
 fi
 
 # Expected format:
-#   name:partitions:replicas:cleanup.policy
+#   name:partitions:replicas[:extra parameters] e.g topic:1:1:--config=cleanup.policy=delete --config=retention.ms=-1
 IFS="${KAFKA_CREATE_TOPICS_SEPARATOR-,}"; for topicToCreate in $KAFKA_CREATE_TOPICS; do
     echo "creating topics: $topicToCreate"
     IFS=':' read -r -a topicConfig <<< "$topicToCreate"
-    config=
+    extraParams=
     if [ -n "${topicConfig[3]}" ]; then
-        config="--config=cleanup.policy=${topicConfig[3]}"
+        extraParams="${topicConfig[3]}"
     fi
 
     COMMAND="JMX_PORT='' ${KAFKA_HOME}/bin/kafka-topics.sh \\
@@ -49,7 +49,7 @@ IFS="${KAFKA_CREATE_TOPICS_SEPARATOR-,}"; for topicToCreate in $KAFKA_CREATE_TOP
 		--topic ${topicConfig[0]} \\
 		--partitions ${topicConfig[1]} \\
 		--replication-factor ${topicConfig[2]} \\
-		${config} \\
+		${extraParams} \\
 		${KAFKA_0_10_OPTS} &"
     eval "${COMMAND}"
 done
