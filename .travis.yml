@@ -48,6 +48,7 @@ script:
   - cd test
   # Shellcheck the tests
   - shellcheck -x -e SC1090 -s bash *.sh **/*.sh
+  - ./verifyImageLabels.sh # Verify docker image's label
   - sleep 5 # Wait for containers to start
   - docker ps -a
   - ./runAllTests.sh
