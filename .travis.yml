@@ -35,7 +35,7 @@ install:
   - echo "SCALA VERSION  $TRAVIS_SCALA_VERSION"
   - echo "LATEST VERSION $LATEST"
   - export CURRENT=${TRAVIS_SCALA_VERSION}-${KAFKA_VERSION}
-  - docker build --build-arg kafka_version=$KAFKA_VERSION --build-arg scala_version=$TRAVIS_SCALA_VERSION --build-arg vcs_ref=$TRAVIS_COMMIT --build-arg build_date='date -u +"%Y-%m-%dT%H:%M:%SZ"' -t wurstmeister/kafka .
+  - docker build --build-arg kafka_version=$KAFKA_VERSION --build-arg scala_version=$TRAVIS_SCALA_VERSION --build-arg vcs_ref=$TRAVIS_COMMIT --build-arg build_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ") -t wurstmeister/kafka .
   - docker pull confluentinc/cp-kafkacat
 
 before_script:
