@@ -6,7 +6,7 @@ if [ -z "$VCS_REF" ] || [ "$VCS_REF" = "unspecified" ]; then
   echo "org.label-schema.vcs-ref is empty or unspecified"
   exit 1
 fi
-if ! git cat-file -e "$VCS_REF"^{commit}; then
+if ! git cat-file -e "$VCS_REF^{commit}"; then
   echo "$VCS_REF Not a valid git commit"
   exit 1
 fi
