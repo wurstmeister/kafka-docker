@@ -129,6 +129,13 @@ echo "" >> "$KAFKA_HOME/config/server.properties"
             echo "Excluding $env_var from broker config"
             continue
         fi
+        #add the file extension
+	if [[ $env_var == KAFKA_*_FILE ]]; then
+            #kafka_name=$(echo "$env_var" | cut -d_ -f2- | tr '[:upper:]' '[:lower:]' | tr _ .)
+	    kafka_name=$(echo "$env_var" | cut -d_ -f2- | tr '[:upper:]' '[:lower:]' | tr _ . | rev | cut -c6- | rev)
+	    echo $kafka_name=$(cat $env_var) >> $KAFKA_HOME/config/server.properties
+            #updateConfig "$kafka_name" "${!env_var}" "$KAFKA_HOME/config/server.properties"
+        fi
 
         if [[ $env_var =~ ^KAFKA_ ]]; then
             kafka_name=$(echo "$env_var" | cut -d_ -f2- | tr '[:upper:]' '[:lower:]' | tr _ .)
