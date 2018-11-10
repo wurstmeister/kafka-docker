@@ -30,6 +30,7 @@ Everytime the image is updated, all tags will be pushed with the latest updates.
 
 ## Announcements
 
+* **11-Nov-2018** - Update base image to openjdk 181 ([Release notes](https://www.oracle.com/technetwork/java/javase/8u181-relnotes-4479407.html)). Please force pull to get these latest updates - including security patches etc.
 * **28-May-2018** - New docker image tag format - see Readme.
 
 ---
@@ -84,7 +85,7 @@ Here is an example snippet from ```docker-compose.yml```:
         environment:
           KAFKA_CREATE_TOPICS: "Topic1:1:3,Topic2:1:1:compact"
 
-```Topic 1``` will have 1 partition and 3 replicas, ```Topic 2``` will have 1 partition, 1 replica and a `cleanup.policy` set to `compact`. Also, [Topic compaction does not work](https://github.com/wurstmeister/kafka-docker/wiki#topic-compaction-does-not-work)
+```Topic 1``` will have 1 partition and 3 replicas, ```Topic 2``` will have 1 partition, 1 replica and a `cleanup.policy` set to `compact`. Also, see FAQ: [Topic compaction does not work](https://github.com/wurstmeister/kafka-docker/wiki#topic-compaction-does-not-work)
 
 If you wish to use multi-line YAML or some other delimiter between your topic definitions, override the default `,` separator by specifying the `KAFKA_CREATE_TOPICS_SEPARATOR` environment variable.
 
