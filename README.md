@@ -16,7 +16,7 @@ Tags and releases
 
 All versions of the image are built from the same set of scripts with only minor variations (i.e. certain features are not supported on older versions). The version format mirrors the Kafka format, `<scala version>-<kafka version>`. Initially, all images are built with the recommended version of scala documented on [http://kafka.apache.org/downloads](http://kafka.apache.org/downloads). Available tags are:
 
-- `2.11-2.0.0`
+- `2.11-2.0.1`
 - `2.11-1.1.1`
 - `2.11-1.0.2`
 - `2.11-0.11.0.3`
@@ -31,8 +31,6 @@ Everytime the image is updated, all tags will be pushed with the latest updates.
 ## Announcements
 
 * **28-May-2018** - New docker image tag format - see Readme.
-* **03-Apr-2018** - *BREAKING* - `KAFKA_ADVERTISED_PROTOCOL_NAME` and `KAFKA_PROTOCOL_NAME` removed. Please update to canonical kafka settings.
-* **03-Apr-2018** - *BREAKING* - `KAFKA_ZOOKEEPER_CONNECT` is now a mandatory environment var.
 
 ---
 
@@ -86,7 +84,7 @@ Here is an example snippet from ```docker-compose.yml```:
         environment:
           KAFKA_CREATE_TOPICS: "Topic1:1:3,Topic2:1:1:compact"
 
-```Topic 1``` will have 1 partition and 3 replicas, ```Topic 2``` will have 1 partition, 1 replica and a `cleanup.policy` set to `compact`.
+```Topic 1``` will have 1 partition and 3 replicas, ```Topic 2``` will have 1 partition, 1 replica and a `cleanup.policy` set to `compact`. Also, [Topic compaction does not work](https://github.com/wurstmeister/kafka-docker/wiki#topic-compaction-does-not-work)
 
 If you wish to use multi-line YAML or some other delimiter between your topic definitions, override the default `,` separator by specifying the `KAFKA_CREATE_TOPICS_SEPARATOR` environment variable.
 
