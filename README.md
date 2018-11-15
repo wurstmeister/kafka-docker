@@ -207,6 +207,10 @@ Older compose files using the short-version of port mapping may encounter Kafka 
 
 See the included sample compose file ```docker-compose-swarm.yml```
 
+## Release process
+
+See the [wiki](https://github.com/wurstmeister/kafka-docker/wiki/ReleaseProcess) for information on adding or updating versions to release to Dockerhub.
+
 ## Tutorial
 
 [http://wurstmeister.github.io/kafka-docker/](http://wurstmeister.github.io/kafka-docker/)
