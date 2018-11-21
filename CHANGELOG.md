@@ -3,6 +3,12 @@ Changelog
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
 
+21-Nov-2018
+-----------
+
+- Update to latest Kafka: `2.1.0`
+- Set scala version for Kafka `2.1.0` and `2.0.1` to recommended `2.12`
+
 10-Nov-2018
 -----------
 
