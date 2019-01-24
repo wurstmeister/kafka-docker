@@ -98,9 +98,7 @@ fi
 
 # Jolokia 
 if [[ -n "$KAFKA_JOLOKIA_PORT" ]]; then
-    echo $KAFKA_OPTS
     export KAFKA_OPTS="-javaagent:$KAFKA_HOME/libs/jolokia-jvm-1.6.0-agent.jar=port=$KAFKA_JOLOKIA_PORT,host=0.0.0.0 $KAFKA_OPTS"
-    echo $KAFKA_OPTS
 fi
 
 #Issue newline to config file in case there is not one already
