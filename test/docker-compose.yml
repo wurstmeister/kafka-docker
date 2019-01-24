@@ -32,7 +32,7 @@ services:
       - "*/*.kafka.sh"
 
   kafkacattest:
-    image: confluentinc/cp-kafkacat
+    image: confluentinc/cp-kafkacat:5.0.0
     environment:
        - BROKER_LIST
        - KAFKA_VERSION=${KAFKA_VERSION-2.1.0}
