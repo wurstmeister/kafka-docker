@@ -96,6 +96,11 @@ if [[ -z "$KAFKA_ADVERTISED_HOST_NAME$KAFKA_LISTENERS" ]]; then
     export KAFKA_ADVERTISED_HOST_NAME="$HOSTNAME_VALUE"
 fi
 
+# Jolokia 
+if [[ -n "$KAFKA_JOLOKIA_PORT" ]]; then
+    export KAFKA_OPTS="-javaagent:$KAFKA_HOME/libs/jolokia-jvm-1.6.0-agent.jar=port=$KAFKA_JOLOKIA_PORT,host=0.0.0.0 $KAFKA_OPTS"
+fi
+
 #Issue newline to config file in case there is not one already
 echo "" >> "$KAFKA_HOME/config/server.properties"
 
