@@ -97,7 +97,7 @@ if [[ -z "$KAFKA_ADVERTISED_HOST_NAME$KAFKA_LISTENERS" ]]; then
 fi
 
 # Jolokia 
-if [[ -z "$KAFKA_JOLOKIA_PORT" ]]; then
+if [[ -n "$KAFKA_JOLOKIA_PORT" ]]; then
     echo $KAFKA_OPTS
     export KAFKA_OPTS="-javaagent:$KAFKA_HOME/libs/jolokia-jvm-1.6.0-agent.jar=port=$KAFKA_JOLOKIA_PORT,host=0.0.0.0 $KAFKA_OPTS"
     echo $KAFKA_OPTS
