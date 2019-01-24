@@ -187,6 +187,15 @@ For example, to connect to a kafka running locally (assumes exposing port 1099)
 
 Jconsole can now connect at ```jconsole 192.168.99.100:1099```
 
+## Jolokia
+
+For get JMX Metric via jolokia HTTP, set environment
+
+```
+KAFKA_JOLOKIA_PORT: 7777
+```
+
+
 ## Docker Swarm Mode
 
 The listener configuration above is necessary when deploying Kafka in a Docker Swarm using an overlay network. By separating OUTSIDE and INSIDE listeners, a host can communicate with clients outside the overlay network while still benefiting from it from within the swarm.
