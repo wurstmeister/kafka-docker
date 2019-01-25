@@ -79,15 +79,15 @@
 <p>To test your setup, start a shell, create a topic and start a producer:</p>
 
 <pre><code>$ $KAFKA_HOME/bin/kafka-topics.sh --create --topic topic \
---partitions 4 --zookeeper $ZK --replication-factor 2
-$ $KAFKA_HOME/bin/kafka-topics.sh --describe --topic topic --zookeeper $ZK 
+--partitions 4 --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor 2
+$ $KAFKA_HOME/bin/kafka-topics.sh --describe --topic topic --zookeeper $KAFKA_ZOOKEEPER_CONNECT
 $ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic \
 --broker-list=`broker-list.sh`
 </code></pre>
 
 <p>Start another shell and start a consumer:</p>
 
-<pre><code>$ $KAFKA_HOME/bin/kafka-console-consumer.sh --topic=topic --zookeeper=$ZK
+<pre><code>$ $KAFKA_HOME/bin/kafka-console-consumer.sh --topic=topic --bootstrap-server $KAFKA_ADVERTISED_HOST_NAME:9092
 </code></pre>
 
 <h1>
