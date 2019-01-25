@@ -1,6 +1,6 @@
 Following the excellent tutorials on how to run a multi broker kafka cluster natively: [http://www.michael-noll.com/blog/2013/03/13/running-a-multi-broker-apache-kafka-cluster-on-a-single-node/](http://www.michael-noll.com/blog/2013/03/13/running-a-multi-broker-apache-kafka-cluster-on-a-single-node/) and in vagrant: [http://allthingshadoop.com/2013/12/07/using-vagrant-to-get-up-and-running-with-apache-kafka/](http://allthingshadoop.com/2013/12/07/using-vagrant-to-get-up-and-running-with-apache-kafka/)
 
-Here is the tutorial based on Docker and Fig:
+Here is the tutorial based on Docker and Compose:
 
 Cluster Setup
 =============
