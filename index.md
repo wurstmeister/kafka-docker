@@ -25,15 +25,19 @@ $ docker-compose scale kafka=2
 
 This will start a single zookeeper instance and two Kafka instances. You can use `docker-compose ps` to show the running instances. If you want to add more Kafka brokers simply increase the value passed to `docker-compose scale kafka=n`
 
-Kafka Shell You can interact with your Kafka cluster via the Kafka shell:
-=========================================================================
+Kafka Shell
+===========
+
+You can interact with your Kafka cluster via the Kafka shell:
 
 ```
 $ start-kafka-shell.sh <DOCKER_HOST_IP> <ZK_HOST:ZK_PORT>
 ```
 
-Testing To test your setup, start a shell, create a topic and start a producer:
-===============================================================================
+Testing
+=======
+
+To test your setup, start a shell, create a topic and start a producer:
 
 ```
 $ $KAFKA_HOME/bin/kafka-topics.sh --create --topic topic \
