@@ -1,0 +1,8 @@
+title: Kafka Docker
+description: Run multiple Kafka brokers in Docker
+google_analytics: UA-47065224-1
+show_downloads: true
+theme: jekyll-theme-slate
+
+gems:
+  - jekyll-mentions
