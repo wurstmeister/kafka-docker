@@ -31,6 +31,7 @@ Everytime the image is updated, all tags will be pushed with the latest updates.
 
 ## Announcements
 
+* **01-Feb-2019** - Update base image to openjdk 191 ([Release notes](https://www.oracle.com/technetwork/java/javase/8u191-relnotes-5032181.html)). Please force pull to get these latest updates - including security patches etc.
 * **11-Nov-2018** - Update base image to openjdk 181 ([Release notes](https://www.oracle.com/technetwork/java/javase/8u181-relnotes-4479407.html)). Please force pull to get these latest updates - including security patches etc.
 * **28-May-2018** - New docker image tag format - see Readme.
 
