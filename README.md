@@ -110,6 +110,19 @@ HOSTNAME_COMMAND=wget -t3 -T2 -qO-  http://169.254.169.254/latest/meta-data/loca
 ```
 Reference: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
 
+For Local, OpenShift, Kubernetes or Swarm deployments you can use the following to get the container host's IP:
+```
+HOSTNAME_COMMAND=ip -o -4 addr list eth0 | awk '{print \$4}' | cut -d/ -f1
+```
+Note: Here `$4` is escaped with `\`, which is dependent on where you use/define the environment variable.
+
+If you need to get the container IP after the container is started then you can use something like this:
+```
+KAFKA_HOST=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' kafka)
+echo "KAFKA_HOST host is $KAFKA_HOST"
+```
+Where `kafka` is the container name.
+
 ### Injecting HOSTNAME_COMMAND into configuration
 
 If you require the value of `HOSTNAME_COMMAND` in any of your other `KAFKA_XXX` variables, use the `_{HOSTNAME_COMMAND}` string in your variable value, i.e.
