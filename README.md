@@ -39,8 +39,7 @@ Everytime the image is updated, all tags will be pushed with the latest updates.
 
 ## Pre-Requisites
 
-- install docker-compose [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
-- modify the ```KAFKA_ADVERTISED_HOST_NAME``` in [docker-compose.yml](https://raw.githubusercontent.com/wurstmeister/kafka-docker/master/docker-compose.yml) to match your docker host IP (Note: Do not use localhost or 127.0.0.1 as the host ip if you want to run multiple brokers.)
+- install docker-compose https://docs.docker.com/compose/install/
 - if you want to customize any Kafka parameters, simply add them as environment variables in ```docker-compose.yml```, e.g. in order to increase the ```message.max.bytes``` parameter set the environment to ```KAFKA_MESSAGE_MAX_BYTES: 2000000```. To turn off automatic topic creation set ```KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'```
 - Kafka's log4j usage can be customized by adding environment variables prefixed with ```LOG4J_```. These will be mapped to ```log4j.properties```. For example: ```LOG4J_LOGGER_KAFKA_AUTHORIZER_LOGGER=DEBUG, authorizerAppender```
 
@@ -50,15 +49,40 @@ Everytime the image is updated, all tags will be pushed with the latest updates.
 
 Start a cluster:
 
-- ```docker-compose up -d ```
+```bash
+docker-compose up -d
+```
 
 Add more brokers:
 
-- ```docker-compose scale kafka=3```
+```bash
+docker-compose up -d --scale kafka=3
+```
 
 Destroy a cluster:
 
-- ```docker-compose stop```
+```bash
+docker-compose stop
+```
+
+quick start in kafka container, refer to https://kafka.apache.org/quickstart
+```bash
+# Enter index 1 instance of kafka service
+docker-compose exec --index=1 kafka bash
+
+# create a topic
+$KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper host.docker.internal:2181 --replication-factor 1 --partitions 1 --topic test
+
+# see topic list
+$KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper host.docker.internal:2181
+
+# send some messages
+$KAFKA_HOME/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
+
+# start a consumer
+$KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
+```
+
 
 ## Note
 
