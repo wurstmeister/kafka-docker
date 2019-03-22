@@ -4,11 +4,15 @@ services:
     image: wurstmeister/zookeeper
     ports:
       - "2181:2181"
+    # zookeeper意外退出时自动重启
+    restart: always
+    container_name: zookeeper
   kafka:
     build: .
     ports:
       - "${INSIDE_PORT}:${INSIDE_PORT}"
       - "${OUTSIDE_PORT}:${OUTSIDE_PORT}"
+    restart: always
     environment:
       - TZ=CST-8
       - KAFKA_BROKER_ID=2
@@ -26,3 +30,4 @@ services:
       - project.extra=public-image
       - project.depends=zookeeper
       - project.owner=LHZ
+    container_name: kafka
