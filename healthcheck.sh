@@ -1,6 +1,6 @@
 #! /bin/bash
 
-r=`$KAFKA_HOME/bin/zookeeper-shell.sh zookeeper:2181 <<< "ls /brokers/ids" | tail -1 | jq '.[]'`   
+r=`$KAFKA_HOME/bin/zookeeper-shell.sh $KAFKA_ZOOKEEPER_CONNECT <<< "ls /brokers/ids" | tail -1 | jq '.[]'`   
 ids=( $r )                                                                                         
 function contains() {
      local n=$#
