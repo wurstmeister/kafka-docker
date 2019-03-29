@@ -5,18 +5,13 @@ source "/usr/bin/versions.sh"
 
 FILENAME="kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz"
 
-## Versions prior to 0.10.2.1 are not actively mirrored
-echo "Downloading kafka $MAJOR_VERSION.$MINOR_VERSION"
-if [[ "$MAJOR_VERSION" == "0" && "$MINOR_VERSION" -lt "11" ]]; then
-	echo "Version prior to 0.10.2.1 - downloading direct"
-	url="https://archive.apache.org/dist/kafka/${KAFKA_VERSION}/${FILENAME}"
-else
-	url=$(curl --stderr /dev/null "https://www.apache.org/dyn/closer.cgi?path=/kafka/${KAFKA_VERSION}/${FILENAME}&as_json=1" | jq -r '"\(.preferred)\(.path_info)"')
-fi
+url=$(curl --stderr /dev/null "https://www.apache.org/dyn/closer.cgi?path=/kafka/${KAFKA_VERSION}/${FILENAME}&as_json=1" | jq -r '"\(.preferred)\(.path_info)"')
 
-if [[ -z "$url" ]]; then
-	echo "Unable to determine mirror for downloading Kafka, the service may be down"
-	exit 1
+# Test to see if the suggested mirror has this version, currently pre 2.1.1 versions
+# do not appear to be actively mirrored. This may also be useful if closer.cgi is down.
+if [[ ! $(curl -s -f -I "${url}") ]]; then
+    echo "Mirror does not have desired version, downloading direct from Apache"
+    url="https://archive.apache.org/dist/kafka/${KAFKA_VERSION}/${FILENAME}"
 fi
 
 echo "Downloading Kafka from $url"
