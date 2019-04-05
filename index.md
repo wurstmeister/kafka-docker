@@ -7,11 +7,12 @@ Cluster Setup
 
 1.	Install [Docker](https://www.docker.io/gettingstarted/#h_installation)
 2.	Install [Compose](http://docs.docker.com/compose/install/)
-3.	Update `docker-compose.yml` with your docker host IP (`KAFKA_ADVERTISED_HOST_NAME`\)
-4.	If you want to customise any Kafka parameters, simply add them as environment variables in `docker-compose.yml`. For example:
+3.	Clone this repository.
+4.	Update `docker-compose.yml` with your docker host IP (`KAFKA_ADVERTISED_HOST_NAME`\)
+5.	If you want to customise any Kafka parameters, simply add them as environment variables in `docker-compose.yml`. For example:
 	-	to increase the `message.max.bytes` parameter add `KAFKA_MESSAGE_MAX_BYTES: 2000000` to the `environment` section.
 	-	to turn off automatic topic creation set `KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'`
-5.	Start the cluster
+6.	Start the cluster
 
 ```
 $ docker-compose up
