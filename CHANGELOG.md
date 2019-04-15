@@ -3,6 +3,11 @@ Changelog
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
 
+15-Apr-2019
+-----------
+
+-	Update base image to openjdk:8u201-jre-alpine
+
 27-Mar-2019
 -----------
 

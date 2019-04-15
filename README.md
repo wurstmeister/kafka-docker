@@ -32,7 +32,7 @@ Everytime the image is updated, all tags will be pushed with the latest updates.
 
 ## Announcements
 
-* **01-Feb-2019** - Update base image to openjdk 191 ([Release notes](https://www.oracle.com/technetwork/java/javase/8u191-relnotes-5032181.html)). Please force pull to get these latest updates - including security patches etc.
+* **15-Apr-2019** - Update base image to openjdk 201 ([Release notes](https://www.oracle.com/technetwork/java/javase/8u201-relnotes-5209271.html). Please force pull to get these latest updates - including security patches etc.
 
 ---
 
