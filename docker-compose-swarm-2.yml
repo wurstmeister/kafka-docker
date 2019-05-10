@@ -1,0 +1,46 @@
+version: '3.7'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+  
+  kafka:
+    image: wurstmeister/kafka
+    networks:
+      - net-broker
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+#    ports:
+#      - target: 9094
+#        published: 9094
+#        protocol: tcp
+#        mode: host
+    environment:
+      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+      KAFKA_CREATE_TOPICS: "topic-1"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      # For future use with multi node cluster
+      # add a the kafka_broker_id label to each node e.g => docker node update --label-add kafka_broker_id=101 desktop1
+      # BROKER_ID_COMMAND: 'docker node inspect self | grep kafka_broker_id | sed "s/.*\"kafka_broker_id\": //" | sed "s/\"//g"'
+      BROKER_ID_COMMAND: "echo 101"
+      KAFKA_LOG_DIRS: "/kafka/kafka-logs"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - kafka-data:/kafka
+
+volumes:
+  kafka-data:
+
+networks:
+  net-broker:
