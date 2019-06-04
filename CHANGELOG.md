@@ -7,6 +7,7 @@ Kafka features are not tied to a specific kafka-docker version (ideally all chan
 -----------
 
 -	Updated `2.2.x` version to Kafka `2.2.1`
+-	Update base image to openjdk:8u212-jre-alpine
 
 15-Apr-2019
 -----------
