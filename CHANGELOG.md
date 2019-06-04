@@ -3,6 +3,11 @@ Changelog
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
 
+04-Jun-2019
+-----------
+
+-	Updated `2.2.x` version to Kafka `2.2.1`
+
 15-Apr-2019
 -----------
 
