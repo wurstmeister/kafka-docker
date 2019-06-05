@@ -2,6 +2,7 @@ FROM openjdk:8u212-jre-alpine
 
 ARG kafka_version=2.2.1
 ARG scala_version=2.12
+ARG jolokia_version=1.6.1
 ARG glibc_version=2.29-r0
 ARG vcs_ref=unspecified
 ARG build_date=unspecified
@@ -17,12 +18,13 @@ LABEL org.label-schema.name="kafka" \
 
 ENV KAFKA_VERSION=$kafka_version \
     SCALA_VERSION=$scala_version \
+    JOLOKIA_VERSION=$jolokia_version \
     KAFKA_HOME=/opt/kafka \
     GLIBC_VERSION=$glibc_version
 
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
 
-COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh versions.sh /tmp/
+COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh versions.sh download-jolokia.sh /tmp/
 
 RUN apk add --no-cache bash curl jq docker \
  && chmod a+x /tmp/*.sh \
@@ -31,6 +33,7 @@ RUN apk add --no-cache bash curl jq docker \
  && tar xfz /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz -C /opt \
  && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} ${KAFKA_HOME} \
+ && /tmp/download-jolokia.sh \
  && rm /tmp/* \
  && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk \
  && apk add --no-cache --allow-untrusted glibc-${GLIBC_VERSION}.apk \
