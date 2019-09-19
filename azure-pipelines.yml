@@ -1,0 +1,36 @@
+# EdgeOne kafka Docker build pipeline 
+# Example: germanedge-docker/kafka:latest
+# dockerRegistry: "artifactory.new-solutions.com" -> image container registry service
+
+name: "e1-dsfm_$(Date:yyyyMMdd)$(Rev:.r)"
+
+variables:
+  dockerId: "edge-one"  # Docker-ID for container registry service
+  artifactRegistry: "germanedge-docker.artifactory"
+  imageName: "kafka"
+
+trigger:
+- master
+
+pr: none
+
+jobs:
+
+- job: 'DockerLinuxmaster'
+  condition: eq(variables['build.SourceBranchName'], 'master')
+  displayName: 'creates a kafka Docker image for Linux for master'
+  pool:
+    name: 'Hosted Ubuntu 1604'
+  steps:
+  - task: Docker@2
+    displayName: 'Build and Push the image'
+    inputs:
+      containerRegistry: '$(artifactRegistry)'
+      repository: '$(dockerId)/$(imageName)'
+      command: 'buildAndPush'
+      Dockerfile: 'Dockerfile'
+      buildContext: '.'
+      tags: |
+        $(Build.BuildId)
+        latest
+
