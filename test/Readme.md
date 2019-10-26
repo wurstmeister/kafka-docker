@@ -8,8 +8,7 @@ To execute
 
 ```
 cd test
-docker-compose up -d zookeeper
-docker-compose scale kafka=2
+docker-compose up -d zookeeper kafka_1 kafka_2
 ./runAllTests.sh
 ```
 

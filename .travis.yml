@@ -45,8 +45,7 @@ install:
   - docker pull confluentinc/cp-kafkacat
 
 before_script:
-  - docker-compose -f test/docker-compose.yml up -d zookeeper
-  - docker-compose -f test/docker-compose.yml scale kafka=2
+  - docker-compose -f test/docker-compose.yml up -d zookeeper kafka_1 kafka_2
 
 script:
   # Shellcheck main source files
@@ -56,6 +55,7 @@ script:
   - shellcheck -x -e SC1090 -s bash *.sh **/*.sh
   - ./verifyImageLabels.sh # Verify docker image's label
   - sleep 5 # Wait for containers to start
+  - docker-compose logs
   - docker ps -a
   - ./runAllTests.sh
   # End-to-End scenario tests
