@@ -16,7 +16,7 @@ Tags and releases
 
 All versions of the image are built from the same set of scripts with only minor variations (i.e. certain features are not supported on older versions). The version format mirrors the Kafka format, `<scala version>-<kafka version>`. Initially, all images are built with the recommended version of scala documented on [http://kafka.apache.org/downloads](http://kafka.apache.org/downloads). Available tags are:
 
-- `2.12-2.3.0`
+- `2.12-2.3.1`
 - `2.12-2.2.1`
 - `2.12-2.1.1`
 - `2.12-2.0.1`
