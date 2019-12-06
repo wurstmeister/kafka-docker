@@ -11,6 +11,7 @@ variables:
 
 trigger:
 - master
+- develop
 
 pr: none
 
@@ -33,4 +34,23 @@ jobs:
       tags: |
         $(Build.BuildId)
         latest
+        master
 
+- job: 'CreateDockerKafka_Linuxdev'
+  condition: eq(variables['build.SourceBranchName'], 'develop')
+  displayName: 'creates a Docker image linux - dev branch'
+  pool: 
+    name: 'Hosted Ubuntu 1604'
+  steps:
+  - task: Docker@2
+    displayName: 'Build and Push the image (Linux)'
+    inputs:
+      containerRegistry: '$(artifactRegistry)'
+      repository: '$(dockerId)/$(imageName)'
+      command: 'buildAndPush'
+      Dockerfile: 'DOCKERFILE-LINUX'
+      buildContext: '.'
+      tags: |
+        $(Build.BuildId)
+        latest
+        develop
