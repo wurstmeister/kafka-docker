@@ -2,7 +2,7 @@
 # Example: germanedge-docker/kafka:latest
 # dockerRegistry: "artifactory.new-solutions.com" -> image container registry service
 
-name: "e1-dsfm_$(Date:yyyyMMdd)$(Rev:.r)"
+name: "e1-kafka_$(Date:yyyyMMdd)$(Rev:.r)"
 
 variables:
   dockerId: "edge-one"  # Docker-ID for container registry service
