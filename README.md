@@ -18,7 +18,7 @@ All versions of the image are built from the same set of scripts with only minor
 
 - `2.12-2.4.0`
 - `2.12-2.3.1`
-- `2.12-2.2.1`
+- `2.12-2.2.2`
 - `2.12-2.1.1`
 - `2.12-2.0.1`
 - `2.11-1.1.1`
