@@ -49,9 +49,18 @@ $ $KAFKA_HOME/bin/kafka-console-producer.sh --topic=topic \
 
 Start another shell and start a consumer:
 
-```
-$ $KAFKA_HOME/bin/kafka-console-consumer.sh --topic=topic --zookeeper=$ZK
-```
+- With later version of kafka (0.10.x ~ latest)
+
+	```
+	$ $KAFKA_HOME/bin/kafka-console-consumer.sh --topic=topic --bootstrap-server=`broker-list.sh`
+	```
+
+- With earlier version of kafka (0.8.x ~ 2.0.x)
+
+	```
+	$ $KAFKA_HOME/bin/kafka-console-consumer.sh --topic=topic --zookeeper=$ZK
+	```
+- With kafka version between 0.10.x to 2.0.x, both scripts above are available.
 
 Running kafka-docker on a Mac:
 ==============================
