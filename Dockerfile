@@ -1,4 +1,5 @@
-FROM openjdk:8u212-jre-alpine
+ARG base_image=adoptopenjdk:11.0.6_10-jre-hotspot
+FROM ${base_image}
 
 ARG kafka_version=2.4.1
 ARG scala_version=2.12

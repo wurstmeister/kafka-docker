@@ -14,27 +14,27 @@ env:
 matrix:
   include:
   - scala: "2.10"
-    env: KAFKA_VERSION=0.8.2.2
+    env: KAFKA_VERSION=0.8.2.2 BASE_IMAGE=openjdk:8u212-jre-alpine
   - scala: 2.11
-    env: KAFKA_VERSION=0.9.0.1
+    env: KAFKA_VERSION=0.9.0.1 BASE_IMAGE=openjdk:8u212-jre-alpine
   - scala: 2.11
-    env: KAFKA_VERSION=0.10.2.2
+    env: KAFKA_VERSION=0.10.2.2 BASE_IMAGE=openjdk:8u212-jre-alpine
   - scala: 2.11
-    env: KAFKA_VERSION=0.11.0.3
+    env: KAFKA_VERSION=0.11.0.3 BASE_IMAGE=openjdk:8u212-jre-alpine
   - scala: 2.11
-    env: KAFKA_VERSION=1.0.2
+    env: KAFKA_VERSION=1.0.2 BASE_IMAGE=openjdk:8u212-jre-alpine
   - scala: 2.11
-    env: KAFKA_VERSION=1.1.1
+    env: KAFKA_VERSION=1.1.1 BASE_IMAGE=openjdk:8u212-jre-alpine
   - scala: 2.12
-    env: KAFKA_VERSION=2.0.1
+    env: KAFKA_VERSION=2.0.1 BASE_IMAGE=openjdk:8u212-jre-alpine
   - scala: 2.12
-    env: KAFKA_VERSION=2.1.1
+    env: KAFKA_VERSION=2.1.1 BASE_IMAGE=adoptopenjdk/openjdk11:jre-11.0.6_10-alpine
   - scala: 2.12
-    env: KAFKA_VERSION=2.2.2
+    env: KAFKA_VERSION=2.2.2 BASE_IMAGE=adoptopenjdk/openjdk11:jre-11.0.6_10-alpine
   - scala: 2.12
-    env: KAFKA_VERSION=2.3.1
+    env: KAFKA_VERSION=2.3.1 BASE_IMAGE=adoptopenjdk/openjdk11:jre-11.0.6_10-alpine
   - scala: 2.12
-    env: KAFKA_VERSION=2.4.1
+    env: KAFKA_VERSION=2.4.1 BASE_IMAGE=adoptopenjdk/openjdk11:jre-11.0.6_10-alpine
 
 install:
   - docker --version
@@ -43,7 +43,7 @@ install:
   - echo "SCALA VERSION  $TRAVIS_SCALA_VERSION"
   - echo "LATEST VERSION $LATEST"
   - export CURRENT=${TRAVIS_SCALA_VERSION}-${KAFKA_VERSION}
-  - docker build --build-arg kafka_version=$KAFKA_VERSION --build-arg scala_version=$TRAVIS_SCALA_VERSION --build-arg vcs_ref=$TRAVIS_COMMIT --build-arg build_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ") -t wurstmeister/kafka .
+  - docker build --build-arg base_image=$BASE_IMAGE --build-arg kafka_version=$KAFKA_VERSION --build-arg scala_version=$TRAVIS_SCALA_VERSION --build-arg vcs_ref=$TRAVIS_COMMIT --build-arg build_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ") -t wurstmeister/kafka .
   - docker pull confluentinc/cp-kafkacat
 
 before_script:
