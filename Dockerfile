@@ -1,4 +1,4 @@
-ARG base_image=adoptopenjdk:11.0.6_10-jre-hotspot
+ARG base_image=adoptopenjdk/openjdk11:jre-11.0.6_10-alpine
 FROM ${base_image}
 
 ARG kafka_version=2.4.1
