@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  test:
+  build:
     working_directory: ~/build
     docker:
       - image: circleci/python
@@ -21,7 +21,7 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-    - test:
+    - build:
         context: bintray_docker
         filters:
           branches:
