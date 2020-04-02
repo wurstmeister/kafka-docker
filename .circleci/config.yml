@@ -13,7 +13,8 @@ jobs:
           name: build images
           command: |
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            export VERSION=`git tag -l |sort -V | tail -1 | sed 's/v//'`
+            # tags don't line up with kafka version 
+            export VERSION=`cat Dockerfile| grep "ARG kafka_version=" | sed 's/ARG kafka_version=//'`
             docker build -t getspectrum/kafka:$VERSION .
             docker push getspectrum/kafka:$VERSION
 
