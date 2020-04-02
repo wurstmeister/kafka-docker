@@ -1,8 +1,7 @@
 version: 2
 jobs:
   test:
-    working_directory: ~/box
-    # The primary container is an instance of the first image listed. The job's commands run in this container.
+    working_directory: ~/build
     docker:
       - image: circleci/python
     steps:
@@ -10,7 +9,7 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: build images
+          name: build image
           command: |
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
             # tags don't line up with kafka version 
@@ -28,3 +27,4 @@ workflows:
           branches:
             only:
               - master
+              - feat/erin/circle
