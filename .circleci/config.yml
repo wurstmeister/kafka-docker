@@ -27,4 +27,3 @@ workflows:
           branches:
             only:
               - master
-              - feat/erin/circle
