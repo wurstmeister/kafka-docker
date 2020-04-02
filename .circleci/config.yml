@@ -1,0 +1,29 @@
+version: 2
+jobs:
+  test:
+    working_directory: ~/box
+    # The primary container is an instance of the first image listed. The job's commands run in this container.
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build images
+          command: |
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            export VERSION=`git tag -l |sort -V | tail -1 | sed 's/v//'`
+            docker build -t getspectrum/kafka:$VERSION .
+            docker push getspectrum/kafka:$VERSION
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+    - test:
+        context: bintray_docker
+        filters:
+          branches:
+            only:
+              - master
