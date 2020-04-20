@@ -1,6 +1,6 @@
 FROM openjdk:8u212-jre-alpine
 
-ARG kafka_version=2.4.1
+ARG kafka_version=2.5.0
 ARG scala_version=2.12
 ARG glibc_version=2.31-r0
 ARG vcs_ref=unspecified
