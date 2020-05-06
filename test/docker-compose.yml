@@ -49,7 +49,7 @@ services:
     image: confluentinc/cp-kafkacat:5.0.0
     environment:
        - BROKER_LIST
-       - KAFKA_VERSION=${KAFKA_VERSION-2.4.1}
+       - KAFKA_VERSION=${KAFKA_VERSION-2.5.0}
     volumes:
       - .:/tests
     working_dir: /tests
