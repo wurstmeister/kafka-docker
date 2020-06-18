@@ -58,9 +58,9 @@ Add more brokers:
 
 - ```docker-compose scale kafka=3```
 
-Destroy a cluster:
+Stop Kafka cluster and clean up everything
 
-- ```docker-compose stop```
+- ```docker-compose down --volumes```
 
 ## Note
 
