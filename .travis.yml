@@ -8,7 +8,7 @@ services:
 # This version will be also tagged as 'latest'
 env:
   global:
-    - LATEST="2.12-2.5.0"
+    - LATEST="2.13-2.6.0"
 
 # Build recommended versions based on: http://kafka.apache.org/downloads
 matrix:
@@ -37,6 +37,8 @@ matrix:
     env: KAFKA_VERSION=2.4.1
   - scala: 2.12
     env: KAFKA_VERSION=2.5.0
+  - scala: 2.13
+    env: KAFKA_VERSION=2.6.0
 
 install:
   - docker --version
@@ -45,7 +47,7 @@ install:
   - echo "SCALA VERSION  $TRAVIS_SCALA_VERSION"
   - echo "LATEST VERSION $LATEST"
   - export CURRENT=${TRAVIS_SCALA_VERSION}-${KAFKA_VERSION}
-  - docker build --build-arg kafka_version=$KAFKA_VERSION --build-arg scala_version=$TRAVIS_SCALA_VERSION --build-arg vcs_ref=$TRAVIS_COMMIT --build-arg build_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ") -t wurstmeister/kafka .
+  - docker build --build-arg kafka_version=$KAFKA_VERSION --build-arg scala_version=$TRAVIS_SCALA_VERSION --build-arg vcs_ref=$TRAVIS_COMMIT --build-arg build_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ") -t kagemomiji/kafka .
   - docker pull confluentinc/cp-kafkacat
 
 before_script:
@@ -70,16 +72,4 @@ script:
 after_script:
   - docker-compose stop
 
-# This will deploy from master. Might want to have a single release branch for a little more control
-deploy:
-  - provider: script
-    script: bash docker_push latest
-    on:
-      repo: wurstmeister/kafka-docker
-      branch: master
-      condition: $CURRENT = $LATEST
-  - provider: script
-    script: bash docker_push "${TRAVIS_SCALA_VERSION}-${KAFKA_VERSION}"
-    on:
-      repo: wurstmeister/kafka-docker
-      # branch: release
+
