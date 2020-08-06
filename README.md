@@ -1,8 +1,4 @@
-[![Docker Pulls](https://img.shields.io/docker/pulls/wurstmeister/kafka.svg)](https://hub.docker.com/r/wurstmeister/kafka/)
-[![Docker Stars](https://img.shields.io/docker/stars/wurstmeister/kafka.svg)](https://hub.docker.com/r/wurstmeister/kafka/)
-[![](https://images.microbadger.com/badges/version/wurstmeister/kafka.svg)](https://microbadger.com/images/wurstmeister/kafka "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/image/wurstmeister/kafka.svg)](https://microbadger.com/images/wurstmeister/kafka "Get your own image badge on microbadger.com")
-[![Build Status](https://travis-ci.org/wurstmeister/kafka-docker.svg?branch=master)](https://travis-ci.org/wurstmeister/kafka-docker)
+[![Build Status](https://travis-ci.org/kagemomiji/kafka-docker.svg?branch=master)](https://travis-ci.org/kagemomiji/kafka-docker)
 
 kafka-docker
 ============
@@ -16,6 +12,7 @@ Tags and releases
 
 All versions of the image are built from the same set of scripts with only minor variations (i.e. certain features are not supported on older versions). The version format mirrors the Kafka format, `<scala version>-<kafka version>`. Initially, all images are built with the recommended version of scala documented on [http://kafka.apache.org/downloads](http://kafka.apache.org/downloads). Available tags are:
 
+- `2.13-2.6.0`
 - `2.12-2.5.0`
 - `2.12-2.4.1`
 - `2.12-2.3.1`
@@ -213,8 +210,5 @@ See the included sample compose file ```docker-compose-swarm.yml```
 
 ## Release process
 
-See the [wiki](https://github.com/wurstmeister/kafka-docker/wiki/ReleaseProcess) for information on adding or updating versions to release to Dockerhub.
+See the [wiki](https://github.com/kagemomiji/kafka-docker/wiki/ReleaseProcess) for information on adding or updating versions to release to Dockerhub.
 
-## Tutorial
-
-[http://wurstmeister.github.io/kafka-docker/](http://wurstmeister.github.io/kafka-docker/)
