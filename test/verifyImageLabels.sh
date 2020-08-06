@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-VCS_REF=$(docker inspect -f '{{ index .Config.Labels "org.label-schema.vcs-ref"}}' wurstmeister/kafka)
+VCS_REF=$(docker inspect -f '{{ index .Config.Labels "org.label-schema.vcs-ref"}}' kagemomiji/kafka)
 echo "VCS_REF=$VCS_REF"
 if [ -z "$VCS_REF" ] || [ "$VCS_REF" = "unspecified" ]; then
   echo "org.label-schema.vcs-ref is empty or unspecified"
@@ -11,7 +11,7 @@ if ! git cat-file -e "$VCS_REF^{commit}"; then
   exit 1
 fi
 
-BUILD_DATE=$(docker inspect -f '{{ index .Config.Labels "org.label-schema.build-date"}}' wurstmeister/kafka)
+BUILD_DATE=$(docker inspect -f '{{ index .Config.Labels "org.label-schema.build-date"}}' kagemomiji/kafka)
 echo "BUILD_DATE=$BUILD_DATE"
 if ! date -d "$BUILD_DATE"; then
   echo "$BUILD_DATE Not a valid date"
