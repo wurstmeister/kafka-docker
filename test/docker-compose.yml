@@ -1,7 +1,7 @@
 version: '2.1'
 
 x-kafka-defaults: &kafka-defaults
-  image: wurstmeister/kafka
+  image: kagemomiji/kafka
   ports:
     - "9092"
   volumes:
@@ -32,7 +32,7 @@ services:
       KAFKA_BROKER_ID: 2
 
   kafkatest:
-    image: wurstmeister/kafka
+    image: kagemomiji/kafka
     environment:
       KAFKA_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
