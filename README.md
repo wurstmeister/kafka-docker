@@ -49,6 +49,18 @@ Everytime the image is updated, all tags will be pushed with the latest updates.
 
 **NOTE:** There are several 'gotchas' with configuring networking. If you are not sure about what the requirements are, please check out the [Connectivity Guide](https://github.com/wurstmeister/kafka-docker/wiki/Connectivity) in the [Wiki](https://github.com/wurstmeister/kafka-docker/wiki)
 
+## Kafka configurations
+
+You can create and modify any property inside the config/server.properties by settings an docker environment variable starting with `KAFKA_`.
+For example inside the docker-compose.xml add:
+
+    environment:
+      KAFKA_DELETE_TOPIC_ENABLE: "true"     
+
+And the start-kafka.sh script will convert it to `delete.topic.enable=true`
+
+For a list of available configuration see https://kafka.apache.org/documentation/#brokerconfigs
+
 ## Usage
 
 Start a cluster:
