@@ -52,7 +52,7 @@ Everytime the image is updated, all tags will be pushed with the latest updates.
 ## Kafka configurations
 
 You can create and modify any property inside the config/server.properties by settings an docker environment variable starting with `KAFKA_`.
-For example inside the docker-compose.xml add:
+For example inside your `docker-compose.yml` add:
 
     environment:
       KAFKA_DELETE_TOPIC_ENABLE: "true"     
