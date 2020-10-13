@@ -18,7 +18,6 @@ All versions of the image are built from the same set of scripts with only minor
 
 - `2.13-2.6.0`
 - `2.12-2.5.1`
-- `2.12-2.5.0`
 - `2.12-2.4.1`
 - `2.12-2.3.1`
 - `2.12-2.2.2`
