@@ -34,7 +34,7 @@ if [[ "$MAJOR_VERSION" == "0" && "$MINOR_VERSION" -gt "9" ]] || [[ "$MAJOR_VERSI
 fi
 
 # Expected format:
-#   name:partitions:replicas:cleanup.policy
+#   name:partitions:replicas:cleanup.policy:retention.ms
 IFS="${KAFKA_CREATE_TOPICS_SEPARATOR-,}"; for topicToCreate in $KAFKA_CREATE_TOPICS; do
     echo "creating topics: $topicToCreate"
     IFS=':' read -r -a topicConfig <<< "$topicToCreate"
@@ -52,6 +52,18 @@ IFS="${KAFKA_CREATE_TOPICS_SEPARATOR-,}"; for topicToCreate in $KAFKA_CREATE_TOP
 		${config} \\
 		${KAFKA_0_10_OPTS} &"
     eval "${COMMAND}"
+
+    if [ -n "${topicConfig[4]}" ]; then
+        wait
+        echo "setting retention of topic ${topicConfig[0]} to ${topicConfig[4]} ms"
+        SET_RETENTION=" ${KAFKA_HOME}/bin/kafka-configs.sh \\
+        --zookeeper ${KAFKA_ZOOKEEPER_CONNECT} \\
+        --alter \\
+        --entity-type topics \\
+        --entity-name ${topicConfig[0]} \\
+        --add-config 'retention.ms=${topicConfig[4]}'"
+        eval "${SET_RETENTION}"
+    fi
 done
 
 wait
