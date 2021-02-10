@@ -80,6 +80,13 @@ if [[ -n "$RACK_COMMAND" && -z "$KAFKA_BROKER_RACK" ]]; then
     export KAFKA_BROKER_RACK
 fi
 
+# Eval listeners command
+if [[ -n "$KAFKA_LISTENERS_COMMAND" ]]; then
+    KAFKA_LISTENERS=$(eval "$KAFKA_LISTENERS_COMMAND")
+    export KAFKA_LISTENERS
+    unset KAFKA_LISTENERS_COMMAND
+fi
+
 # Try and configure minimal settings or exit with error if there isn't enough information
 if [[ -z "$KAFKA_ADVERTISED_HOST_NAME$KAFKA_LISTENERS" ]]; then
     if [[ -n "$KAFKA_ADVERTISED_LISTENERS" ]]; then
