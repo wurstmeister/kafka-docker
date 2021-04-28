@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
 # shellcheck disable=SC1091
 source "/usr/bin/versions.sh"
