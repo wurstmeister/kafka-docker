@@ -1,4 +1,4 @@
-FROM openjdk:8u212-jre-alpine
+FROM azul/zulu-openjdk-alpine:8u292-8.54.0.21
 
 ARG kafka_version=2.7.0
 ARG scala_version=2.13
