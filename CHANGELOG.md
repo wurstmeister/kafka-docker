@@ -3,6 +3,11 @@ Changelog
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
 
+05-Jun-2021
+-----------
+
+- Dropped support for versions < 2.0.1
+
 30-Dec-2020
 -----------
 
