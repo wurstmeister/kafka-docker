@@ -93,7 +93,14 @@ Here is an example snippet from ```docker-compose.yml```:
 
 ```Topic 1``` will have 1 partition and 3 replicas, ```Topic 2``` will have 1 partition, 1 replica and a `cleanup.policy` set to `compact`. Also, see FAQ: [Topic compaction does not work](https://github.com/wurstmeister/kafka-docker/wiki#topic-compaction-does-not-work)
 
-If you wish to use multi-line YAML or some other delimiter between your topic definitions, override the default `,` separator by specifying the `KAFKA_CREATE_TOPICS_SEPARATOR` environment variable.
+If you'd like to add default configurations to all topics, for instance removing the retention, you can do it via:
+
+        environment:
+          KAFKA_CREATE_TOPICS_DEFAULT_CONFIG: "retention.ms=-1,retention.bytes=-1"
+
+Check all available [Kafka topic configs](https://kafka.apache.org/documentation/#topicconfigs)
+
+If you wish to use multi-line YAML or some other delimiter between your topic definitions and configs, override the default `,` separator by specifying the `KAFKA_CREATE_TOPICS_SEPARATOR` environment variable.
 
 For example, `KAFKA_CREATE_TOPICS_SEPARATOR: "$$'\n'"` would use a newline to split the topic definitions. Syntax has to follow docker-compose escaping rules, and [ANSI-C](https://www.gnu.org/software/bash/manual/html_node/ANSI_002dC-Quoting.html) quoting.
 

@@ -34,9 +34,17 @@ if [[ "$MAJOR_VERSION" == "0" && "$MINOR_VERSION" -gt "9" ]] || [[ "$MAJOR_VERSI
 fi
 
 # Expected format:
+#   config=value,
+# Available configs: https://kafka.apache.org/documentation/#topicconfigs
+topicConfigDefault=
+IFS="${KAFKA_CREATE_TOPICS_SEPARATOR-,}"; for config in $KAFKA_CREATE_TOPICS_DEFAULT_CONFIG; do
+    topicConfigDefault="${topicConfigDefault} --config=${config//[[:space:]]/}"
+done
+
+# Expected format:
 #   name:partitions:replicas:cleanup.policy
 IFS="${KAFKA_CREATE_TOPICS_SEPARATOR-,}"; for topicToCreate in $KAFKA_CREATE_TOPICS; do
-    echo "creating topics: $topicToCreate"
+    echo "creating topics: $topicToCreate with default config \"$topicConfigDefault\""
     IFS=':' read -r -a topicConfig <<< "$topicToCreate"
     config=
     if [ -n "${topicConfig[3]}" ]; then
@@ -49,6 +57,7 @@ IFS="${KAFKA_CREATE_TOPICS_SEPARATOR-,}"; for topicToCreate in $KAFKA_CREATE_TOP
 		--topic ${topicConfig[0]} \\
 		--partitions ${topicConfig[1]} \\
 		--replication-factor ${topicConfig[2]} \\
+		${topicConfigDefault} \\
 		${config} \\
 		${KAFKA_0_10_OPTS} &"
     eval "${COMMAND}"
