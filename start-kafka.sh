@@ -44,10 +44,15 @@ if [[ -z "$KAFKA_LOG_DIRS" ]]; then
     export KAFKA_LOG_DIRS="/kafka/kafka-logs-$HOSTNAME"
 fi
 
-if [[ -n "$KAFKA_HEAP_OPTS" ]]; then
-    sed -r -i 's/(export KAFKA_HEAP_OPTS)="(.*)"/\1="'"$KAFKA_HEAP_OPTS"'"/g' "$KAFKA_HOME/bin/kafka-server-start.sh"
-    unset KAFKA_HEAP_OPTS
-fi
+# When KAFKA_HEAP_OPTS set, this code try to modify read-only /opt/bin/kafka-server-start.sh
+# then throw ACCESS DENIED and failed to start because 'bash -e'
+# But the script kafka-server-start.sh will apply KAFKA_HEAP_OPTS as well!
+# It works fine with version 2.13-2.7.0
+#
+#if [[ -n "$KAFKA_HEAP_OPTS" ]]; then
+#    sed -r -i 's/(export KAFKA_HEAP_OPTS)="(.*)"/\1="'"$KAFKA_HEAP_OPTS"'"/g' "$KAFKA_HOME/bin/kafka-server-start.sh"
+#    unset KAFKA_HEAP_OPTS
+#fi
 
 if [[ -n "$HOSTNAME_COMMAND" ]]; then
     HOSTNAME_VALUE=$(eval "$HOSTNAME_COMMAND")
