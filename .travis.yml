@@ -5,10 +5,10 @@ language: scala
 services:
   - docker
 
-# This release is experimental only, previous version is remains 'latest'
+# This version will be also tagged as 'latest'
 env:
   global:
-    - LATEST="2.13-2.7.0"
+    - LATEST="2.13-2.8.0"
 
 # Build recommended versions based on: http://kafka.apache.org/downloads
 matrix:

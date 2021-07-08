@@ -3,6 +3,10 @@ Changelog
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
 
+08-Jul-2021
+-----------
+-	Add support for experimental Kafka `2.8.0`
+
 06-Jun-2021
 ----------
 - Add support for darwin arm by to azul/zulu-openjdk-alpine base image
@@ -11,11 +15,6 @@ Kafka features are not tied to a specific kafka-docker version (ideally all chan
 -----------
 
 - Dropped support for versions < 2.0.1
-
-20-Apr-2021
------------
-
--	Add support for experimental Kafka `2.8.0`
 
 30-Dec-2020
 -----------
