@@ -8,7 +8,7 @@ services:
 # This version will be also tagged as 'latest'
 env:
   global:
-    - LATEST="2.13-2.7.0"
+    - LATEST="2.13-2.7.1"
 
 # Build recommended versions based on: http://kafka.apache.org/downloads
 matrix:
@@ -28,7 +28,7 @@ matrix:
   - scala: 2.13
     env: KAFKA_VERSION=2.6.0
   - scala: 2.13
-    env: KAFKA_VERSION=2.7.0
+    env: KAFKA_VERSION=2.7.1
 
 install:
   - docker --version
