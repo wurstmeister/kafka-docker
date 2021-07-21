@@ -213,6 +213,16 @@ Older compose files using the short-version of port mapping may encounter Kafka 
 
 See the included sample compose file ```docker-compose-swarm.yml```
 
+## Without Zookeeper
+
+If you need to enable Kraft support, set the following environments (3 nodes):
+
+```
+KAFKA_WITHOUT_ZOOKEEPER: "true"
+KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://:9093
+KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+```
+
 ## Release process
 
 See the [wiki](https://github.com/wurstmeister/kafka-docker/wiki/ReleaseProcess) for information on adding or updating versions to release to Dockerhub.
