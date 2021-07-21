@@ -1,6 +1,6 @@
 FROM azul/zulu-openjdk-alpine:8u292-8.54.0.21
 
-ARG kafka_version=2.7.1
+ARG kafka_version=2.8.0
 ARG scala_version=2.13
 ARG glibc_version=2.31-r0
 ARG vcs_ref=unspecified
@@ -24,7 +24,8 @@ ENV PATH=${PATH}:${KAFKA_HOME}/bin
 
 COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh versions.sh /tmp/
 
-RUN apk add --no-cache bash curl jq docker \
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
+ && apk add --no-cache bash curl jq docker \
  && chmod a+x /tmp/*.sh \
  && mv /tmp/start-kafka.sh /tmp/broker-list.sh /tmp/create-topics.sh /tmp/versions.sh /usr/bin \
  && sync && /tmp/download-kafka.sh \
