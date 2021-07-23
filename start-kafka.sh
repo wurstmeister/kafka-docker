@@ -15,6 +15,11 @@ if [[ -z "$KAFKA_WITHOUT_ZOOKEEPER" && -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
     exit 1
 fi
 
+if [[ ! -z "$KAFKA_WITHOUT_ZOOKEEPER" && -z "$CLUSTER_UUID" ]]; then
+    echo "ERROR: missing CLUSTER_UUID when use KAFKA_WITHOUT_ZOOKEEPER"
+    exit 1
+fi
+
 if [[ -z "$KAFKA_PORT" ]]; then
     export KAFKA_PORT=9092
 fi
@@ -155,6 +160,6 @@ if [[ -z "$KAFKA_WITHOUT_ZOOKEEPER" ]]; then
 elif [[ -d "/kafka/kafka-logs-kafka1" ]]; then
     exec "$KAFKA_HOME/bin/kafka-server-start.sh" "$KAFKA_HOME/config/kraft/server.properties"
 else
-    bash -c "$KAFKA_HOME/bin/kafka-storage.sh format -t $($KAFKA_HOME/bin/kafka-storage.sh random-uuid) -c $KAFKA_HOME/config/kraft/server.properties"
+    bash -c "$KAFKA_HOME/bin/kafka-storage.sh format -t $CLUSTER_UUID -c $KAFKA_HOME/config/kraft/server.properties"
     exec "$KAFKA_HOME/bin/kafka-server-start.sh" "$KAFKA_HOME/config/kraft/server.properties"
 fi
