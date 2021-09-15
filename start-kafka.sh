@@ -15,7 +15,7 @@ if [[ -z "$KAFKA_WITHOUT_ZOOKEEPER" && -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
     exit 1
 fi
 
-if [[ ! -z "$KAFKA_WITHOUT_ZOOKEEPER" && -z "$CLUSTER_UUID" ]]; then
+if [[ -n "$KAFKA_WITHOUT_ZOOKEEPER" && -z "$CLUSTER_UUID" ]]; then
     echo "ERROR: missing CLUSTER_UUID when use KAFKA_WITHOUT_ZOOKEEPER"
     exit 1
 fi
