@@ -3,6 +3,11 @@ Changelog
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
 
+04-Oct-2021
+----------
+
+-	Add support for Kafka `2.8.1`
+
 19-July-2021
 ----------
 
