@@ -8,27 +8,47 @@ testCreateTopics() {
 	# TOPICS array contains the topic name to create / validate
 	# CLEANUP array contains the expected cleanup policy configuration for the topic
 	TOPICS[0]="default-$NOW"
-	CLEANUP[0]=""
+	CONFIG[0]=""
 
 	TOPICS[1]="compact-$NOW"
-	CLEANUP[1]="compact,compression.type=snappy"
+	CONFIG[1]="cleanup.policy=compact,compression.type=snappy"
 
 	KAFKA_CREATE_TOPICS="${TOPICS[0]}:1:1,${TOPICS[1]}:2:1:compact --config=compression.type=snappy" create-topics.sh
 
-	# Loop through each array, validate that topic exists, and correct cleanup policy is set
+	# shellcheck disable=SC1091
+	source "/usr/bin/versions.sh"
+
+	# since 3.0.0 there is no --zookeeper option anymore, so we have to use the
+	# --bootstrap-server option with a random broker
+	if [[ "$MAJOR_VERSION" -ge "3" ]]; then
+		CONNECT_OPTS="--bootstrap-server $(echo "${BROKER_LIST}" | cut -d ',' -f1)"
+	else
+		CONNECT_OPTS="--zookeeper ${KAFKA_ZOOKEEPER_CONNECT}"
+	fi
+
+	# Loop through each array, validate that topic exists, and correct configuration is set
 	for i in "${!TOPICS[@]}"; do
 		TOPIC=${TOPICS[i]}
 
 		echo "Validating topic '$TOPIC'"
 
-		EXISTS=$(/opt/kafka/bin/kafka-topics.sh --zookeeper "$KAFKA_ZOOKEEPER_CONNECT" --list --topic "$TOPIC")
-		POLICY=$(/opt/kafka/bin/kafka-configs.sh --zookeeper "$KAFKA_ZOOKEEPER_CONNECT" --entity-type topics --entity-name "$TOPIC" --describe | grep 'Configs for topic' | awk -F'cleanup.policy=' '{print $2}')
+		# shellcheck disable=SC2086
+		EXISTS=$(/opt/kafka/bin/kafka-topics.sh ${CONNECT_OPTS} --list --topic "$TOPIC")
+		# shellcheck disable=SC2086
+		ACTUAL_CONFIG=$(/opt/kafka/bin/kafka-configs.sh ${CONNECT_OPTS} --entity-type topics --entity-name "$TOPIC" --describe \
+			| cut -d'{' -f1 \
+			| grep -oE '(compression.type|cleanup.policy)=([^ ,]+)' \
+			| sort \
+			| tr '\n' ',' \
+			| sed 's/,$//')
 
-		RESULT="$EXISTS:$POLICY"
-		EXPECTED="$TOPIC:${CLEANUP[i]}"
+		RESULT="$EXISTS:$ACTUAL_CONFIG"
+		EXPECTED="$TOPIC:${CONFIG[i]}"
 
 		if [[ "$RESULT" != "$EXPECTED" ]]; then
-			echo "$TOPIC topic not configured correctly: '$RESULT'"
+			echo "$TOPIC topic not configured correctly:"
+			echo "    Actual: '$RESULT'"
+			echo "  Expected: '$EXPECTED'"
 			return 1
 		fi
 	done
