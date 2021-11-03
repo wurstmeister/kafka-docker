@@ -2,7 +2,8 @@
 [![Docker Stars](https://img.shields.io/docker/stars/wurstmeister/kafka.svg)](https://hub.docker.com/r/wurstmeister/kafka/)
 [![](https://images.microbadger.com/badges/version/wurstmeister/kafka.svg)](https://microbadger.com/images/wurstmeister/kafka "Get your own version badge on microbadger.com")
 [![](https://images.microbadger.com/badges/image/wurstmeister/kafka.svg)](https://microbadger.com/images/wurstmeister/kafka "Get your own image badge on microbadger.com")
-[![Build Status](https://travis-ci.org/wurstmeister/kafka-docker.svg?branch=master)](https://travis-ci.org/wurstmeister/kafka-docker)
+[![Build Status](https://app.travis-ci.com/wurstmeister/kafka-docker.svg?branch=master)](https://travis-ci.org/wurstmeister/kafka-docker)
+
 
 kafka-docker
 ============
@@ -16,7 +17,7 @@ Tags and releases
 
 All versions of the image are built from the same set of scripts with only minor variations (i.e. certain features are not supported on older versions). The version format mirrors the Kafka format, `<scala version>-<kafka version>`. Initially, all images are built with the recommended version of scala documented on [http://kafka.apache.org/downloads](http://kafka.apache.org/downloads). Available tags are:
 
-- `2.13-2.7.0`
+- `2.13-2.7.1`
 - `2.13-2.6.0`
 - `2.12-2.5.0`
 - `2.12-2.4.1`
