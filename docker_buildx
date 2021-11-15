@@ -27,6 +27,6 @@ docker buildx build \
     --build-arg scala_version=$TRAVIS_SCALA_VERSION \
     --build-arg vcs_ref=$TRAVIS_COMMIT \
     --build-arg build_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-    -t drewpc/kafka \
+    -t wurstmeister/kafka \
     $EXTRA_BUILDX_ARGS \
     .
