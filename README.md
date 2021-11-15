@@ -2,7 +2,7 @@
 [![Docker Stars](https://img.shields.io/docker/stars/wurstmeister/kafka.svg)](https://hub.docker.com/r/wurstmeister/kafka/)
 [![](https://images.microbadger.com/badges/version/wurstmeister/kafka.svg)](https://microbadger.com/images/wurstmeister/kafka "Get your own version badge on microbadger.com")
 [![](https://images.microbadger.com/badges/image/wurstmeister/kafka.svg)](https://microbadger.com/images/wurstmeister/kafka "Get your own image badge on microbadger.com")
-[![Build Status](https://app.travis-ci.com/wurstmeister/kafka-docker.svg?branch=master)](https://travis-ci.org/wurstmeister/kafka-docker)
+[![Build Status](https://app.travis-ci.com/wurstmeister/kafka-docker.svg?branch=master)](https://app.travis-ci.com/wurstmeister/kafka-docker)
 
 
 kafka-docker

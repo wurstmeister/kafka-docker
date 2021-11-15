@@ -10,5 +10,6 @@ fi
 
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 TARGET="$BASE_IMAGE:$IMAGE_VERSION"
-docker tag "$BASE_IMAGE" "$TARGET"
-docker push "$TARGET"
+bash docker_buildx \
+    -t "$TARGET" \
+    --push
