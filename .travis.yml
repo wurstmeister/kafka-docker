@@ -13,18 +13,6 @@ env:
 # Build recommended versions based on: http://kafka.apache.org/downloads
 matrix:
   include:
-  - scala: 2.10
-    env: KAFKA_VERSION=0.8.2.2
-  - scala: 2.11
-    env: KAFKA_VERSION=0.9.0.1
-  - scala: 2.11
-    env: KAFKA_VERSION=0.10.2.2
-  - scala: 2.11
-    env: KAFKA_VERSION=0.11.0.3
-  - scala: 2.11
-    env: KAFKA_VERSION=1.0.2
-  - scala: 2.11
-    env: KAFKA_VERSION=1.1.1
   - scala: 2.12
     env: KAFKA_VERSION=2.0.1
   - scala: 2.12
@@ -36,11 +24,11 @@ matrix:
   - scala: 2.12
     env: KAFKA_VERSION=2.4.1
   - scala: 2.12
-    env: KAFKA_VERSION=2.5.0
+    env: KAFKA_VERSION=2.5.1
   - scala: 2.13
-    env: KAFKA_VERSION=2.6.0
+    env: KAFKA_VERSION=2.6.3
   - scala: 2.13
-    env: KAFKA_VERSION=2.7.1
+    env: KAFKA_VERSION=2.7.2
   - scala: 2.13
     env: KAFKA_VERSION=2.8.1
 
