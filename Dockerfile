@@ -22,11 +22,11 @@ ENV KAFKA_VERSION=$kafka_version \
 
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
 
-COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh versions.sh /tmp/
+COPY healthcheck.sh download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh versions.sh /tmp/
 
 RUN apk add --no-cache bash curl jq docker \
  && chmod a+x /tmp/*.sh \
- && mv /tmp/start-kafka.sh /tmp/broker-list.sh /tmp/create-topics.sh /tmp/versions.sh /usr/bin \
+ && mv /tmp/start-kafka.sh /tmp/broker-list.sh /tmp/create-topics.sh /tmp/versions.sh /tmp/healthcheck.sh /usr/bin \
  && sync && /tmp/download-kafka.sh \
  && tar xfz /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz -C /opt \
  && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
@@ -39,6 +39,8 @@ RUN apk add --no-cache bash curl jq docker \
 COPY overrides /opt/overrides
 
 VOLUME ["/kafka"]
+
+HEALTHCHECK --interval=5s --timeout=10s --retries=5 CMD ["healthcheck.sh"]
 
 # Use "exec" form so that it runs as PID 1 (useful for graceful shutdown)
 CMD ["start-kafka.sh"]
