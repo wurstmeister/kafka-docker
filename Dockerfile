@@ -25,7 +25,7 @@ COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh versions.s
 RUN set -eux ; \
     apt-get update ; \
     apt-get upgrade -s ; \
-    apt-get install -y --no-install-recommends jq net-tools curl wget ; \
+    apt-get install -y --no-install-recommends jq net-tools curl wget docker ; \
     chmod a+x /tmp2/*.sh ; \
     mv /tmp2/start-kafka.sh /tmp2/broker-list.sh /tmp2/create-topics.sh /tmp2/versions.sh /usr/bin ; \
     sync ; \
