@@ -25,7 +25,16 @@ COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh versions.s
 RUN set -eux ; \
     apt-get update ; \
     apt-get upgrade -s ; \
-    apt-get install -y --no-install-recommends jq net-tools curl wget docker ; \
+    apt-get install -y --no-install-recommends jq net-tools curl wget \
+### BEGIN docker for CI tests
+     	ca-certificates gnupg lsb-release ; \
+	curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg ; \
+	echo \
+  		"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+  		$(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null ; \
+    apt-get update ; \
+    apt-get install -y --no-install-recommends docker-ce-cli ; \
+### END docker for CI tests
     chmod a+x /tmp2/*.sh ; \
     mv /tmp2/start-kafka.sh /tmp2/broker-list.sh /tmp2/create-topics.sh /tmp2/versions.sh /usr/bin ; \
     sync ; \
