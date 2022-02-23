@@ -25,7 +25,7 @@ COPY download-kafka.sh start-kafka.sh broker-list.sh create-topics.sh versions.s
 RUN set -eux ; \
     apt-get update ; \
     apt-get upgrade -s ; \
-    apt-get install -y --no-install-recommends libsnappy1v5 jq net-tools curl wget ; \
+    apt-get install -y --no-install-recommends jq net-tools curl wget ; \
 ### BEGIN docker for CI tests
     apt-get install -y --no-install-recommends gnupg lsb-release ; \
 	curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg ; \
