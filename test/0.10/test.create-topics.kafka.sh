@@ -22,7 +22,7 @@ testCreateTopics() {
 		echo "Validating topic '$TOPIC'"
 
 		EXISTS=$(/opt/kafka/bin/kafka-topics.sh --zookeeper "$KAFKA_ZOOKEEPER_CONNECT" --list --topic "$TOPIC")
-		POLICY=$(/opt/kafka/bin/kafka-topics.sh --zookeeper "$KAFKA_ZOOKEEPER_CONNECT" --describe --topic "$TOPIC" | grep Configs | awk -F'Configs: ' '{print $2}'
+		POLICY=$(/opt/kafka/bin/kafka-topics.sh --zookeeper "$KAFKA_ZOOKEEPER_CONNECT" --describe --topic "$TOPIC" | grep Configs | awk -F'Configs: ' '{print $2}')
 
 		RESULT="$EXISTS:$POLICY"
 		EXPECTED="$TOPIC:${CLEANUP[i]}"
