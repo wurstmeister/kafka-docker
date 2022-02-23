@@ -40,7 +40,7 @@ RUN set -eux ; \
     apt -f install ; \
 ### END docker for CI tests
 ### BEGIN other for CI tests
-    apt-get install -y --no-install-recommends netcat ; \
+    apt-get install -y --no-install-recommends netcat shellcheck ; \
 ### END other for CI tests
     chmod a+x /tmp2/*.sh ; \
     mv /tmp2/start-kafka.sh /tmp2/broker-list.sh /tmp2/create-topics.sh /tmp2/versions.sh /usr/bin ; \
