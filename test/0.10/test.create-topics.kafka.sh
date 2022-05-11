@@ -6,12 +6,12 @@ testCreateTopics() {
 	NOW=$(date +%s)
 
 	# TOPICS array contains the topic name to create / validate
-	# CLEANUP array contains the expected cleanup policy configuration for the topic
+	# CONFIG array contains the expected cleanup policy configuration for the topic
 	TOPICS[0]="default-$NOW"
 	CONFIG[0]=""
 
 	TOPICS[1]="compact-$NOW"
-	CONFIG[1]="cleanup.policy=compact,compression.type=snappy"
+	CLEANUP[1]="compression.type=snappy,cleanup.policy=compact"
 
 	KAFKA_CREATE_TOPICS="${TOPICS[0]}:1:1,${TOPICS[1]}:2:1:compact --config=compression.type=snappy" create-topics.sh
 
