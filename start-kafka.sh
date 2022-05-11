@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+# shellcheck disable=SC1091
+source /usr/bin/versions.sh
+
 # Allow specific kafka versions to perform any unique bootstrap operations
 OVERRIDE_FILE="/opt/overrides/${KAFKA_VERSION}.sh"
 if [[ -x "$OVERRIDE_FILE" ]]; then
@@ -26,7 +29,7 @@ if [[ -z "$KAFKA_ADVERTISED_PORT" && \
   -z "$KAFKA_LISTENERS" && \
   -z "$KAFKA_ADVERTISED_LISTENERS" && \
   -S /var/run/docker.sock ]]; then
-    KAFKA_ADVERTISED_PORT=$(docker port "$(hostname)" $KAFKA_PORT | sed -r 's/.*:(.*)/\1/g' | head -n1) 
+    KAFKA_ADVERTISED_PORT=$(docker port "$(hostname)" $KAFKA_PORT | sed -r 's/.*:(.*)/\1/g' | head -n1)
     export KAFKA_ADVERTISED_PORT
 fi
 
@@ -94,6 +97,16 @@ if [[ -z "$KAFKA_ADVERTISED_HOST_NAME$KAFKA_LISTENERS" ]]; then
     # Maintain existing behaviour
     # If HOSTNAME_COMMAND is provided, set that to the advertised.host.name value if listeners are not defined.
     export KAFKA_ADVERTISED_HOST_NAME="$HOSTNAME_VALUE"
+fi
+
+# `advertised.port` and `advertised.host.name` are removed with Kafka 3.0.0
+# See: https://github.com/apache/kafka/pull/10872
+if [[ "$MAJOR_VERSION" -ge "3" ]]; then
+    if [ -z "$KAFKA_ADVERTISED_LISTENERS" ]; then
+        if [ -n "${KAFKA_ADVERTISED_HOST_NAME}" ]; then
+            export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://${KAFKA_ADVERTISED_HOST_NAME}:${KAFKA_PORT}"
+        fi
+    fi
 fi
 
 #Issue newline to config file in case there is not one already
