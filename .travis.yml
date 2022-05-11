@@ -14,8 +14,6 @@ env:
 matrix:
   include:
   - scala: 2.12
-    env: KAFKA_VERSION=2.0.1
-  - scala: 2.12
     env: KAFKA_VERSION=2.1.1
   - scala: 2.12
     env: KAFKA_VERSION=2.2.2
