@@ -11,7 +11,9 @@ testCreateTopics() {
 	CONFIG[0]=""
 
 	TOPICS[1]="compact-$NOW"
-	CLEANUP[1]="compression.type=snappy,cleanup.policy=compact"
+	CONFIG[1]=$(echo -e "compression.type=snappy\ncleanup.policy=compact" | sort \
+			| tr '\n' ',' \
+			| sed 's/,$//')
 
 	KAFKA_CREATE_TOPICS="${TOPICS[0]}:1:1,${TOPICS[1]}:2:1:compact --config=compression.type=snappy" create-topics.sh
 
