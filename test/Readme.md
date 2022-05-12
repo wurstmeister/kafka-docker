@@ -18,7 +18,7 @@ Run selected tests
 ### Kafka
 
 ```
-docker-compose run --rm kafkatest <testname pattern>
+docker-compose run -e BROKER_LIST=$(../internal-broker-list.sh) --rm kafkatest <testname pattern>
 ```
 
 ### Kafkacat
