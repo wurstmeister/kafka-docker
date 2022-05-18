@@ -14,7 +14,7 @@ fi
 ORIG_IFS=$IFS
 
 if [[ "$MAJOR_VERSION" -ge "3" ]]; then
-    if [[ -z "BROKER_LIST" ]]; then
+    if [[ -z "$BROKER_LIST" ]]; then
         echo "ERROR: missing mandatory config: BROKER_LIST"
         exit 1
     fi
