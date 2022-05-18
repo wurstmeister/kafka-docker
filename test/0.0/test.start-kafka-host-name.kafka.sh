@@ -19,7 +19,7 @@ source "/usr/bin/versions.sh"
 # since 3.0.0 there is no --zookeeper option anymore, so we have to use the
 # --bootstrap-server option with a random broker
 if [[ "$MAJOR_VERSION" -ge "3" ]]; then
-    echo "this thes is obsolete with kafka from version 3.0.0 'advertised.host.name' are removed with Kafka 3.0.0"
+    echo "this test is obsolete with kafka from version 3.0.0 'advertised.host.name' are removed with Kafka 3.0.0"
     echo "See: https://github.com/apache/kafka/pull/10872"
 else
     testHostnameCommand
