@@ -34,6 +34,9 @@ if [[ "$MAJOR_VERSION" -ge "3" ]]; then
         echo "ERROR: KAFKA_HOST_NAME is removed as of kafka 3, remove KAFKA_HOST_NAME=$KAFKA_HOST_NAME from your config"
         exit 1
     fi
+    if [[ -v KAFKA_ZOOKEEPER_CONNECT ]]; then
+        echo "WARNING: KAFKA_ZOOKEEPER_CONNECT is not used as of kafka 3, KAFKA_ZOOKEEPER_CONNECT=$KAFKA_ZOOKEEPER_CONNECT from your config has no effect"
+    fi
 else
     if [[ -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
         echo "ERROR: missing mandatory config: KAFKA_ZOOKEEPER_CONNECT"
