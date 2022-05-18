@@ -22,8 +22,16 @@ if [[ "$MAJOR_VERSION" -ge "3" ]]; then
         echo "ERROR: KAFKA_ADVERTISED_HOST_NAME is removed as of kafka 3, remove KAFKA_ADVERTISED_HOST_NAME=$KAFKA_ADVERTISED_HOST_NAME from your config"
         exit 1
     fi
-        if [[ -v KAFKA_ADVERTISED_PORT ]]; then
+    if [[ -v KAFKA_ADVERTISED_PORT ]]; then
         echo "ERROR: KAFKA_ADVERTISED_PORT is removed as of kafka 3, remove KAFKA_ADVERTISED_PORT=$KAFKA_ADVERTISED_PORT from your config"
+        exit 1
+    fi
+    if [[ -v KAFKA_PORT ]]; then
+        echo "ERROR: KAFKA_PORT is removed as of kafka 3, remove KAFKA_PORT=$KAFKA_PORT from your config"
+        exit 1
+    fi
+    if [[ -v KAFKA_HOST_NAME ]]; then
+        echo "ERROR: KAFKA_HOST_NAME is removed as of kafka 3, remove KAFKA_HOST_NAME=$KAFKA_HOST_NAME from your config"
         exit 1
     fi
 else
