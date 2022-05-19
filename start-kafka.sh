@@ -14,10 +14,6 @@ fi
 ORIG_IFS=$IFS
 
 if [[ "$MAJOR_VERSION" -ge "3" ]]; then
-    if [[ -z "$BROKER_LIST" ]]; then
-        echo "ERROR: missing mandatory config: BROKER_LIST"
-        exit 1
-    fi
     if [[ -v KAFKA_ADVERTISED_HOST_NAME ]]; then
         echo "ERROR: KAFKA_ADVERTISED_HOST_NAME is removed as of kafka 3, remove KAFKA_ADVERTISED_HOST_NAME=$KAFKA_ADVERTISED_HOST_NAME from your config"
         exit 1
