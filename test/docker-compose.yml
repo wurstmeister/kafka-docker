@@ -7,12 +7,6 @@ x-kafka-defaults: &kafka-defaults
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
 
-x-kafka-environment-defaults: &kafka-environment-defaults
-  HOSTNAME_COMMAND: "echo $$(hostname)"
-  KAFKA_ADVERTISED_PORT: 9092
-  KAFKA_PORT: 9092
-  KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-
 services:
   zookeeper:
     image: wurstmeister/zookeeper
@@ -22,13 +16,11 @@ services:
     <<: *kafka-defaults
     container_name: test_kafka_1
     environment:
-      <<: *kafka-environment-defaults
       KAFKA_BROKER_ID: 1
   kafka_2:
     <<: *kafka-defaults
     container_name: test_kafka_2
     environment:
-      <<: *kafka-environment-defaults
       KAFKA_BROKER_ID: 2
 
   kafkatest:
