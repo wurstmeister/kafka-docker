@@ -3,25 +3,27 @@
 source test.functions
 
 testRestart() {
-	# Given a hostname is provided
-	export KAFKA_ADVERTISED_HOST_NAME="testhost"
+	# shellcheck disable=SC1091
+	source "/usr/bin/versions.sh"
+	# since 3.0.0 KAFKA_ADVERTISED_HOST_NAME was removed
+	if [[ "$MAJOR_VERSION" -lt "3" ]]; then
+		# Given a hostname is provided
+		export KAFKA_ADVERTISED_HOST_NAME="testhost"
+	else
+        export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://testhost:9092"
+	fi
 
 	# When the container is restarted (Script invoked multiple times)
 	source "$START_KAFKA"
 	source "$START_KAFKA"
 
-	# Then the configuration file only has one instance of the config
-	assertExpectedConfig 'advertised.host.name=testhost'
-	assertAbsent 'listeners'
+	if [[ "$MAJOR_VERSION" -lt "3" ]]; then
+		# Then the configuration file only has one instance of the config
+	    assertExpectedConfig 'advertised.host.name=testhost'
+	    assertAbsent 'listeners'
+	else
+	    assertExpectedConfig 'advertised.listeners=PLAINTEXT://testhost:9092'
+	    assertAbsent 'listeners'
+	fi
 }
-# shellcheck disable=SC1091
-source "/usr/bin/versions.sh"
-
-# since 3.0.0 there is no --zookeeper option anymore, so we have to use the
-# --bootstrap-server option with a random broker
-if [[ "$MAJOR_VERSION" -ge "3" ]]; then
-    echo "this test is obsolete with kafka from version 3.0.0 'advertised.host.name' are removed with Kafka 3.0.0"
-    echo "See: https://github.com/apache/kafka/pull/10872"
-else
-    testRestart
-fi
+testRestart

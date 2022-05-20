@@ -44,12 +44,14 @@ fi
 create-topics.sh &
 unset KAFKA_CREATE_TOPICS
 
-if [[ -z "$KAFKA_ADVERTISED_PORT" && \
-  -z "$KAFKA_LISTENERS" && \
-  -z "$KAFKA_ADVERTISED_LISTENERS" && \
-  -S /var/run/docker.sock ]]; then
-    KAFKA_ADVERTISED_PORT=$(docker port "$(hostname)" $KAFKA_PORT | sed -r 's/.*:(.*)/\1/g' | head -n1)
-    export KAFKA_ADVERTISED_PORT
+if [[ "$MAJOR_VERSION" -lt "3" ]]; then
+    if [[ -z "$KAFKA_ADVERTISED_PORT" && \
+      -z "$KAFKA_LISTENERS" && \
+      -z "$KAFKA_ADVERTISED_LISTENERS" && \
+      -S /var/run/docker.sock ]]; then
+        KAFKA_ADVERTISED_PORT=$(docker port "$(hostname)" $KAFKA_PORT | sed -r 's/.*:(.*)/\1/g' | head -n1)
+        export KAFKA_ADVERTISED_PORT
+    fi
 fi
 
 if [[ -z "$KAFKA_BROKER_ID" ]]; then
@@ -118,13 +120,13 @@ if [[ "$MAJOR_VERSION" -lt "3" ]]; then
         # If HOSTNAME_COMMAND is provided, set that to the advertised.host.name value if listeners are not defined.
         export KAFKA_ADVERTISED_HOST_NAME="$HOSTNAME_VALUE"
     fi
-fi
-# `advertised.port` and `advertised.host.name` are removed with Kafka 3.0.0
-# See: https://github.com/apache/kafka/pull/10872
-if [[ "$MAJOR_VERSION" -ge "3" ]]; then
-    if [ -z "$KAFKA_ADVERTISED_LISTENERS" ]; then
-        if [ -n "${KAFKA_ADVERTISED_HOST_NAME}" ]; then
-            export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://${KAFKA_ADVERTISED_HOST_NAME}:${KAFKA_PORT}"
+else
+    if [[ "$HOSTNAME_VALUE" ]]; then
+        if [[ -z "$KAFKA_ADVERTISED_LISTENERS" ]]; then
+            export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://$HOSTNAME_VALUE:9092"
+            if [[ -z "$KAFKA_LISTENERS" ]]; then
+                export KAFKA_LISTENERS=PLAINTEXT://:9092
+            fi
         fi
     fi
 fi

@@ -34,7 +34,7 @@ if [[ "$MAJOR_VERSION" == "0" && "$MINOR_VERSION" -gt "9" ]] || [[ "$MAJOR_VERSI
 fi
 
 # since 3.0.0 there is no --zookeeper option anymore, so we have to use the
-# --bootstrap-server option with a random broker
+# --bootstrap-server option.
 if [[ "$MAJOR_VERSION" -ge "3" ]]; then
     CONNECT_OPTS="--bootstrap-server ${BROKER_LIST}"
 else

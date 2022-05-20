@@ -7,11 +7,10 @@ testLog4jConfig() {
 	# shellcheck disable=SC1091
 	source "/usr/bin/versions.sh"
 
-    # since 3.0.0 there is no --zookeeper option anymore, so we have to use the
-    # --bootstrap-server option with a random broker
-    if [[ "$MAJOR_VERSION" -lt "3" ]]; then
-        export KAFKA_ADVERTISED_HOST_NAME="testhost"
-    fi
+	# since 3.0.0 there is no KAFKA_ADVERTISED_HOST_NAME
+	if [[ "$MAJOR_VERSION" -lt "3" ]]; then
+		export KAFKA_ADVERTISED_HOST_NAME="testhost"
+	fi
 
 	export LOG4J_LOGGER_KAFKA=DEBUG
 
