@@ -36,7 +36,7 @@ fi
 # since 3.0.0 there is no --zookeeper option anymore, so we have to use the
 # --bootstrap-server option with a random broker
 if [[ "$MAJOR_VERSION" -ge "3" ]]; then
-    CONNECT_OPTS="--bootstrap-server $(echo "${BROKER_LIST}" | cut -d ',' -f1)"
+    CONNECT_OPTS="--bootstrap-server ${BROKER_LIST}"
 else
     CONNECT_OPTS="--zookeeper ${KAFKA_ZOOKEEPER_CONNECT}"
 fi
