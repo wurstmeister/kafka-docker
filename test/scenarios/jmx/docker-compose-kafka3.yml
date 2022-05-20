@@ -3,4 +3,4 @@ services:
   kafka:
     environment:
       KAFKA_LISTENERS: PLAINTEXT://:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_1:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
