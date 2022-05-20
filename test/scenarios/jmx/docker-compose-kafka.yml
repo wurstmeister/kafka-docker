@@ -1,0 +1,11 @@
+version: '2'
+services:
+  kafka:
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_PORT: 9092
+
+  test:
+    environment:
+      KAFKA_PORT: 9092

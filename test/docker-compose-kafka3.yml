@@ -9,14 +9,12 @@ services:
   kafka_1:
     environment:
       <<: *kafka-environment-defaults
-      KAFKA_BROKER_ID: 1
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_1:9092
 
   kafka_2:
     environment:
       <<: *kafka-environment-defaults
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_2:9092
-      KAFKA_BROKER_ID: 2
 
   kafkatest:
     environment:
