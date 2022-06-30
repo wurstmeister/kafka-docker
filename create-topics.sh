@@ -15,7 +15,7 @@ step=10
 # shellcheck disable=SC1091
 source "/usr/bin/versions.sh"
 if [[ "$MAJOR_VERSION" -ge "3" ]]; then
-    PORT=$(echo $KAFKA_LISTENERS | awk -F: '{print $3}' )
+    PORT=$(echo "$KAFKA_LISTENERS" | awk -F: '{print $3}' )
 else
     PORT="$KAFKA_PORT"
 fi

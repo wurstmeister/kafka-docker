@@ -53,7 +53,7 @@ source "/usr/bin/versions.sh"
 
 # since 3.0.0 there is no KAFKA_PORT option anymore, so we need to find the port by inspecting KAFKA_LISTENERS
 if [[ "$MAJOR_VERSION" -ge "3" ]]; then
-    PORT=$(echo $KAFKA_LISTENERS | awk -F: '{print $3}')
+    PORT=$(echo "$KAFKA_LISTENERS" | awk -F: '{print $3}')
 else
     PORT="$KAFKA_PORT"
 fi
