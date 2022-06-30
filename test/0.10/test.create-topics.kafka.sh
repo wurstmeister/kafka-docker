@@ -17,8 +17,6 @@ testCreateTopics() {
 
 	KAFKA_CREATE_TOPICS="${TOPICS[0]}:1:1,${TOPICS[1]}:2:1:compact --config=compression.type=snappy" create-topics.sh
 
-	# shellcheck disable=SC1091
-	source "/usr/bin/versions.sh"
 
 	# since 3.0.0 there is no --zookeeper option anymore, so we have to use the
 	# --bootstrap-server option with a random broker
@@ -58,8 +56,18 @@ testCreateTopics() {
 	return 0
 }
 
+# shellcheck disable=SC1091
+source "/usr/bin/versions.sh"
+
+# since 3.0.0 there is no KAFKA_PORT option anymore, so we need to find the port by inspecting KAFKA_LISTENERS
+if [[ "$MAJOR_VERSION" -ge "3" ]]; then
+    PORT=$(echo $KAFKA_LISTENERS | awk -F: '{print $3}')
+else
+    PORT="$KAFKA_PORT"
+fi
+
 # mock the netstat call as made by the create-topics.sh script
-function netstat() { echo "1 2 3 :$KAFKA_PORT"; }
+function netstat() { echo "1 2 3 :$PORT"; }
 export -f netstat
 
 testCreateTopics

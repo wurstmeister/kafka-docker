@@ -11,7 +11,17 @@ fi
 start_timeout_exceeded=false
 count=0
 step=10
-while netstat -lnt | awk '$4 ~ /:'"$KAFKA_PORT"'$/ {exit 1}'; do
+
+# shellcheck disable=SC1091
+source "/usr/bin/versions.sh"
+if [[ "$MAJOR_VERSION" -ge "3" ]]; then
+    PORT=$(echo $KAFKA_LISTENERS | awk -F: '{print $3}' )
+else
+    PORT="$KAFKA_PORT"
+fi
+
+
+while netstat -lnt | awk '$4 ~ /:'"$PORT"'$/ {exit 1}'; do
     echo "waiting for kafka to be ready"
     sleep $step;
     count=$((count + step))
@@ -27,8 +37,6 @@ if $start_timeout_exceeded; then
 fi
 
 # introduced in 0.10. In earlier versions, this will fail because the topic already exists.
-# shellcheck disable=SC1091
-source "/usr/bin/versions.sh"
 if [[ "$MAJOR_VERSION" == "0" && "$MINOR_VERSION" -gt "9" ]] || [[ "$MAJOR_VERSION" -gt "0" ]]; then
     KAFKA_0_10_OPTS="--if-not-exists"
 fi
@@ -36,7 +44,7 @@ fi
 # since 3.0.0 there is no --zookeeper option anymore, so we have to use the
 # --bootstrap-server option.
 if [[ "$MAJOR_VERSION" -ge "3" ]]; then
-    CONNECT_OPTS="--bootstrap-server ${BROKER_LIST}"
+    CONNECT_OPTS="--bootstrap-server ${PORT}"
 else
     CONNECT_OPTS="--zookeeper ${KAFKA_ZOOKEEPER_CONNECT}"
 fi
