@@ -48,7 +48,7 @@ Start a cluster:
 
 Add more brokers:
 
-- ```docker-compose scale kafka=3```
+- ```docker-compose up -d --scale kafka=3```
 
 Destroy a cluster:
 
