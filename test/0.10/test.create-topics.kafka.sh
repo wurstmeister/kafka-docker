@@ -11,7 +11,7 @@ testCreateTopics() {
 	CLEANUP[0]=""
 
 	TOPICS[1]="compact-$NOW"
-	CLEANUP[1]="compact,compression.type=snappy"
+	CLEANUP[1]="compression.type=snappy,cleanup.policy=compact"
 
 	KAFKA_CREATE_TOPICS="${TOPICS[0]}:1:1,${TOPICS[1]}:2:1:compact --config=compression.type=snappy" create-topics.sh
 
@@ -22,7 +22,7 @@ testCreateTopics() {
 		echo "Validating topic '$TOPIC'"
 
 		EXISTS=$(/opt/kafka/bin/kafka-topics.sh --zookeeper "$KAFKA_ZOOKEEPER_CONNECT" --list --topic "$TOPIC")
-		POLICY=$(/opt/kafka/bin/kafka-configs.sh --zookeeper "$KAFKA_ZOOKEEPER_CONNECT" --entity-type topics --entity-name "$TOPIC" --describe | grep 'Configs for topic' | awk -F'cleanup.policy=' '{print $2}')
+		POLICY=$(/opt/kafka/bin/kafka-topics.sh --zookeeper "$KAFKA_ZOOKEEPER_CONNECT" --describe --topic "$TOPIC" | awk -F'Configs:' '{print $2}' | xargs)
 
 		RESULT="$EXISTS:$POLICY"
 		EXPECTED="$TOPIC:${CLEANUP[i]}"

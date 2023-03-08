@@ -3,6 +3,17 @@ Changelog
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
 
+09-Apr-2022
+----------
+
+-	Switched to openjdk:11-jre-slim for multi-arch support. 
+-	Drop support for Kafka `2.0.1` due to JDK upgrade.
+
+04-Oct-2021
+----------
+
+-	Add support for Kafka `2.8.1`
+
 19-July-2021
 ----------
 

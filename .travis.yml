@@ -8,13 +8,11 @@ services:
 # This version will be also tagged as 'latest'
 env:
   global:
-    - LATEST="2.13-2.7.1"
+    - LATEST="2.13-2.8.1"
 
 # Build recommended versions based on: http://kafka.apache.org/downloads
 matrix:
   include:
-  - scala: 2.12
-    env: KAFKA_VERSION=2.0.1
   - scala: 2.12
     env: KAFKA_VERSION=2.1.1
   - scala: 2.12
@@ -24,21 +22,41 @@ matrix:
   - scala: 2.12
     env: KAFKA_VERSION=2.4.1
   - scala: 2.12
-    env: KAFKA_VERSION=2.5.0
+    env: KAFKA_VERSION=2.5.1
   - scala: 2.13
-    env: KAFKA_VERSION=2.6.0
+    env: KAFKA_VERSION=2.6.3
   - scala: 2.13
-    env: KAFKA_VERSION=2.7.1
+    env: KAFKA_VERSION=2.7.2
+  - scala: 2.13
+    env: KAFKA_VERSION=2.8.1
+
+# Upgrade Docker Engine so we can use buildx
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
 
 install:
   - docker --version
+  - docker buildx version
   - docker-compose --version
   - echo "KAFKA VERSION  $KAFKA_VERSION"
   - echo "SCALA VERSION  $TRAVIS_SCALA_VERSION"
   - echo "LATEST VERSION $LATEST"
   - if [ -z ${DOCKER_PASSWORD+x} ]; then echo "Using unauthenticated pulls on PR"; else echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin; fi
   - export CURRENT=${TRAVIS_SCALA_VERSION}-${KAFKA_VERSION}
-  - docker build --build-arg kafka_version=$KAFKA_VERSION --build-arg scala_version=$TRAVIS_SCALA_VERSION --build-arg vcs_ref=$TRAVIS_COMMIT --build-arg build_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ") -t wurstmeister/kafka .
+
+  # Prepare the environment for multi-arch builds
+  - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  - docker buildx create --use
+
+  # Build all of the platforms and cache the result
+  - bash docker_buildx
+
+  # Using the multi-arch build cache, load the current architecture image into docker for the
+  # subsequent docker-compose/test stuff.
+  - bash docker_buildx --load
   - docker pull confluentinc/cp-kafkacat
 
 before_script:
