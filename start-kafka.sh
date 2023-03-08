@@ -10,8 +10,13 @@ fi
 # Store original IFS config, so we can restore it at various stages
 ORIG_IFS=$IFS
 
-if [[ -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
+if [[ -z "$KAFKA_WITHOUT_ZOOKEEPER" && -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
     echo "ERROR: missing mandatory config: KAFKA_ZOOKEEPER_CONNECT"
+    exit 1
+fi
+
+if [[ ! -z "$KAFKA_WITHOUT_ZOOKEEPER" && -z "$CLUSTER_UUID" ]]; then
+    echo "ERROR: missing CLUSTER_UUID when use KAFKA_WITHOUT_ZOOKEEPER"
     exit 1
 fi
 
@@ -118,7 +123,7 @@ echo "" >> "$KAFKA_HOME/config/server.properties"
 
     # Fixes #312
     # KAFKA_VERSION + KAFKA_HOME + grep -rohe KAFKA[A-Z0-0_]* /opt/kafka/bin | sort | uniq | tr '\n' '|'
-    EXCLUSIONS="|KAFKA_VERSION|KAFKA_HOME|KAFKA_DEBUG|KAFKA_GC_LOG_OPTS|KAFKA_HEAP_OPTS|KAFKA_JMX_OPTS|KAFKA_JVM_PERFORMANCE_OPTS|KAFKA_LOG|KAFKA_OPTS|"
+    EXCLUSIONS="|KAFKA_VERSION|KAFKA_HOME|KAFKA_DEBUG|KAFKA_GC_LOG_OPTS|KAFKA_HEAP_OPTS|KAFKA_JMX_OPTS|KAFKA_JVM_PERFORMANCE_OPTS|KAFKA_LOG|KAFKA_OPTS|KAFKA_WITHOUT_ZOOKEEPER|"
 
     # Read in env as a new-line separated array. This handles the case of env variables have spaces and/or carriage returns. See #313
     IFS=$'\n'
@@ -132,7 +137,11 @@ echo "" >> "$KAFKA_HOME/config/server.properties"
 
         if [[ $env_var =~ ^KAFKA_ ]]; then
             kafka_name=$(echo "$env_var" | cut -d_ -f2- | tr '[:upper:]' '[:lower:]' | tr _ .)
-            updateConfig "$kafka_name" "${!env_var}" "$KAFKA_HOME/config/server.properties"
+            if [[ -z "$KAFKA_WITHOUT_ZOOKEEPER" ]]; then
+                updateConfig "$kafka_name" "${!env_var}" "$KAFKA_HOME/config/server.properties"
+            else
+                updateConfig "$kafka_name" "${!env_var}" "$KAFKA_HOME/config/kraft/server.properties"
+            fi
         fi
 
         if [[ $env_var =~ ^LOG4J_ ]]; then
@@ -146,4 +155,11 @@ if [[ -n "$CUSTOM_INIT_SCRIPT" ]] ; then
   eval "$CUSTOM_INIT_SCRIPT"
 fi
 
-exec "$KAFKA_HOME/bin/kafka-server-start.sh" "$KAFKA_HOME/config/server.properties"
+if [[ -z "$KAFKA_WITHOUT_ZOOKEEPER" ]]; then
+    exec "$KAFKA_HOME/bin/kafka-server-start.sh" "$KAFKA_HOME/config/server.properties"
+elif [[ -d "/kafka/kafka-logs-kafka1" ]]; then
+    exec "$KAFKA_HOME/bin/kafka-server-start.sh" "$KAFKA_HOME/config/kraft/server.properties"
+else
+    bash -c "$KAFKA_HOME/bin/kafka-storage.sh format -t $CLUSTER_UUID -c $KAFKA_HOME/config/kraft/server.properties"
+    exec "$KAFKA_HOME/bin/kafka-server-start.sh" "$KAFKA_HOME/config/kraft/server.properties"
+fi
