@@ -89,7 +89,7 @@ For example, `KAFKA_CREATE_TOPICS_SEPARATOR: "$$'\n'"` would use a newline to sp
 
 ## Advertised hostname
 
-You can configure the advertised hostname in different ways
+You can configure the advertised hostname in different ways (Note that as of kafka 3 KAFKA_ADVERTISED_HOST_NAME,KAFKA_ADVERTISED_PORT KAFKA_PORT and KAFKA_HOST_NAME is no longer supported)
 
 1. explicitly, using ```KAFKA_ADVERTISED_HOST_NAME```
 2. via a command, using ```HOSTNAME_COMMAND```, e.g. ```HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"```

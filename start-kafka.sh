@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+# shellcheck disable=SC1091
+source /usr/bin/versions.sh
+
 # Allow specific kafka versions to perform any unique bootstrap operations
 OVERRIDE_FILE="/opt/overrides/${KAFKA_VERSION}.sh"
 if [[ -x "$OVERRIDE_FILE" ]]; then
@@ -10,24 +13,45 @@ fi
 # Store original IFS config, so we can restore it at various stages
 ORIG_IFS=$IFS
 
-if [[ -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
-    echo "ERROR: missing mandatory config: KAFKA_ZOOKEEPER_CONNECT"
-    exit 1
+if [[ "$MAJOR_VERSION" -ge "3" ]]; then
+    if [[ -v KAFKA_ADVERTISED_HOST_NAME ]]; then
+        echo "ERROR: KAFKA_ADVERTISED_HOST_NAME is removed as of kafka 3, remove KAFKA_ADVERTISED_HOST_NAME=$KAFKA_ADVERTISED_HOST_NAME from your config"
+        exit 1
+    fi
+    if [[ -v KAFKA_ADVERTISED_PORT ]]; then
+        echo "ERROR: KAFKA_ADVERTISED_PORT is removed as of kafka 3, remove KAFKA_ADVERTISED_PORT=$KAFKA_ADVERTISED_PORT from your config"
+        exit 1
+    fi
+    if [[ -v KAFKA_PORT ]]; then
+        echo "ERROR: KAFKA_PORT is removed as of kafka 3, remove KAFKA_PORT=$KAFKA_PORT from your config"
+        exit 1
+    fi
+    if [[ -v KAFKA_HOST_NAME ]]; then
+        echo "ERROR: KAFKA_HOST_NAME is removed as of kafka 3, remove KAFKA_HOST_NAME=$KAFKA_HOST_NAME from your config"
+        exit 1
+    fi
+else
+    if [[ -z "$KAFKA_ZOOKEEPER_CONNECT" ]]; then
+        echo "ERROR: missing mandatory config: KAFKA_ZOOKEEPER_CONNECT"
+        exit 1
+    fi
+    if [[ -z "$KAFKA_PORT" ]]; then
+        export KAFKA_PORT=9092
+    fi
 fi
 
-if [[ -z "$KAFKA_PORT" ]]; then
-    export KAFKA_PORT=9092
-fi
 
 create-topics.sh &
 unset KAFKA_CREATE_TOPICS
 
-if [[ -z "$KAFKA_ADVERTISED_PORT" && \
-  -z "$KAFKA_LISTENERS" && \
-  -z "$KAFKA_ADVERTISED_LISTENERS" && \
-  -S /var/run/docker.sock ]]; then
-    KAFKA_ADVERTISED_PORT=$(docker port "$(hostname)" $KAFKA_PORT | sed -r 's/.*:(.*)/\1/g' | head -n1) 
-    export KAFKA_ADVERTISED_PORT
+if [[ "$MAJOR_VERSION" -lt "3" ]]; then
+    if [[ -z "$KAFKA_ADVERTISED_PORT" && \
+      -z "$KAFKA_LISTENERS" && \
+      -z "$KAFKA_ADVERTISED_LISTENERS" && \
+      -S /var/run/docker.sock ]]; then
+        KAFKA_ADVERTISED_PORT=$(docker port "$(hostname)" $KAFKA_PORT | sed -r 's/.*:(.*)/\1/g' | head -n1)
+        export KAFKA_ADVERTISED_PORT
+    fi
 fi
 
 if [[ -z "$KAFKA_BROKER_ID" ]]; then
@@ -81,19 +105,30 @@ if [[ -n "$RACK_COMMAND" && -z "$KAFKA_BROKER_RACK" ]]; then
 fi
 
 # Try and configure minimal settings or exit with error if there isn't enough information
-if [[ -z "$KAFKA_ADVERTISED_HOST_NAME$KAFKA_LISTENERS" ]]; then
-    if [[ -n "$KAFKA_ADVERTISED_LISTENERS" ]]; then
-        echo "ERROR: Missing environment variable KAFKA_LISTENERS. Must be specified when using KAFKA_ADVERTISED_LISTENERS"
-        exit 1
-    elif [[ -z "$HOSTNAME_VALUE" ]]; then
-        echo "ERROR: No listener or advertised hostname configuration provided in environment."
-        echo "       Please define KAFKA_LISTENERS / (deprecated) KAFKA_ADVERTISED_HOST_NAME"
-        exit 1
-    fi
+if [[ "$MAJOR_VERSION" -lt "3" ]]; then
+    if [[ -z "$KAFKA_ADVERTISED_HOST_NAME$KAFKA_LISTENERS" ]]; then
+        if [[ -n "$KAFKA_ADVERTISED_LISTENERS" ]]; then
+            echo "ERROR: Missing environment variable KAFKA_LISTENERS. Must be specified when using KAFKA_ADVERTISED_LISTENERS"
+            exit 1
+        elif [[ -z "$HOSTNAME_VALUE" ]]; then
+            echo "ERROR: No listener or advertised hostname configuration provided in environment."
+            echo "       Please define KAFKA_LISTENERS / (deprecated) KAFKA_ADVERTISED_HOST_NAME"
+            exit 1
+        fi
 
-    # Maintain existing behaviour
-    # If HOSTNAME_COMMAND is provided, set that to the advertised.host.name value if listeners are not defined.
-    export KAFKA_ADVERTISED_HOST_NAME="$HOSTNAME_VALUE"
+        # Maintain existing behaviour
+        # If HOSTNAME_COMMAND is provided, set that to the advertised.host.name value if listeners are not defined.
+        export KAFKA_ADVERTISED_HOST_NAME="$HOSTNAME_VALUE"
+    fi
+else
+    if [[ "$HOSTNAME_VALUE" ]]; then
+        if [[ -z "$KAFKA_ADVERTISED_LISTENERS" ]]; then
+            export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://$HOSTNAME_VALUE:9092"
+            if [[ -z "$KAFKA_LISTENERS" ]]; then
+                export KAFKA_LISTENERS=PLAINTEXT://:9092
+            fi
+        fi
+    fi
 fi
 
 #Issue newline to config file in case there is not one already

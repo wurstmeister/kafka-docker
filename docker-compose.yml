@@ -12,8 +12,8 @@ services:
       - "9092"
     environment:
       DOCKER_API_VERSION: 1.22
-      KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.99.100:9092
+      KAFKA_LISTENERS: PLAINTEXT://:9092
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped

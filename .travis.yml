@@ -8,27 +8,56 @@ services:
 # This version will be also tagged as 'latest'
 env:
   global:
-    - LATEST="2.13-2.8.1"
+    - LATEST="2.13-3.2.0"
 
 # Build recommended versions based on: http://kafka.apache.org/downloads
 matrix:
   include:
   - scala: 2.12
-    env: KAFKA_VERSION=2.1.1
+    env:
+      - KAFKA_VERSION=2.1.1
+      - EXTRA_COMPOSE_FILE=test/docker-compose-kafka.yml
   - scala: 2.12
-    env: KAFKA_VERSION=2.2.2
+    env:
+      - KAFKA_VERSION=2.2.2
+      - EXTRA_COMPOSE_FILE=test/docker-compose-kafka.yml
   - scala: 2.12
-    env: KAFKA_VERSION=2.3.1
+    env:
+      - KAFKA_VERSION=2.3.1
+      - EXTRA_COMPOSE_FILE=test/docker-compose-kafka.yml
   - scala: 2.12
-    env: KAFKA_VERSION=2.4.1
+    env:
+      - KAFKA_VERSION=2.4.1
+      - EXTRA_COMPOSE_FILE=test/docker-compose-kafka.yml
   - scala: 2.12
-    env: KAFKA_VERSION=2.5.1
+    env:
+      - KAFKA_VERSION=2.5.1
+      - EXTRA_COMPOSE_FILE=test/docker-compose-kafka.yml
   - scala: 2.13
-    env: KAFKA_VERSION=2.6.3
+    env:
+      - KAFKA_VERSION=2.6.3
+      - EXTRA_COMPOSE_FILE=test/docker-compose-kafka.yml
   - scala: 2.13
-    env: KAFKA_VERSION=2.7.2
+    env:
+      - KAFKA_VERSION=2.7.2
+      - EXTRA_COMPOSE_FILE=test/docker-compose-kafka.yml
   - scala: 2.13
-    env: KAFKA_VERSION=2.8.1
+    env:
+      - KAFKA_VERSION=2.8.1
+      - EXTRA_COMPOSE_FILE=test/docker-compose-kafka.yml
+  - scala: 2.13
+    env:
+      - KAFKA_VERSION=3.0.1
+      - EXTRA_COMPOSE_FILE=test/docker-compose-kafka3.yml
+  - scala: 2.13
+    env:
+      - KAFKA_VERSION=3.1.1
+      - EXTRA_COMPOSE_FILE=test/docker-compose-kafka3.yml
+  - scala: 2.13
+    env:
+      - KAFKA_VERSION=3.2.0
+      - EXTRA_COMPOSE_FILE=test/docker-compose-kafka3.yml
+
 
 # Upgrade Docker Engine so we can use buildx
 before_install:
@@ -60,7 +89,7 @@ install:
   - docker pull confluentinc/cp-kafkacat
 
 before_script:
-  - docker-compose -f test/docker-compose.yml up -d zookeeper kafka_1 kafka_2
+  - docker-compose -f test/docker-compose.yml -f ${EXTRA_COMPOSE_FILE} up -d zookeeper kafka_1 kafka_2
 
 script:
   # Shellcheck main source files

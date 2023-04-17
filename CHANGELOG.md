@@ -2,7 +2,10 @@ Changelog
 =========
 
 Kafka features are not tied to a specific kafka-docker version (ideally all changes will be merged into all branches). Therefore, this changelog will track changes to the image by date.
+20-May-2022
+-----------
 
+- Add support for Kafka `3.0.1`,`3.1.1` and `3.2.0`
 09-Apr-2022
 ----------
 

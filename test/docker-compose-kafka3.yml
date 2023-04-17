@@ -1,0 +1,24 @@
+version: '2.1'
+
+x-kafka-environment-defaults: &kafka-environment-defaults
+  HOSTNAME_COMMAND: "echo $$(hostname)"
+  KAFKA_LISTENERS: PLAINTEXT://:9092
+  KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+services:
+  kafka_1:
+    environment:
+      <<: *kafka-environment-defaults
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_1:9092
+
+  kafka_2:
+    environment:
+      <<: *kafka-environment-defaults
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_2:9092
+
+  kafkatest:
+    environment:
+      <<: *kafka-environment-defaults
+      HOSTNAME_COMMAND: "echo $$(hostname)"
+      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181

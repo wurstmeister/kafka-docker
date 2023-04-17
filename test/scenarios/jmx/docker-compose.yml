@@ -10,11 +10,10 @@ services:
       - "9092"
       - "1099"
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: kafka
-      KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_PORT: 9092
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka -Dcom.sun.management.jmxremote.rmi.port=1099"
       JMX_PORT: 1099
     volumes:
@@ -31,7 +30,6 @@ services:
   test:
     image: wurstmeister/kafka
     environment:
-      KAFKA_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     volumes:
       - .:/scenario

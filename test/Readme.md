@@ -8,7 +8,10 @@ To execute
 
 ```
 cd test
-docker-compose up -d zookeeper kafka_1 kafka_2
+# if kafka veresion < 3
+docker-compose -f docker-compose.yml -f docker-compose-kafka.yml up -d zookeeper kafka_1 kafka_2
+# if kafka veresion >= 3
+docker-compose -f docker-compose.yml -f docker-compose-kafka3.yml up -d zookeeper kafka_1 kafka_2
 ./runAllTests.sh
 ```
 
@@ -18,7 +21,7 @@ Run selected tests
 ### Kafka
 
 ```
-docker-compose run --rm kafkatest <testname pattern>
+docker-compose run -e BROKER_LIST=$(./internal-broker-list.sh) --rm kafkatest <testname pattern>
 ```
 
 ### Kafkacat
